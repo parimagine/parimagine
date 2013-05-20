@@ -128,7 +128,7 @@
   <div id="demoLightbox" class="lightbox hide"  tabindex="-1" role="dialog" aria-hidden="true">
     <div class='lightbox-content'>
       <img id='lightbox-img' src="stock-photo-5033318-eiffel-tower-statue.jpg"/>
-      <div class="lightbox-caption"><p>Your caption here</p></div>
+      <div id="lightbox-caption" class="lightbox-caption"><p></p></div>
     </div>
   </div>    
 
@@ -144,15 +144,26 @@
   <a class="photo" href="{{photoServer}}/{{photo.image}}">
     <img src="{{photoServer}}/{{photo.image}}" >
   </a>
-  <div style="margin-top:5px;">{{photo.didascalie}}</div>
-  <div style=""> <!-- font-size: smaller; -->
-    <a href="https://maps.google.com/maps?q=Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}" target="google_maps" >
-      {{district}} {{number}} {{photo.address.street}} {{photo.address.legacy}}
-    </a>
+  <div style="margin-top:5px;">{{didascalie.base}}</div>
+  <div>
+    <small>{{didascalie.ext}}</small>
+  </div>
+  <div>
+    <small>
+      <a href="https://maps.google.com/maps?q=Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}" target="google_maps" >
+        [{{district}}] {{number}} {{photo.address.street}} {{photo.address.legacy}}
+      </a>
+    </small>
   </div>
 <div></script>
 
 <script type="text/javascript">
+
+if (typeof String.prototype.startsWith != 'function') {
+  String.prototype.startsWith = function (str){
+    return this.slice(0, str.length) == str;
+  };
+}
 
 $(function(){
 
@@ -230,13 +241,23 @@ $(function(){
 
   function new_box(photo) {
     // ask handlebars to render the template
+    // parse didascalie
+    var d = photo.didascalie.split(" | ");
+    if (d[1].startsWith(d[0])) {
+      d[1] = d[1].substring(d[0].length);
+    }
+    d[0] = $('<span>').html(d[0]).html();
+    d[1] = $('<span>').html(d[1]).html();
+    var dida = { base : d[0], ext : d[1]};
+
     return handlebars_template(
       {
         photoServer: photoServer, 
         photo      : photo, 
         number     : (photo.address.number=='0'?'':photo.address.number), 
         random     : random_width_class(), 
-        district   : districts[photo.address.district] 
+        district   : districts[photo.address.district],
+        didascalie : dida
       }
     );
   }
@@ -247,6 +268,7 @@ $(function(){
       {
         event.preventDefault();
         $('#lightbox-img').attr('src', $(this).attr('href'));
+        $('#lightbox-caption p').html($(this).parent().find('div').clone());
         $('#lightbox-img').load(function() {
           $('#demoLightbox').lightbox({});
         });
@@ -265,8 +287,6 @@ $(function(){
           dataType    : "json",
           url         : getAjaxURL(district, 0, 10),
       }).done(function( data, textStatus, jqXHR ) {
-
-        // $photos_container.hide();
 
         $.each(data, function() {
           $photos_container.append(new_box(this));
