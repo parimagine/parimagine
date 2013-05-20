@@ -7,87 +7,147 @@
 <!--[if IE 8 ]>    <html lang="en-US" class="no-js ie8"> <![endif]-->
 <!--[if (gte IE 9)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!-->
 <html lang="en-US" ><!--<![endif]-->
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="google" content="notranslate">
-    <meta http-equiv="Content-Language" content="en" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta property="og:url" content=""/>
-    <meta property="og:title" content=""/>
-    <meta property="og:description" content=""/>
-    <meta property="og:image" content=""/>
-    <meta property="og:type" content="website"/>
-    <title>parimagine</title>
-        
-    <meta name="HandheldFriendly" content="True"/>
-    <meta name="MobileOptimized" content="320"/>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  <meta http-equiv="Content-Language" content="en" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    
-    <!-- media-queries.js (fallback) -->
-    <!--[if lt IE 9]>
-      <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>     
-    <![endif]-->
+  <meta property="og:title" content="parimagine"/>
+  <meta property="og:description" content="photothèque des jeunes parisiens"/>
+  <meta property="og:image" content="https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/documents/photos-presse/cinema/P318.jpg"/>
+  <meta property="og:type" content="website"/>
 
-    <!-- html5.js -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="bootstrap-lightbox.css">
-    <link rel="stylesheet" href="style.css" />
-  </head>
+  <title>parimagine</title>
+      
+  <meta name="HandheldFriendly" content="True"/>
+  <meta name="MobileOptimized" content="320"/>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   
-  <body>
-    <div class="container">
+  <!-- media-queries.js (fallback) -->
+  <!--[if lt IE 9]>
+    <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>     
+  <![endif]-->
 
-      <section id="content">
+  <!-- html5.js -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="bootstrap-combined.min.css">
+  <link rel="stylesheet" href="bootstrap-lightbox.css">
+  <link rel="stylesheet" href="style.css" />
+  <style type="text/css">
 
-        <div class="row-fluid">
-          <div id="container" style="visiblity:hidden; margin: 0 auto;" class="span12 clearfix">
-          </div>
+  html {
+    overflow-y: scroll; /* force display of vertical scrollbar */
+    height: 101%;  /* enable vertical scrollbar (even when content fits in window) */
+  }
+
+  body {
+    background-color: rgb(240, 240, 240);
+  }
+
+  header  {
+    position:absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 20px;
+    background: #eee;
+  }
+
+  section#content {
+    padding-bottom: 120px;
+  }
+  
+  footer  {
+    position:fixed;
+    bottom:0;
+    left:0;
+    width: 100%;
+    background: rgb(212, 212, 212);
+  }
+
+  footer #next {
+    width: 100%;
+    border-style: none;
+  }
+
+  </style>
+</head>
+
+<body>
+  <!-- Navbar
+  ================================================== -->
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="brand" href="http://dev.parimagine.fr/">parimagine</a>
+        <div class="nav-collapse collapse">
+          <ul class="nav"> 
+            <li class="dropdown" id="districts">  
+                <a id="districts_menu" class="dropdown-toggle" data-toggle="dropdown" href="#">arrondissements [<span></span>]&nbsp;<b class="caret"></b></a>  
+                <ul class="dropdown-menu">  
+                </ul>  
+            </li>  
+          </ul>  
         </div>
-
-        <footer class="row-fluid">
-          <a id="next" href="#" class="btn span12 clearfix" style="margin-top:10px;">
-            <span class="centered">…<span>
-          </a>
-        </footer>
-
-      </section> 
-    <div>
-
-    <a id="next0" href="#" style="display:none">what the heck ?!</a>
-
-    <div id="demoLightbox" class="lightbox hide"  tabindex="-1" role="dialog" aria-hidden="true">
-      <div class='lightbox-content'>
-        <img id='lightbox-img' src="#"/>
-        <!-- div class="lightbox-caption"><p>Your caption here</p></div-->
       </div>
-    </div>    
+    </div>
+  </div>
 
-  </body>
-</html>
+  <div class="container" style="padding-top: 45px;">
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-<!-- script src="//cdnjs.cloudflare.com/ajax/libs/jquery-infinitescroll/2.0b2.110713/jquery.infinitescroll.min.js"></script-->
-<script src="https://raw.github.com/paulirish/infinite-scroll/master/jquery.infinitescroll.js"></script>
-<!--script src="//cdnjs.cloudflare.com/ajax/libs/masonry/2.1.08/jquery.masonry.min.js"></script-->
-<script src="http://masonry.desandro.com/jquery.masonry.js"></script>
-<script src="handlebars.js"></script>
+    <section id="content">
 
-<script src="scale.fix.js"></script>
-<script src="bootstrap-lightbox.js"></script>
+      <div class="row-fluid">
+        <div id="photos_container" class="span12 clearfix">
+        </div>
+      </div>
 
+    </section> 
+  </div>
+
+  <footer>
+    <a id="next" class="btn btn-mini" href="#">
+      <span class="centered">…</span>
+    </a>
+  </footer>
+
+  <a id="next0" href="#" style="display:none">
+
+    what the heck ?!
+  </a>
+
+  <div id="demoLightbox" class="lightbox hide"  tabindex="-1" role="dialog" aria-hidden="true">
+    <div class='lightbox-content'>
+      <img id='lightbox-img' src="stock-photo-5033318-eiffel-tower-statue.jpg"/>
+      <div class="lightbox-caption"><p>Your caption here</p></div>
+    </div>
+  </div>    
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="bootstrap.js"></script>
+<script type="text/javascript" src="bootstrap-lightbox.js"></script>
+<script type="text/javascript" src="jquery.infinitescroll.js"></script>
+<script type="text/javascript" src="jquery.masonry.js"></script>
+<script type="text/javascript" src="handlebars.js"></script>
+
+<!-- !!!! content inside script id="didascalie-template" MUST start with "<", otherwise jquery explodes !!!! -->
 <script id="didascalie-template" type="text/x-handlebars-template"><div class="centered box {{random}}">
   <a class="photo" href="{{photoServer}}/{{photo.image}}">
     <img src="{{photoServer}}/{{photo.image}}" >
   </a>
   <div style="margin-top:5px;">{{photo.didascalie}}</div>
-  <div>
-    <a href="https://maps.google.com/maps?q=Paris+{{district}}+ {{photo.address.number}}+{{photo.address.street}}" target="google_maps" >
-      {{district}} {{photo.address.number}} {{photo.address.street}} {{photo.address.legacy}}
+  <div style=""> <!-- font-size: smaller; -->
+    <a href="https://maps.google.com/maps?q=Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}" target="google_maps" >
+      {{district}} {{number}} {{photo.address.street}} {{photo.address.legacy}}
     </a>
   </div>
 <div></script>
@@ -96,19 +156,10 @@
 
 $(function(){
 
-  var source   = $("#didascalie-template").html();
-  var template = Handlebars.compile(source);
-
-  // var photoServer = "http://localhost:1212/geppaequo-fileupload/documents";
-  // var photoServer = "SiteParimagine/Piwi/galleries";
-  var photoServer = "<c:url value='/documents' />";
-  var jsonServer  = "<c:url value='/parimagine/page' />";
-  var $container              = $('#container');
   var masonry_initiation_done = false;
-  
   function masonry_initiation() {
     if (!masonry_initiation_done) {
-      $container.masonry({
+      $photos_container.masonry({
         itemSelector : '.box',
         columnWidth : 90,
         gutterWidth: 40,
@@ -143,19 +194,58 @@ $(function(){
     "20ème"
   ];
 
+  var current_district = 0;
+
+  $.each(districts, function() {
+    var $menu_item = $('<li><a href="#">'+(this == '' ? '&nbsp;' : this) +'</a></li>');
+    $menu_item.click( function(event) 
+      {
+        event.preventDefault();
+        $('.box').remove();
+        var index = $(this).parent().children().index(this);
+        $('#districts_menu span').html(districts[index]);
+        $photos_container.masonry( 'destroy' );
+        masonry_initiation_done = false;
+        go(index);
+      }
+    );
+    $(".dropdown-menu").append($menu_item);
+  });
+
+  // handlebars
+  var handlebars_source   = $("#didascalie-template").html();
+  var handlebars_template = Handlebars.compile(handlebars_source);
+
+  var photoServer = "<c:url value='/documents' />";
+  var jsonServer  = "<c:url value='/parimagine/page' />";
+  var $photos_container  = $('#photos_container');
+
+  function getAjaxURL(district, page, range) {
+    return "<c:url value='/parimagine' />"+"/district/"+district+"/page/"+page+"?count="+range;
+  }
+
   function random_width_class() {
     return "col"+(2+Math.round(1*Math.random()));
   }
 
   function new_box(photo) {
-    return template({photoServer:photoServer, photo: photo, random: random_width_class(), district: districts[photo.address.district] });
+    // ask handlebars to render the template
+    return handlebars_template(
+      {
+        photoServer: photoServer, 
+        photo      : photo, 
+        number     : (photo.address.number=='0'?'':photo.address.number), 
+        random     : random_width_class(), 
+        district   : districts[photo.address.district] 
+      }
+    );
   }
 
-  function il_est_tard() {
+  // lightbox will be shown when any element with class 'photo' is clicked
+  function setup_lightbox() {
     $('.photo').click( function(event) 
       {
         event.preventDefault();
-        console.log(this);
         $('#lightbox-img').attr('src', $(this).attr('href'));
         $('#lightbox-img').load(function() {
           $('#demoLightbox').lightbox({});
@@ -165,83 +255,96 @@ $(function(){
     return;
   }
 
-  $.ajax(
-    {
-        type        : 'GET',
-        dataType    : "json",
-        url         : jsonServer+"/0?count=20",
-    }).done(function( data, textStatus, jqXHR ) {
-      $.each(data, function() {
-        $container.append(new_box(this));
-      });  
+  function go(district) {
+    // fetch the inital 10 photos objects in json format from the server
+    current_district = district; // save in global. I know it is BAD. 
 
-      il_est_tard();  
+    $.ajax(
+      {
+          type        : 'GET',
+          dataType    : "json",
+          url         : getAjaxURL(district, 0, 10),
+      }).done(function( data, textStatus, jqXHR ) {
 
-      $container.imagesLoaded(function() {
-        masonry_initiation();
-      });
+        // $photos_container.hide();
 
-      $container.infinitescroll(
-        {
-          navSelector  : "a#next0:last",   // selector for the paged navigation (it will be hidden)
-          nextSelector : "a#next:last",   // selector for the NEXT link (to page 2)
+        $.each(data, function() {
+          $photos_container.append(new_box(this));
+        });  
 
-          dataType: 'json',
-          appendCallback: false,
-          // prefill: true,
-          path : function(current) {
-            return jsonServer+"/"+(current-1)+"?count=20";
-          },
-          itemSelector : '.box',     // selector for all items you'll retrieve
-          loading: {
-            speed: 0,
-            img: 'ajax-loader.gif',
-            finishedMsg: '',
-            msgText: '',
-          },
-        }, function(data, opts) {
-          var page = opts.state.currPage;  // no used now, just in case of
+        setup_lightbox();  
 
-          // an array of DOM elements
-          var newElements = [];
-          $.each(data, function() {
-            var newElement = $(new_box(this)).get()[0];
-            newElements.push(newElement);
-          });
+        $photos_container.imagesLoaded(function() {
+          masonry_initiation();
+          $(".box").animate({opacity: 1, visibility: "visible"});
+        });
 
-          // wrapp array of DOM elemnts in a jquery object
-          var $newElements = $(newElements);
+        $photos_container.infinitescroll(
+          {
+            navSelector  : "a#next0:last",   // selector for the paged navigation (it will be hidden)
+            nextSelector : "a#next:last",   // selector for the NEXT link (to page 2)
 
-          $newElements.imagesLoaded(function(){
-            masonry_initiation(); // in case we arrive here before the 'normal' initiation
-            // show elems now they're ready
-            $newElements.animate({ opacity: 1 });
-            $container.masonry( 'appended', $newElements, true ); 
-          });
+            dataType: 'json',
+            appendCallback: false,
+            // prefill: true,
+            path : function(current) {
+              return getAjaxURL(current_district, current-1, 10);
+            },
+            itemSelector : '.box',     // selector for all items you'll retrieve
+            loading: {
+              speed: 0,
+              img: 'ajax-loader.gif',
+              finishedMsg: '',
+              msgText: '',
+            },
+          }, function(data, opts) {
+            var page = opts.state.currPage;  // no used now, just in case of
 
-          $container.append($newElements);
+            // an array of DOM elements
+            var newElements = [];
+            $.each(data, function() {
+              var newElement = $(new_box(this)).get()[0];
+              newElements.push(newElement);
+            });
 
-          il_est_tard();  
+            // wrapp array of DOM elemnts in a jquery object
+            var $newElements = $(newElements);
 
+            $newElements.imagesLoaded(function(){
+              masonry_initiation(); // in case we arrive here before the 'normal' initiation
+              // show elems now they're ready
+              $photos_container.masonry( 'appended', $newElements, true ); 
+              $newElements.animate({ opacity: 1, visibility: "visible"});
+            });
+
+            $photos_container.append($newElements);
+
+            setup_lightbox();  
+
+            return false;
+          }
+        );
+
+        // unbind normal behavior. needs to occur after normal infinite scroll setup.
+        // $(window).unbind('.infscr');
+
+        // cf. http://stackoverflow.com/questions/10762656/infinite-scroll-manual-trigger
+        $("a#next").click(function(){
+          $photos_container.infinitescroll('retrieve');
           return false;
-        }
-      );
+        });
 
-      /*      
-      // unbind normal behavior. needs to occur after normal infinite scroll setup.
-      $(window).unbind('.infscr');
+      }).fail(function(jqXHR, textStatus, errorThrown){
+          console.log(textStatus + ' ' + errorThrown);
+      }
+    );
+  }
 
-      // cf. http://stackoverflow.com/questions/10762656/infinite-scroll-manual-trigger
-      $("a#next").click(function(){
-        $container.infinitescroll('retrieve');
-        return false;
-      });
-      */
+  go(0); // 0 -> district == 0 -> all districts
 
-    }).fail(function(jqXHR, textStatus, errorThrown){
-        console.log(textStatus + ' ' + errorThrown);
-    }
-  );
 });  
 
 </script>
+</body>
+</html>
+

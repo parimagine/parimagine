@@ -30,4 +30,17 @@ public class Resource {
         }
         return Photos.getInstance().getSlice(count, page);
     }
+
+    @GET
+    @javax.ws.rs.Path("/district/{district}/page/{page}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Photo> getSlice(
+            @PathParam("district") Integer district,
+            @PathParam("page") Integer page,
+            @QueryParam("count") Integer count ) throws IOException {
+        if (count == null || count == 0 ) {
+            count = 12;
+        }
+        return Photos.getInstance().getDistrictSlice(district, count, page);
+    }
 }
