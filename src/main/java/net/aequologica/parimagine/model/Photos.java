@@ -6,15 +6,37 @@ import static com.google.common.collect.Lists.newArrayList;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.Version;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
 
 public class Photos {
     
@@ -28,7 +50,8 @@ public class Photos {
     }
 
     final List<Photo> list;
-
+    final Map<String, Photo> map;
+    
     class PredicateDistrict implements Predicate<Photo> {
         
         private Integer district;
@@ -48,6 +71,11 @@ public class Photos {
     
     private Photos() throws IOException {
         list = load();
+        map = new HashMap<>();
+        for (Photo photo : list) {
+            map.put(photo.getImage(), photo);
+        }
+        createIndex();
         Collections.sort(list);
         for (int i = 1; i<= 20; i++) {
             List<Photo> districtList = newArrayList(filter(list, new PredicateDistrict(i)));
@@ -72,6 +100,26 @@ public class Photos {
         }
         return districtLists.get(district).subList(offset*sizeOfSlice, (offset+1)*sizeOfSlice);
     }
+    
+    public List<Photo> search(String searchString) throws IOException, ParseException {
+        List<Photo> list = new ArrayList<>(32); 
+        IndexReader reader = DirectoryReader.open(index);
+        IndexSearcher searcher = new IndexSearcher(reader);
+        QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_43, new String[] { "didascalie", "street", "legacy" }, analyzer);
+        Query query = parser.parse(searchString);
+        TopDocs results = searcher.search(query, 32);
+        ScoreDoc[] hits = results.scoreDocs;
+        for (ScoreDoc scoreDoc : hits) {
+            Document doc = searcher.doc(scoreDoc.doc);
+            String image = doc.get("image");
+            list.add(map.get(image));
+            if (list.size()>=32) {
+                break;
+            }
+        }
+        reader.close();
+        return list;
+    }
 
     private static List<Photo> load() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -90,4 +138,27 @@ public class Photos {
         
     }
 
+    Directory index = new RAMDirectory();
+    Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_43);
+    
+    private void createIndex() throws IOException {
+        IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_43, analyzer);
+    
+        iwc.setOpenMode(OpenMode.CREATE);
+    
+        IndexWriter writer = new IndexWriter(index, iwc);
+        for (Photo photo : list) {
+            // make a new, empty document
+            Document doc = new Document();
+    
+            Field image = new StringField("image", photo.getImage(), Field.Store.YES);
+            doc.add(image);
+            doc.add(new TextField("didascalie", photo.getDidascalie(), Field.Store.NO));
+            doc.add(new TextField("street", photo.getAddress().getStreet(), Field.Store.NO));
+            doc.add(new TextField("legacy", photo.getAddress().getLegacy(), Field.Store.NO));
+    
+            writer.addDocument(doc);
+        }
+        writer.close();
+    }
 }

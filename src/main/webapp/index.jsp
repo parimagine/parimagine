@@ -74,6 +74,38 @@
     border-style: none;
   }
 
+  .navbar-search {
+    position: relative;
+  }
+  
+  .navbar-search .search-query {
+    padding-left: 29px;
+  }
+
+  .navbar-search .icon-search {
+    opacity: 0.5;
+    position: absolute;
+    top: 7px;
+    left: 11px;
+    background-image: url("http://twitter.github.com/bootstrap/assets/img/glyphicons-halflings.png");
+  }
+
+  .navbar-search .icon-remove {
+    position: absolute;
+    top: 7px;
+    right: 11px;
+    opacity: 0.5;
+    background-image: url("http://twitter.github.com/bootstrap/assets/img/glyphicons-halflings.png");
+  }
+
+  #icon-search {
+    cursor: pointer;
+  }
+
+  #icon-remove {
+    cursor: pointer;
+  }
+
   </style>
 </head>
 
@@ -95,7 +127,14 @@
                 <a id="districts_menu" class="dropdown-toggle" data-toggle="dropdown" href="#">arrondissements [<span></span>]&nbsp;<b class="caret"></b></a>  
                 <ul class="dropdown-menu">  
                 </ul>  
-            </li>  
+            </li> 
+            <form class="navbar-search pull-left">
+              <input type="text" class="search-query" placeholder="Search" data-toggle="popover" data-placement="bottom" data-content="">
+                <i id="icon-search" class="icon-search"></i>
+                <li><a href="#" data-toggle="popover" data-placement="bottom" data-content="" title="Search"></a></li>              
+                <i id="icon-remove" class="icon-remove"></i>
+              </input>
+            </form>
           </ul>  
         </div>
       </div>
@@ -103,6 +142,11 @@
   </div>
 
   <div class="container" style="padding-top: 45px;">
+
+    <div class="popover bottom">
+      <div class="arrow"></div>
+      <h3 class="popover-title">Search</h3>
+    </div>
 
     <section id="content">
 
@@ -165,7 +209,16 @@ if (typeof String.prototype.startsWith != 'function') {
   };
 }
 
+String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
+
 $(function(){
+
+  // popover demo
+  $("a[data-toggle=popover]")
+    .popover()
+    .click(function(e) {
+      e.preventDefault()
+  })
 
   var masonry_initiation_done = false;
   function masonry_initiation() {
@@ -227,13 +280,18 @@ $(function(){
   var handlebars_source   = $("#didascalie-template").html();
   var handlebars_template = Handlebars.compile(handlebars_source);
 
-  var photoServer = "<c:url value='/documents' />";
-  var jsonServer  = "<c:url value='/parimagine/page' />";
-  var $photos_container  = $('#photos_container');
+  var photoServer  = "<c:url value='/documents' />";
 
-  function getAjaxURL(district, page, range) {
-    return "<c:url value='/parimagine' />"+"/district/"+district+"/page/"+page+"?count="+range;
+  function getAjaxURL(district, page, range, search) {
+    if (typeof search === "undefined") {
+      return "<c:url value='/parimagine' />"+"/district/"+district+"/page/"+page+"?count="+range;
+    }
+
+    // ignore district
+    return "<c:url value='/parimagine' />"+"/search?for="+encodeURIComponent(search);
   }
+  
+  var $photos_container  = $('#photos_container');
 
   function random_width_class() {
     return "col"+(2+Math.round(1*Math.random()));
@@ -262,6 +320,62 @@ $(function(){
     );
   }
 
+  function search(searchString) {
+    $("a[data-toggle=popover]").popover('hide');
+    $('#districts_menu span').html(districts[0]);
+    $('.box').remove();
+    $photos_container.masonry( 'destroy' );
+    masonry_initiation_done = false;
+    if (searchString.length == 0) {
+      go(0);
+    } else {
+      go(0, '"'+searchString+'"');
+    }
+  }
+
+  $('.navbar-search .icon-search').click(function(event) {
+      search($('.navbar-search input').val().trim());
+    }
+  );
+
+  $('.navbar-search .icon-remove').click(function(event) {
+      $('.navbar-search input').val('');
+      search("");
+    }
+  );
+
+  $('.navbar-search input').bind('keypress', function(event) {
+    var code = (event.keyCode ? event.keyCode : event.which);
+    if (code == 13) { //Enter keycode
+      event.preventDefault();
+      search($(this).val().trim());
+    }
+  });
+
+  // borrowed from http://www.codetoad.com/javascript_get_selected_text.asp
+  getSelected = function() {
+    var t = '';
+    if (window.getSelection){
+      t = window.getSelection();
+    } else if (document.getSelection){
+      t = document.getSelection();
+    } else if (document.selection){
+      t = document.selection.createRange().text;
+    }
+    return t;
+  }
+
+  // use jQuery to bind a mouseup event handler to the document
+  $photos_container.bind("mouseup", function() {
+    var st = getSelected();
+    if (st!='') {
+      $('.navbar-search input').val(st);
+      $("a[data-toggle=popover]").popover('show');
+    } else {
+      $("a[data-toggle=popover]").popover('hide');
+    }
+  });
+
   // lightbox will be shown when any element with class 'photo' is clicked
   function setup_lightbox() {
     $('.photo').click( function(event) 
@@ -277,7 +391,7 @@ $(function(){
     return;
   }
 
-  function go(district) {
+  function go(district, search) {
     // fetch the inital 10 photos objects in json format from the server
     current_district = district; // save in global. I know it is BAD. 
 
@@ -285,7 +399,7 @@ $(function(){
       {
           type        : 'GET',
           dataType    : "json",
-          url         : getAjaxURL(district, 0, 10),
+          url         : getAjaxURL(district, 0, 10, search),
       }).done(function( data, textStatus, jqXHR ) {
 
         $.each(data, function() {
@@ -299,60 +413,65 @@ $(function(){
           $(".box").animate({opacity: 1, visibility: "visible"});
         });
 
-        $photos_container.infinitescroll(
-          {
-            navSelector  : "a#next0:last",   // selector for the paged navigation (it will be hidden)
-            nextSelector : "a#next:last",   // selector for the NEXT link (to page 2)
+        if (typeof search === "undefined") {
+          $photos_container.infinitescroll(
+            {
+              navSelector  : "a#next0:last",   // selector for the paged navigation (it will be hidden)
+              nextSelector : "a#next:last",   // selector for the NEXT link (to page 2)
 
-            dataType: 'json',
-            appendCallback: false,
-            // prefill: true,
-            path : function(current) {
-              return getAjaxURL(current_district, current-1, 10);
-            },
-            itemSelector : '.box',     // selector for all items you'll retrieve
-            loading: {
-              speed: 0,
-              img: 'ajax-loader.gif',
-              finishedMsg: '',
-              msgText: '',
-            },
-          }, function(data, opts) {
-            var page = opts.state.currPage;  // no used now, just in case of
+              dataType: 'json',
+              appendCallback: false,
+              // prefill: true,
+              path : function(current) {
+                return getAjaxURL(current_district, current-1, 10);
+              },
+              itemSelector : '.box',     // selector for all items you'll retrieve
+              loading: {
+                speed: 0,
+                img: 'ajax-loader.gif',
+                finishedMsg: '',
+                msgText: '',
+              },
+            }, function(data, opts) {
+              var page = opts.state.currPage;  // no used now, just in case of
 
-            // an array of DOM elements
-            var newElements = [];
-            $.each(data, function() {
-              var newElement = $(new_box(this)).get()[0];
-              newElements.push(newElement);
-            });
+              // an array of DOM elements
+              var newElements = [];
+              $.each(data, function() {
+                var newElement = $(new_box(this)).get()[0];
+                newElements.push(newElement);
+              });
 
-            // wrapp array of DOM elemnts in a jquery object
-            var $newElements = $(newElements);
+              // wrapp array of DOM elemnts in a jquery object
+              var $newElements = $(newElements);
 
-            $newElements.imagesLoaded(function(){
-              masonry_initiation(); // in case we arrive here before the 'normal' initiation
-              // show elems now they're ready
-              $photos_container.masonry( 'appended', $newElements, true ); 
-              $newElements.animate({ opacity: 1, visibility: "visible"});
-            });
+              $newElements.imagesLoaded(function(){
+                masonry_initiation(); // in case we arrive here before the 'normal' initiation
+                // show elems now they're ready
+                $photos_container.masonry( 'appended', $newElements, true ); 
+                $newElements.animate({ opacity: 1, visibility: "visible"});
+              });
 
-            $photos_container.append($newElements);
+              $photos_container.append($newElements);
 
-            setup_lightbox();  
+              setup_lightbox();  
 
+              return false;
+            }
+          );
+
+          // unbind normal behavior. needs to occur after normal infinite scroll setup.
+          // $(window).unbind('.infscr');
+
+          // cf. http://stackoverflow.com/questions/10762656/infinite-scroll-manual-trigger
+          $("a#next").click(function(){
+            $photos_container.infinitescroll('retrieve');
             return false;
-          }
-        );
-
-        // unbind normal behavior. needs to occur after normal infinite scroll setup.
-        // $(window).unbind('.infscr');
-
-        // cf. http://stackoverflow.com/questions/10762656/infinite-scroll-manual-trigger
-        $("a#next").click(function(){
-          $photos_container.infinitescroll('retrieve');
-          return false;
-        });
+          });
+          $photos_container.infinitescroll('resume');
+        } else {
+          $photos_container.infinitescroll('pause');
+        }
 
       }).fail(function(jqXHR, textStatus, errorThrown){
           console.log(textStatus + ' ' + errorThrown);

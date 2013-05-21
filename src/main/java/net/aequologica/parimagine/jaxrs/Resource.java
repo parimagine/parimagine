@@ -12,24 +12,13 @@ import javax.ws.rs.core.MediaType;
 import net.aequologica.parimagine.model.Photo;
 import net.aequologica.parimagine.model.Photos;
 
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @javax.ws.rs.Path("/")
 public class Resource {
     private static Logger log = LoggerFactory.getLogger(Resource.class);
-
-    @GET
-    @javax.ws.rs.Path("/page/{page}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Photo> getSlice(
-            @PathParam("page") Integer page,
-            @QueryParam("count") Integer count ) throws IOException {
-        if (count == null || count == 0 ) {
-            count = 12;
-        }
-        return Photos.getInstance().getSlice(count, page);
-    }
 
     @GET
     @javax.ws.rs.Path("/district/{district}/page/{page}")
@@ -43,4 +32,17 @@ public class Resource {
         }
         return Photos.getInstance().getDistrictSlice(district, count, page);
     }
+
+    @GET
+    @javax.ws.rs.Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Photo> search(
+            @QueryParam("for")   String  searchString, 
+            @QueryParam("count") Integer count ) throws IOException, ParseException {
+        if (count == null || count == 0 ) {
+            count = 32;
+        }
+        return Photos.getInstance().search(searchString);
+    }
+
 }
