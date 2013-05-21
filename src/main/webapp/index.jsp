@@ -87,7 +87,7 @@
     position: absolute;
     top: 7px;
     left: 11px;
-    background-image: url("http://twitter.github.com/bootstrap/assets/img/glyphicons-halflings.png");
+    background-image: url("glyphicons_halflings.png");
   }
 
   .navbar-search .icon-remove {
@@ -95,7 +95,7 @@
     top: 7px;
     right: 11px;
     opacity: 0.5;
-    background-image: url("http://twitter.github.com/bootstrap/assets/img/glyphicons-halflings.png");
+    background-image: url("glyphicons_halflings.png");
   }
 
   #icon-search {
@@ -129,7 +129,7 @@
                 </ul>  
             </li> 
             <form class="navbar-search pull-left">
-              <input type="text" class="search-query" placeholder="Search" data-toggle="popover" data-placement="bottom" data-content="">
+              <input type="text" class="search-query" placeholder="Search" data-toggle="popover" data-placement="bottom" data-content="" value="${param.search}">
                 <i id="icon-search" class="icon-search"></i>
                 <li><a href="#" data-toggle="popover" data-placement="bottom" data-content="" title="Search"></a></li>              
                 <i id="icon-remove" class="icon-remove"></i>
@@ -326,7 +326,7 @@ $(function(){
     $('.box').remove();
     $photos_container.masonry( 'destroy' );
     masonry_initiation_done = false;
-    if (searchString.length == 0) {
+    if (typeof search === "undefined" || searchString.length == 0 || searchString == "") {
       go(0);
     } else {
       go(0, '"'+searchString+'"');
@@ -340,7 +340,7 @@ $(function(){
 
   $('.navbar-search .icon-remove').click(function(event) {
       $('.navbar-search input').val('');
-      search("");
+      search();
     }
   );
 
@@ -479,7 +479,11 @@ $(function(){
     );
   }
 
-  go(0); // 0 -> district == 0 -> all districts
+var paramSearch;
+<c:if test="${not empty param.search}" >
+  paramSearch = '"${param.search}"';
+</c:if>
+go(0, paramSearch); // 0 -> district == 0 -> all districts
 
 });  
 
