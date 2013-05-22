@@ -13,9 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.fr.FrenchAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
@@ -139,7 +141,7 @@ public class Photos {
     }
 
     Directory index = new RAMDirectory();
-    Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_43);
+    Analyzer analyzer = new FrenchAnalyzer(Version.LUCENE_43);
     
     private void createIndex() throws IOException {
         IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_43, analyzer);

@@ -42,7 +42,7 @@ public class Resource {
         if (count == null || count == 0 ) {
             count = 32;
         }
-        return Photos.getInstance().search(searchString);
+        return Photos.getInstance().search("\""+searchString+"\"");
     }
 
 }
