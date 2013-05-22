@@ -120,7 +120,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="brand" href="http://dev.parimagine.fr/">parimagine</a>
+        <div class="brand">Photothèque des Jeunes Parisiens</div>
         <div class="nav-collapse collapse">
           <ul class="nav"> 
             <li class="dropdown" id="districts">  
