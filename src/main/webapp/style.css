@@ -1,3 +1,10 @@
+.navbar .brand {
+  font-family: 'Peignot';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 32px;
+}
+
 #photos_container {
   background: #fff;
   margin: 5px 0 10px 0;
@@ -16,7 +23,7 @@
   padding: 5px;
   background: #fff;
   border: solid 1px #ddd;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.4em;
   float: left;
   opacity: 0;
@@ -135,3 +142,67 @@
 .clearfix:after { clear: both; }
 .clearfix { zoom: 1; }
 */
+
+html {
+  overflow-y: scroll; /* force display of vertical scrollbar */
+  height: 101%;  /* enable vertical scrollbar (even when content fits in window) */
+}
+
+body {
+  background-color: rgb(240, 240, 240);
+}
+
+.navbar-search .search-query {
+  font-size: 14px;
+}
+
+.didascalie-base {
+  font-size: 12px;
+}
+.didascalie-ext, .didascalie-url {
+  font-size: 11px;
+}
+
+
+header  {
+  position:absolute;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 20px;
+  background: #eee;
+}
+
+section#content {
+  padding-bottom: 120px;
+}
+
+footer  {
+  position:fixed;
+  bottom:0;
+  left:0;
+  width: 100%;
+  background: rgb(212, 212, 212);
+}
+
+footer #next {
+  width: 100%;
+  border-style: none;
+}
+
+.navbar-search {
+  position: relative;
+}
+
+.navbar-search .search-query {
+  padding-left: 29px;
+}
+
+#icon-search {
+  cursor: pointer;
+}
+
+#icon-remove {
+  cursor: pointer;
+}
+

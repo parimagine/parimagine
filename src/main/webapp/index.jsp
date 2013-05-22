@@ -36,50 +36,20 @@
   <![endif]-->
   <link rel="stylesheet" href="bootstrap-combined.min.css">
   <link rel="stylesheet" href="bootstrap-lightbox.css">
-  <link rel="stylesheet" href="style.css" />
+  
   <style type="text/css">
-
-  html {
-    overflow-y: scroll; /* force display of vertical scrollbar */
-    height: 101%;  /* enable vertical scrollbar (even when content fits in window) */
+  @font-face {
+    font-family: 'Peignot';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Peignot '), url('<c:url value="/assets/fonts/Peignot.woff"/>') format('woff');
   }
-
-  body {
-    background-color: rgb(240, 240, 240);
-  }
-
-  header  {
-    position:absolute;
-    top:0;
-    left:0;
-    width: 100%;
-    height: 20px;
-    background: #eee;
-  }
-
-  section#content {
-    padding-bottom: 120px;
-  }
-  
-  footer  {
-    position:fixed;
-    bottom:0;
-    left:0;
-    width: 100%;
-    background: rgb(212, 212, 212);
-  }
-
-  footer #next {
-    width: 100%;
-    border-style: none;
-  }
-
-  .navbar-search {
-    position: relative;
-  }
-  
-  .navbar-search .search-query {
-    padding-left: 29px;
+  @font-face {
+    font-family: 'Inconsolata';
+    font-size: larger;
+    font-style: normal;
+    font-weight: 400;
+    src: local('Inconsolata'), url(<c:url value='/assets/fonts/BjAYBlHtW3CJxDcjzrnZCIbN6UDyHWBl620a-IRfuBk.woff'/>) format('woff');
   }
 
   .navbar-search .icon-search {
@@ -98,15 +68,9 @@
     background-image: url("<c:url value='/img/glyphicons-halflings.png' />");
   }
 
-  #icon-search {
-    cursor: pointer;
-  }
-
-  #icon-remove {
-    cursor: pointer;
-  }
-
   </style>
+  
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
@@ -186,20 +150,18 @@
 <!-- !!!! content inside script id="didascalie-template" MUST start with "<", otherwise jquery explodes !!!! -->
 <script id="didascalie-template" type="text/x-handlebars-template"><div class="centered box {{random}}">
   <a class="photo" href="<c:url value='/documents/'/>/{{photo.image}}">
-    <img src="<c:url value='/documents/'/>{{photo.image}}" >
+    <img src="<c:url value='/documents/'/>{{photo.image}}" style="margin-bottom:5px;" />
   </a>
-  <div style="margin-top:5px;">
+  <div class="didascalie-base">
     {{didascalie.base}}
   </div>
-  <div>
-    <small>{{didascalie.ext}}</small>
+  <div class="didascalie-ext">
+     {{didascalie.ext}}
   </div>
-  <div>
-    <small>
-      <a href="https://maps.google.com/maps?q=Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}" target="google_maps" >
-        [{{district}}] {{number}} {{photo.address.street}} {{photo.address.legacy}}
-      </a>
-    </small>
+  <div class="didascalie-url">
+    <a href="https://maps.google.com/maps?q=Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}" target="google_maps" >
+      [{{district}}] {{number}} {{photo.address.street}} {{photo.address.legacy}}
+    </a>
   </div>
 <div></script>
 
@@ -297,7 +259,7 @@ $(document).ready(function(){
       this.text = text;
     },
     get : function() {
-      return encodeURIComponent(this.text);
+      return '"'+encodeURIComponent(this.text)+'"';
     },
     is_valid : function() {
       if (typeof this.text === "undefined") {
