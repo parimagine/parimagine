@@ -1,0 +1,1 @@
+mvn clean deploy -Dlean -DaltDeploymentRepository=qwe::default::file:///tmp/parimagine

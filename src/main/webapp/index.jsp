@@ -87,15 +87,15 @@
     position: absolute;
     top: 7px;
     left: 11px;
-    background-image: url("glyphicons_halflings.png");
+    background-image: url("<c:url value='/img/glyphicons-halflings.png' />");
   }
 
   .navbar-search .icon-remove {
+    opacity: 0.5;
     position: absolute;
     top: 7px;
     right: 11px;
-    opacity: 0.5;
-    background-image: url("glyphicons_halflings.png");
+    background-image: url("<c:url value='/img/glyphicons-halflings.png' />");
   }
 
   #icon-search {
@@ -185,10 +185,12 @@
 
 <!-- !!!! content inside script id="didascalie-template" MUST start with "<", otherwise jquery explodes !!!! -->
 <script id="didascalie-template" type="text/x-handlebars-template"><div class="centered box {{random}}">
-  <a class="photo" href="{{photoServer}}/{{photo.image}}">
-    <img src="{{photoServer}}/{{photo.image}}" >
+  <a class="photo" href="<c:url value='/documents/'/>/{{photo.image}}">
+    <img src="<c:url value='/documents/'/>{{photo.image}}" >
   </a>
-  <div style="margin-top:5px;">{{didascalie.base}}</div>
+  <div style="margin-top:5px;">
+    {{didascalie.base}}
+  </div>
   <div>
     <small>{{didascalie.ext}}</small>
   </div>
@@ -211,17 +213,12 @@ if (typeof String.prototype.startsWith != 'function') {
 
 String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
 
-$(function(){
+$(document).ready(function(){
 
-  // popover demo
-  $("a[data-toggle=popover]")
-    .popover()
-    .click(function(e) {
-      e.preventDefault()
-  })
-
+  // -------------------------------------------------------------------
+  // masonry
   var masonry_initiation_done = false;
-  function masonry_initiation() {
+  function initialize_masonry() {
     if (!masonry_initiation_done) {
       $photos_container.masonry({
         itemSelector : '.box',
@@ -234,6 +231,14 @@ $(function(){
     }
   }
 
+  // -------------------------------------------------------------------
+  // popover 
+  $("a[data-toggle=popover]").popover().click(function(e) {
+    e.preventDefault();
+  })
+
+  // -------------------------------------------------------------------
+  // districts
   var districts = [
     "",
     "1er",
@@ -257,80 +262,124 @@ $(function(){
     "19ème",
     "20ème"
   ];
-
   var current_district = 0;
 
+  // add districts to navbar dropdwon
   $.each(districts, function() {
     var $menu_item = $('<li><a href="#">'+(this == '' ? '&nbsp;' : this) +'</a></li>');
     $menu_item.click( function(event) 
       {
         event.preventDefault();
-        $('.box').remove();
+        // get district, give visual feedback
         var index = $(this).parent().children().index(this);
         $('#districts_menu span').html(districts[index]);
+        // raz 
+        $('.box').remove();
         $photos_container.masonry( 'destroy' );
         masonry_initiation_done = false;
-        go(index);
+        // load images into boxes
+        load_photo_set(index);
       }
     );
     $(".dropdown-menu").append($menu_item);
   });
 
-  // handlebars
+  // -------------------------------------------------------------------
+  // compile handlebars template
   var handlebars_source   = $("#didascalie-template").html();
   var handlebars_template = Handlebars.compile(handlebars_source);
 
-  var photoServer  = "<c:url value='/documents' />";
+  // -------------------------------------------------------------------
+  // construct photo set query URL
+  var current_search_object = {
+    text : undefined,
+    set : function(text) {
+      this.text = text;
+    },
+    get : function() {
+      return encodeURIComponent(this.text);
+    },
+    is_valid : function() {
+      if (typeof this.text === "undefined") {
+        return false;
+      }
+      if (typeof this.text == "undefined") {
+        return false;
+      }
+      if (typeof this.text == undefined) {
+        return false;
+      }
+      if (this.text.length == 0) {
+        return false;
+      }
+      if (this.text == "") {
+        return false;
+      }
+      if (this.text == '') {
+        return false;
+      }
+      return true;
+    },
+  }
 
-  function getAjaxURL(district, page, range, search) {
-    if (typeof search === "undefined") {
+  function get_photo_set_url(district, page, range) {
+    // district URL. district == 0 -> all districts
+    if (!current_search_object.is_valid()) {
       return "<c:url value='/parimagine' />"+"/district/"+district+"/page/"+page+"?count="+range;
     }
 
-    // ignore district
-    return "<c:url value='/parimagine' />"+"/search?for="+encodeURIComponent(search);
+    // search URL
+    return "<c:url value='/parimagine' />"+"/search?for="+current_search_object.get();
   }
   
   var $photos_container  = $('#photos_container');
 
-  function random_width_class() {
+  function get_random_width_class() {
     return "col"+(2+Math.round(1*Math.random()));
   }
 
-  function new_box(photo) {
-    // ask handlebars to render the template
-    // parse didascalie
-    var d = photo.didascalie.split(" | ");
-    if (d[1].startsWith(d[0])) {
-      d[1] = d[1].substring(d[0].length);
-    }
-    d[0] = $('<span>').html(d[0]).html();
-    d[1] = $('<span>').html(d[1]).html();
-    var dida = { base : d[0], ext : d[1]};
+  function create_new_box(photo) {
+    var dida = { 
+      base: photo.didascalie, 
+      ext: '' 
+    };
 
+    // parse didascalie
+    var arr = photo.didascalie.split(" | ");
+    if (arr.length > 1) {
+      if (arr[1].startsWith(arr[0])) {
+        arr[1] = arr[1].substring(arr[0].length);
+      }
+
+      dida.base = arr[0]
+      dida.ext  = arr[1];
+    }
+
+    // convert e.g. &apos; to '
+    dida.base = $('<span>').html(dida.base).html();
+    dida.ext  = $('<span>').html(dida.ext).html();
+      
+    // ask handlebars to render the template
     return handlebars_template(
       {
-        photoServer: photoServer, 
-        photo      : photo, 
+        photo      : photo,
+        didascalie : dida,
         number     : (photo.address.number=='0'?'':photo.address.number), 
-        random     : random_width_class(), 
-        district   : districts[photo.address.district],
-        didascalie : dida
+        random     : get_random_width_class(), 
+        district   : districts[photo.address.district]
       }
     );
   }
 
   function search(searchString) {
+    current_search_object.set(searchString);
     $("a[data-toggle=popover]").popover('hide');
     $('#districts_menu span').html(districts[0]);
+    // raz
     $('.box').remove();
     $photos_container.masonry( 'destroy' );
     masonry_initiation_done = false;
-    if (typeof search === "undefined" || searchString.length == 0 || searchString == "") {
-      go(0);
-    } else {
-      go(0, '"'+searchString+'"');
-    }
+    load_photo_set(0);
   }
 
   $('.navbar-search .icon-search').click(function(event) {
@@ -340,7 +389,7 @@ $(function(){
 
   $('.navbar-search .icon-remove').click(function(event) {
       $('.navbar-search input').val('');
-      search();
+      search(undefined);
     }
   );
 
@@ -353,23 +402,23 @@ $(function(){
   });
 
   // borrowed from http://www.codetoad.com/javascript_get_selected_text.asp
-  getSelected = function() {
-    var t = '';
+  get_selected_text = function() {
+    var text = '';
     if (window.getSelection){
-      t = window.getSelection();
+      text = window.getSelection();
     } else if (document.getSelection){
-      t = document.getSelection();
+      text = document.getSelection();
     } else if (document.selection){
-      t = document.selection.createRange().text;
+      text = document.selection.createRange().text;
     }
-    return t;
+    return text;
   }
 
   // use jQuery to bind a mouseup event handler to the document
   $photos_container.bind("mouseup", function() {
-    var st = getSelected();
-    if (st!='') {
-      $('.navbar-search input').val(st);
+    var selected_text = get_selected_text();
+    if (selected_text != '') {
+      $('.navbar-search input').val(selected_text);
       $("a[data-toggle=popover]").popover('show');
     } else {
       $("a[data-toggle=popover]").popover('hide');
@@ -391,7 +440,7 @@ $(function(){
     return;
   }
 
-  function go(district, search) {
+  function load_photo_set(district) {
     // fetch the inital 10 photos objects in json format from the server
     current_district = district; // save in global. I know it is BAD. 
 
@@ -399,21 +448,23 @@ $(function(){
       {
           type        : 'GET',
           dataType    : "json",
-          url         : getAjaxURL(district, 0, 10, search),
+          url         : get_photo_set_url(district, 0, 10, current_search_object.get()),
       }).done(function( data, textStatus, jqXHR ) {
 
         $.each(data, function() {
-          $photos_container.append(new_box(this));
+          $photos_container.append(create_new_box(this));
         });  
 
         setup_lightbox();  
 
         $photos_container.imagesLoaded(function() {
-          masonry_initiation();
+          initialize_masonry();
           $(".box").animate({opacity: 1, visibility: "visible"});
         });
 
-        if (typeof search === "undefined") {
+        if (current_search_object.is_valid()) { // infinites croll disabled on search results
+          $photos_container.infinitescroll('pause');
+        } else {
           $photos_container.infinitescroll(
             {
               navSelector  : "a#next0:last",   // selector for the paged navigation (it will be hidden)
@@ -423,7 +474,7 @@ $(function(){
               appendCallback: false,
               // prefill: true,
               path : function(current) {
-                return getAjaxURL(current_district, current-1, 10);
+                return get_photo_set_url(current_district, current-1, 10);
               },
               itemSelector : '.box',     // selector for all items you'll retrieve
               loading: {
@@ -438,7 +489,7 @@ $(function(){
               // an array of DOM elements
               var newElements = [];
               $.each(data, function() {
-                var newElement = $(new_box(this)).get()[0];
+                var newElement = $(create_new_box(this)).get()[0];
                 newElements.push(newElement);
               });
 
@@ -446,7 +497,8 @@ $(function(){
               var $newElements = $(newElements);
 
               $newElements.imagesLoaded(function(){
-                masonry_initiation(); // in case we arrive here before the 'normal' initiation
+                initialize_masonry(); // in case we arrive here before the 'normal' initiation
+                
                 // show elems now they're ready
                 $photos_container.masonry( 'appended', $newElements, true ); 
                 $newElements.animate({ opacity: 1, visibility: "visible"});
@@ -469,8 +521,6 @@ $(function(){
             return false;
           });
           $photos_container.infinitescroll('resume');
-        } else {
-          $photos_container.infinitescroll('pause');
         }
 
       }).fail(function(jqXHR, textStatus, errorThrown){
@@ -479,11 +529,10 @@ $(function(){
     );
   }
 
-var paramSearch;
-<c:if test="${not empty param.search}" >
-  paramSearch = '"${param.search}"';
-</c:if>
-go(0, paramSearch); // 0 -> district == 0 -> all districts
+  <c:if test="${not empty param.search}" >
+    current_search_object.set('"${param.search}"');
+  </c:if>
+  load_photo_set(0); // 0 -> district == 0 -> all districts
 
 });  
 
