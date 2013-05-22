@@ -120,7 +120,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <div class="brand">Photothèque des Jeunes Parisiens</div>
+        <div class="brand">photothèque des jeunes parisiens</div>
         <div class="nav-collapse collapse">
           <ul class="nav"> 
             <li class="dropdown" id="districts">  
