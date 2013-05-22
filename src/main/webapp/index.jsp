@@ -93,7 +93,7 @@
                 </ul>  
             </li> 
             <form class="navbar-search pull-left">
-              <input type="text" class="search-query" placeholder="Search" data-toggle="popover" data-placement="bottom" data-content="" value="${param.search}">
+              <input type="text" class="search-query" placeholder="Search" data-toggle="popover" data-placement="bottom" data-content="">
                 <i id="icon-search" class="icon-search"></i>
                 <li><a href="#" data-toggle="popover" data-placement="bottom" data-content="" title="Search"></a></li>              
                 <i id="icon-remove" class="icon-remove"></i>
@@ -257,9 +257,10 @@ $(document).ready(function(){
     text : undefined,
     set : function(text) {
       this.text = text;
+      $('.navbar-search input').val(this.text);
     },
     get : function() {
-      return '"'+encodeURIComponent(this.text)+'"';
+      return encodeURIComponent(this.text);
     },
     is_valid : function() {
       if (typeof this.text === "undefined") {
@@ -490,6 +491,8 @@ $(document).ready(function(){
       }
     );
   }
+
+
 
   <c:if test="${not empty param.search}" >
 
