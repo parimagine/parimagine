@@ -1,6 +1,7 @@
 .navbar .brand {
   font-family: 'Peignot';
   /*
+  font-family: 'ParmaPetit';
   font-style: normal;
   font-weight: 400;
   */
@@ -153,18 +154,19 @@ html {
 body {
   background-color: rgb(240, 240, 240);
   font-family: 'ParmaPetit';
+  font-size: 18px;
 }
 
 .navbar-search .search-query {
   font-family: 'ParmaPetit';
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .didascalie-base {
-  font-size: 12px;
+  font-size: 16px;
 }
 .didascalie-ext, .didascalie-url {
-  font-size: 11px;
+  font-size: 14px;
 }
 
 

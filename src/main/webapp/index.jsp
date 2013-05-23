@@ -45,6 +45,18 @@
     src: local('Peignot '), url('<c:url value="/assets/fonts/Peignot.woff"/>') format('woff');
   }
   @font-face {
+    font-family: 'ParmaPetitOutline';
+    font-style: normal;
+    font-weight: 400;
+    src: local('ParmaPetitOutline '), url('<c:url value="/assets/fonts/ParmaPetitOutline.woff"/>') format('woff');
+  }
+  @font-face {
+    font-family: 'ParmaPetit';
+    font-style: normal;
+    font-weight: 400;
+    src: local('ParmaPetit '), url('<c:url value="/assets/fonts/ParmaPetit-Normal.woff"/>') format('woff');
+  }
+  @font-face {
     font-family: 'Inconsolata';
     font-size: larger;
     font-style: normal;
