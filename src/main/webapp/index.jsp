@@ -496,7 +496,8 @@ $(document).ready(function(){
 
   <c:if test="${not empty param.search}" >
 
-    current_search_object.set('<%= new String(request.getParameter("search").getBytes(java.nio.charset.Charset.forName("ISO-8859-1"))) %>');
+
+    current_search_object.set('<%= new String(request.getParameter("search").getBytes("ISO-8859-1"), "UTF-8") %>');
   </c:if>
   load_photo_set(0); // 0 -> district == 0 -> all districts
 
