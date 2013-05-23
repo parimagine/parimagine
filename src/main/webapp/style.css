@@ -1,11 +1,9 @@
 .navbar .brand {
-  font-family: 'Peignot';
-  /*
   font-family: 'ParmaPetit';
   font-style: normal;
   font-weight: 400;
-  */
-  font-size: 32px;
+  font-size: 40px;
+  color: SteelBlue;
 }
 
 #photos_container {
@@ -41,7 +39,7 @@
   font-weight: 200;
 }
 
-.box img,
+.box img.main_img,
 #tumblelog img {
   display: block;
   width: 100%;
@@ -153,22 +151,33 @@ html {
 
 body {
   background-color: rgb(240, 240, 240);
-  font-family: 'ParmaPetit';
-  font-size: 18px;
-}
-
-.navbar-search .search-query {
-  font-family: 'ParmaPetit';
-  font-size: 18px;
-}
-
-.didascalie-base {
-  font-size: 16px;
-}
-.didascalie-ext, .didascalie-url {
+  font-family: 'Ubuntu', sans-serif;
   font-size: 14px;
 }
 
+.navbar-search .search-query {
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 14px;
+}
+
+.didascalie-base {
+  font-size: 12px;
+}
+.didascalie-ext {
+  font-size: 11px;
+}
+.didascalie-url {
+  font-size: 11px;
+  color: rgb(160, 160, 160);
+}
+
+.icon-globe {
+  opacity: .3;
+  cursor: pointer;
+}
+.icon-globe:hover {
+  opacity: 1;
+}
 
 header  {
   position:absolute;

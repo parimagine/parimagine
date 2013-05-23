@@ -167,20 +167,24 @@
 			//return _this.sizeContainer(preloader.width, preloader.height);
 
 			// The image could be bigger than the window, that is an issue.
-			if( (preloader.width + padLeft + padRight) >= windowWidth)
-			{
-				originalWidth = preloader.width;
-				originalHeight = preloader.height;
-				preloader.width = windowWidth - padLeft - padRight;
-				preloader.height = originalHeight / originalWidth * preloader.width;
+			var originalWidth  = preloader.width;
+			var originalHeight = preloader.height;
+			var containerWidth = preloader.width;
+			var containerHeight= preloader.height;
+			if (that.options.maximize 
+				  || ((preloader.width + padLeft + padRight) >= windowWidth) 
+				  || ((preloader.height + padTop + padBottom) >= windowHeight)) {
+				var containerWidth = windowWidth     - 2*padLeft - 2*padRight;
+				var containerHeight= windowHeight    - 2*padTop  - 2*padBottom;
 			}
-
-			if( (preloader.height + padTop + padBottom) >= windowHeight)
-			{
-				originalWidth = preloader.width;
-				originalHeight = preloader.height;
-				preloader.height = windowHeight - padTop - padBottom;
-				preloader.width = originalWidth / originalHeight * preloader.height;
+			var originalRatio  = originalWidth   / originalHeight;
+			var containerRatio = containerWidth  / containerHeight;
+			if (originalRatio  > containerRatio) {
+				preloader.width  = containerWidth;
+				preloader.height = containerWidth  / originalRatio; 
+			} else {
+				preloader.width  = containerHeight * originalRatio;
+				preloader.height = containerHeight;
 			}
 
 			that.$element.css({
@@ -195,6 +199,12 @@
 				'width': preloader.width,
 				'height': preloader.height
 			});
+			if (that.options.maximize) {
+				that.$element.find('.lightbox-content').find('img').css({
+					'width': preloader.width,
+					'height': preloader.height
+				});
+			}
 
 			// We have everything sized!
 			callbacks.fire();
@@ -226,7 +236,8 @@
 	$.fn.lightbox.defaults = {
 		backdrop: true,
 		keyboard: true,
-		show: true
+		show: true,
+		maximize: false
 	};
 
 	$.fn.lightbox.Constructor = Lightbox;

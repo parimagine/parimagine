@@ -14,10 +14,8 @@ import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.fr.FrenchAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
@@ -51,8 +49,9 @@ public class Photos {
         return Photos.instance;
     }
 
-    final List<Photo> list;
-    final Map<String, Photo> map;
+    final List<Photo> list; // toutes les photos
+    final Map<String, Photo> image2photoMap; // image 2 photo map
+    final Map<Integer, List<Photo>> districtLists = new HashMap<>();
     
     class PredicateDistrict implements Predicate<Photo> {
         
@@ -69,13 +68,11 @@ public class Photos {
         }
     }
     
-    final Map<Integer, List<Photo>> districtLists = new HashMap<>();
-    
     private Photos() throws IOException {
         list = load();
-        map = new HashMap<>();
+        image2photoMap = new HashMap<>();
         for (Photo photo : list) {
-            map.put(photo.getImage(), photo);
+            image2photoMap.put(photo.getImage(), photo);
         }
         createIndex();
         Collections.sort(list);
@@ -90,7 +87,15 @@ public class Photos {
     }
 
     public List<Photo> getSlice(int sizeOfSlice, int offset) {
-        return this.list.subList(offset*sizeOfSlice, (offset+1)*sizeOfSlice);
+    	int from = offset*sizeOfSlice;
+        int to   = (offset+1)*sizeOfSlice;
+        if (!(from < this.list.size())) {
+        	return Collections.emptyList();
+        }
+        if (!(to <= this.list.size())) {
+        	to = this.list.size(); 
+        }
+        return this.list.subList(from, to);
     }
 
     public List<Photo> getDistrictSlice(Integer district, Integer sizeOfSlice, Integer offset) {
@@ -100,7 +105,21 @@ public class Photos {
         if (20 < district) {
             throw new IllegalArgumentException("Il n'y a que 20 arrondissements à Paris. Tu demandes le N° "+district);
         }
-        return districtLists.get(district).subList(offset*sizeOfSlice, (offset+1)*sizeOfSlice);
+        
+        List<Photo> districtList = districtLists.get(district);
+        if (districtList == null) {
+        	return Collections.emptyList();
+        }
+        
+    	int from = offset*sizeOfSlice;
+        int to   = (offset+1)*sizeOfSlice;
+        if (!(from < districtList.size())) {
+        	return Collections.emptyList();
+        }
+        if (!(to <= districtList.size())) {
+        	to = districtList.size(); 
+        }
+        return districtList.subList(from, to);
     }
     
     public List<Photo> search(String searchString) throws IOException, ParseException {
@@ -114,7 +133,7 @@ public class Photos {
         for (ScoreDoc scoreDoc : hits) {
             Document doc = searcher.doc(scoreDoc.doc);
             String image = doc.get("image");
-            list.add(map.get(image));
+            list.add(image2photoMap.get(image));
             if (list.size()>=32) {
                 break;
             }
@@ -163,4 +182,12 @@ public class Photos {
         }
         writer.close();
     }
+
+	public Photo getPhoto(String image) {
+		return image2photoMap.get(image);
+	}
+
+	public List<Photo> getPhotos() {
+		return list;
+	}
 }

@@ -13,13 +13,10 @@ import net.aequologica.parimagine.model.Photo;
 import net.aequologica.parimagine.model.Photos;
 
 import org.apache.lucene.queryparser.classic.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @javax.ws.rs.Path("/")
 public class Resource {
-    private static Logger log = LoggerFactory.getLogger(Resource.class);
-
+	
     @GET
     @javax.ws.rs.Path("/district/{district}/page/{page}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -43,6 +40,21 @@ public class Resource {
             count = 32;
         }
         return Photos.getInstance().search("\""+searchString+"\"");
+    }
+
+    @GET
+    @javax.ws.rs.Path("/datum/{image}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Photo photo(
+    		@PathParam("image") String  image) throws IOException {
+        return Photos.getInstance().getPhoto(image);
+    }
+
+    @GET
+    @javax.ws.rs.Path("/data")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Photo> photo() throws IOException {
+        return Photos.getInstance().getPhotos();
     }
 
 }

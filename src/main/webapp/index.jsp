@@ -37,6 +37,8 @@
   <link rel="stylesheet" href="bootstrap-combined.min.css">
   <link rel="stylesheet" href="bootstrap-lightbox.css">
   
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic' rel='stylesheet' type='text/css'>
+  
   <style type="text/css">
   @font-face {
     font-family: 'Peignot';
@@ -44,24 +46,12 @@
     font-weight: 400;
     src: local('Peignot '), url('<c:url value="/assets/fonts/Peignot.woff"/>') format('woff');
   }
-  @font-face {
-    font-family: 'ParmaPetitOutline';
-    font-style: normal;
-    font-weight: 400;
-    src: local('ParmaPetitOutline '), url('<c:url value="/assets/fonts/ParmaPetitOutline.woff"/>') format('woff');
-  }
+
   @font-face {
     font-family: 'ParmaPetit';
     font-style: normal;
     font-weight: 400;
     src: local('ParmaPetit '), url('<c:url value="/assets/fonts/ParmaPetit-Normal.woff"/>') format('woff');
-  }
-  @font-face {
-    font-family: 'Inconsolata';
-    font-size: larger;
-    font-style: normal;
-    font-weight: 400;
-    src: local('Inconsolata'), url(<c:url value='/assets/fonts/BjAYBlHtW3CJxDcjzrnZCIbN6UDyHWBl620a-IRfuBk.woff'/>) format('woff');
   }
 
   .navbar-search .icon-search {
@@ -96,7 +86,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <div class="brand">photothèque des jeunes parisiens</div>
+        <div class="brand">Photothèque des Jeunes Parisiens</div>
         <div class="nav-collapse collapse">
           <ul class="nav"> 
             <li class="dropdown" id="districts">  
@@ -105,9 +95,9 @@
                 </ul>  
             </li> 
             <form class="navbar-search pull-left">
-              <input type="text" class="search-query" placeholder="Search" data-toggle="popover" data-placement="bottom" data-content="">
+              <input type="text" class="search-query" placeholder="search" data-toggle="popover" data-placement="bottom" data-content="">
                 <i id="icon-search" class="icon-search"></i>
-                <li><a href="#" data-toggle="popover" data-placement="bottom" data-content="" title="Search"></a></li>              
+                <li><a href="#" data-toggle="popover" data-placement="bottom" data-content="" title="search"></a></li>              
                 <i id="icon-remove" class="icon-remove"></i>
               </input>
             </form>
@@ -162,19 +152,31 @@
 <!-- !!!! content inside script id="didascalie-template" MUST start with "<", otherwise jquery explodes !!!! -->
 <script id="didascalie-template" type="text/x-handlebars-template"><div class="centered box {{random}}">
   <a class="photo" href="<c:url value='/documents/'/>/{{photo.image}}">
-    <img src="<c:url value='/documents/'/>{{photo.image}}" style="margin-bottom:5px;" />
+    <img class="main_img" src="<c:url value='/documents/'/>{{photo.image}}" style="margin-bottom:5px;" />
   </a>
   <div class="didascalie-base">
     {{didascalie.base}}
   </div>
-  <div class="didascalie-ext">
-     {{didascalie.ext}}
-  </div>
-  <div class="didascalie-url">
-    <a href="https://maps.google.com/maps?q=Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}" target="google_maps" >
-      [{{district}}] {{number}} {{photo.address.street}} {{photo.address.legacy}}
-    </a>
-  </div>
+  <div style="width=110%;">
+    <div class="didascalie-ext">
+       {{didascalie.ext}}
+    </div>
+    <span class="didascalie-url">
+       [{{district}}] {{number}} {{photo.address.street}} {{photo.address.legacy}}
+    </span>
+
+    <span style="position:relative; float: right; right:0;">
+      <a  href="https://maps.google.com/maps?q=Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}" 
+          title="search 'Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}' on google maps" 
+          target="google_maps" 
+          >
+        <i class="icon-globe"></i>
+        <!--  
+        <img src="<c:url value='/assets/images/40px-Mobile_Contributors_icon1.png'/>" style="width:20px; height: auto; opacity: .5;"> 
+        -->
+      </a>
+    </span>
+  <div>
 <div></script>
 
 <script type="text/javascript">
@@ -326,13 +328,13 @@ $(document).ready(function(){
         arr[1] = arr[1].substring(arr[0].length);
       }
 
-      dida.base = arr[0]
+      dida.base = arr[0];
       dida.ext  = arr[1];
     }
 
     // convert e.g. &apos; to '
-    dida.base = $('<span>').html(dida.base).html();
-    dida.ext  = $('<span>').html(dida.ext).html();
+    dida.base = $('<span>').html(dida.base).html().trim();
+    dida.ext  = $('<span>').html(dida.ext).html().trim();
       
     // ask handlebars to render the template
     return handlebars_template(
@@ -408,7 +410,7 @@ $(document).ready(function(){
         $('#lightbox-img').attr('src', $(this).attr('href'));
         $('#lightbox-caption p').html($(this).parent().find('div').clone());
         $('#lightbox-img').load(function() {
-          $('#demoLightbox').lightbox({});
+          $('#demoLightbox').lightbox({maximize: true});
         });
       }
     );
