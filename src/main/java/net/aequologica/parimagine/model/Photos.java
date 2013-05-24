@@ -58,7 +58,6 @@ public class Photos {
     String[] themes = new String[] {
     	    "bals",
     	    "cinema",
-    	    "cinema",
     	    "enfants",
     	    "enseignes",
     	    "etudiants",
