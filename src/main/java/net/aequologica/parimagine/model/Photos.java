@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +53,25 @@ public class Photos {
     final List<Photo> list; // toutes les photos
     final Map<String, Photo> image2photoMap; // image 2 photo map
     final Map<Integer, List<Photo>> districtLists = new HashMap<>();
+    final Map<String, List<Photo>> themeLists = new HashMap<>();
+    
+    String[] themes = new String[] {
+    	    "bals",
+    	    "cinema",
+    	    "cinema",
+    	    "enfants",
+    	    "enseignes",
+    	    "etudiants",
+    	    "fetesaintecatherine",
+    	    "halles",
+    	    "manifestations",
+    	    "metiers",
+    	    "police",
+    	    "pompiers",
+    	    "quais",
+    	    "saisons",
+    	    "vie-montmartre"
+    };
     
     class PredicateDistrict implements Predicate<Photo> {
         
@@ -68,6 +88,21 @@ public class Photos {
         }
     }
     
+    class PredicateTheme implements Predicate<Photo> {
+        
+        private String theme;
+
+        private PredicateTheme(String theme) {
+            super();
+            this.theme = theme;
+        }
+
+        @Override
+        public boolean apply(Photo photo) {
+            return photo.getImage().startsWith("photos-presse/"+theme);
+        }
+    }
+    
     private Photos() throws IOException {
         list = load();
         image2photoMap = new HashMap<>();
@@ -79,6 +114,10 @@ public class Photos {
         for (int i = 1; i<= 20; i++) {
             List<Photo> districtList = newArrayList(filter(list, new PredicateDistrict(i)));
             districtLists.put(i, districtList );
+        }
+        for (String theme :themes) {
+            List<Photo> themeList = newArrayList(filter(list, new PredicateTheme(theme)));
+            themeLists.put(theme, themeList );
         }
     }
     
@@ -99,6 +138,9 @@ public class Photos {
     }
 
     public List<Photo> getDistrictSlice(Integer district, Integer sizeOfSlice, Integer offset) {
+        if (sizeOfSlice == null || sizeOfSlice == 0 ) {
+        	sizeOfSlice = 12;
+        }
         if (district == null || district == 0) {
             return getSlice(sizeOfSlice, offset);
         }
@@ -122,19 +164,51 @@ public class Photos {
         return districtList.subList(from, to);
     }
     
-    public List<Photo> search(String searchString) throws IOException, ParseException {
-        List<Photo> list = new ArrayList<>(32); 
+    public List<Photo> getThemeSlice(String theme, Integer sizeOfSlice, Integer offset) {
+        if (sizeOfSlice == null || sizeOfSlice == 0 ) {
+        	sizeOfSlice = 12;
+        }
+        if (theme == null || theme.length() == 0)  {
+            return getSlice(sizeOfSlice, offset);
+        }
+        int iTheme = Arrays.binarySearch(themes, theme);
+        
+        if (iTheme == -1) {
+            throw new IllegalArgumentException("Je nai pas trouvé ce thème dans ma liste. Tu demandes le thème '"+theme+"'");
+        }
+        
+        List<Photo> themeList = themeLists.get(theme);
+        if (themeList == null) {
+        	return Collections.emptyList();
+        }
+        
+    	int from = offset*sizeOfSlice;
+        int to   = (offset+1)*sizeOfSlice;
+        if (!(from < themeList.size())) {
+        	return Collections.emptyList();
+        }
+        if (!(to <= themeList.size())) {
+        	to = themeList.size(); 
+        }
+        return themeList.subList(from, to);
+    }
+    
+    public List<Photo> search(String searchString, Integer sizeOfSlice) throws IOException, ParseException {
+        if (sizeOfSlice == null || sizeOfSlice == 0 ) {
+        	sizeOfSlice = 32;
+        }
+        List<Photo> list = new ArrayList<>(sizeOfSlice); 
         IndexReader reader = DirectoryReader.open(index);
         IndexSearcher searcher = new IndexSearcher(reader);
         QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_43, new String[] { "didascalie", "street", "legacy" }, analyzer);
         Query query = parser.parse(searchString);
-        TopDocs results = searcher.search(query, 32);
+        TopDocs results = searcher.search(query, sizeOfSlice);
         ScoreDoc[] hits = results.scoreDocs;
         for (ScoreDoc scoreDoc : hits) {
             Document doc = searcher.doc(scoreDoc.doc);
             String image = doc.get("image");
             list.add(image2photoMap.get(image));
-            if (list.size()>=32) {
+            if (list.size()>=sizeOfSlice) {
                 break;
             }
         }

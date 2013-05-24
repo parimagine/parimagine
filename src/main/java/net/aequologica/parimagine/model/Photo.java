@@ -52,6 +52,7 @@ public class Photo implements Comparable<Photo> {
         return clone;
     }
 
+    Comparator<String> comparatorMoinsPourri = new NaturalOrderComparator(); 
     Comparator<Photo> comparator = new ComparatorPourri();
     
     class ComparatorPourri implements Comparator<Photo> {
@@ -59,17 +60,17 @@ public class Photo implements Comparable<Photo> {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public int compare(Photo o1, Photo o2) {
-            Comparable[] a1 = getComparableArray(o1); 
-            Comparable[] a2 = getComparableArray(o2);
-            int first = a1[0].compareTo(a2[0]);
+            String[] a1 = getComparableArray(o1); 
+            String[] a2 = getComparableArray(o2);
+            int first = comparatorMoinsPourri.compare(a1[0], a2[0]);
             if (first != 0) {
                 return first;
             }
-            int second = a1[1].compareTo(a2[1]);
+            int second = comparatorMoinsPourri.compare(a1[1], a2[1]);
             return second;
         }
         @SuppressWarnings("rawtypes")
-        Comparable[] getComparableArray(Photo p) {
+        String[] getComparableArray(Photo p) {
             String rest = p.getImage();
             String id = p.getImage();
             int lastSlash = id.lastIndexOf('/');
@@ -84,7 +85,20 @@ public class Photo implements Comparable<Photo> {
             if (id.endsWith(".jpg")) {
                 id = id.substring(0, id.length()-4); 
             }
-            return new Comparable[] {Integer.parseInt(rest), Integer.parseInt(id)};
+            
+            /*
+            try {
+				Integer iRest = Integer.parseInt(rest);
+			} catch (NumberFormatException e) {
+			}
+            try {
+				Integer iId = Integer.parseInt(id);
+			} catch (NumberFormatException e) {
+			}
+            // java.lang.NumberFormatException: For input string: "presse/saisons"
+            */
+
+            return new String[] {rest, id};
         }
     }
 

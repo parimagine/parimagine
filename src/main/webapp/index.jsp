@@ -94,6 +94,11 @@
                 <ul class="dropdown-menu">  
                 </ul>  
             </li> 
+            <li class="dropdown" id="themes">  
+                <a id="themes_menu" class="dropdown-toggle" data-toggle="dropdown" href="#">thèmes [<span></span>]&nbsp;<b class="caret"></b></a>  
+                <ul class="dropdown-menu">  
+                </ul>  
+            </li> 
             <form class="navbar-search pull-left">
               <input type="text" class="search-query" placeholder="search" data-toggle="popover" data-placement="bottom" data-content="">
                 <i id="icon-search" class="icon-search"></i>
@@ -257,7 +262,49 @@ $(document).ready(function(){
         load_photo_set(index);
       }
     );
-    $(".dropdown-menu").append($menu_item);
+    $("#districts .dropdown-menu").append($menu_item);
+  });
+
+  // -------------------------------------------------------------------
+  // themes
+  var themes = [
+    "",
+    "bals",
+    "cinema",
+    "cinema",
+    "enfants",
+    "enseignes",
+    "etudiants",
+    "fetesaintecatherine",
+    "halles",
+    "manifestations",
+    "metiers",
+    "police",
+    "pompiers",
+    "quais",
+    "saisons",
+    "vie-montmartre"
+  ];
+  var current_theme = "";
+
+  // add themes to navbar dropdwon
+  $.each(themes, function() {
+    var $menu_item = $('<li><a href="#">'+(this == '' ? '&nbsp;' : this) +'</a></li>');
+    $menu_item.click( function(event) 
+      {
+        event.preventDefault();
+        // get theme, give visual feedback
+        var index = $(this).parent().children().index(this);
+        $('#themes_menu span').html(themes[index]);
+        // raz 
+        $('.box').remove();
+        $photos_container.masonry( 'destroy' );
+        masonry_initiation_done = false;
+        // load images into boxes
+        load_photo_set($(this).find('a').html());
+      }
+    );
+    $("#themes .dropdown-menu").append($menu_item);
   });
 
   // -------------------------------------------------------------------
@@ -299,10 +346,14 @@ $(document).ready(function(){
     },
   }
 
-  function get_photo_set_url(district, page, range) {
-    // district URL. district == 0 -> all districts
+  function get_photo_set_url(district, theme, page, range) {
     if (!current_search_object.is_valid()) {
-      return "<c:url value='/parimagine' />"+"/district/"+district+"/page/"+page+"?count="+range;
+      if (theme != "") {
+        return "<c:url value='/parimagine' />"+"/theme/"+theme;
+      } else {
+        // district URL. district == 0 -> all districts
+        return "<c:url value='/parimagine' />"+"/district/"+district+"/page/"+page+"?count="+range;
+      }
     }
 
     // search URL
@@ -417,15 +468,24 @@ $(document).ready(function(){
     return;
   }
 
-  function load_photo_set(district) {
-    // fetch the inital 10 photos objects in json format from the server
-    current_district = district; // save in global. I know it is BAD. 
+  function load_photo_set(district_or_theme) {
+
+    console.log(district_or_theme);
+
+    if (0 <= district_or_theme && district_or_theme <= 20) {
+      // fetch the inital 10 photos objects in json format from the server
+      current_district = district_or_theme; // save in global. I know it is BAD. 
+      current_theme = "";
+    } else {
+      current_district = 0; 
+      current_theme = district_or_theme;
+    }
 
     $.ajax(
       {
           type        : 'GET',
           dataType    : "json",
-          url         : get_photo_set_url(district, 0, 10, current_search_object.get()),
+          url         : get_photo_set_url(current_district, current_theme, 0, 10, current_search_object.get()),
       }).done(function( data, textStatus, jqXHR ) {
 
         $.each(data, function() {
@@ -451,7 +511,7 @@ $(document).ready(function(){
               appendCallback: false,
               // prefill: true,
               path : function(current) {
-                return get_photo_set_url(current_district, current-1, 10);
+                return get_photo_set_url(current_district, current_theme, current-1, 10);
               },
               itemSelector : '.box',     // selector for all items you'll retrieve
               loading: {
@@ -506,14 +566,11 @@ $(document).ready(function(){
     );
   }
 
-
-
   <c:if test="${not empty param.search}" >
-
-
     current_search_object.set('<%= new String(request.getParameter("search").getBytes("ISO-8859-1"), "UTF-8") %>');
   </c:if>
-  load_photo_set(0); // 0 -> district == 0 -> all districts
+
+  load_photo_set(0); // 0 -> district == 0 -> all districts, all themes
 
 });  
 

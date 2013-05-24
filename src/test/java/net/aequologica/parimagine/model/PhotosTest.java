@@ -27,37 +27,39 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class PhotosTest {
 
 /* 
+THE MAGIC REGEXPs
+TO TRANSFORM parimagiglobal.sql
+INTO photos.json    
 
-THE MAGIC REGEXPs    
-
+------------> all ' after a non-space into &apos; 
 ([^\s])''
 $1&apos;
 
+------------> all " into &quot; 
 "
 &quot;
 
+------------> remove all line starting with INSERT 
 ^INSERT.*\n
-######### nothing #############
+-nothing-
 
-\((\d*?), '(\d\d\d\d-\d\d-\d\d)', '(.*?)', (\d*?), (\d*?), '(.*?)', '(.*?)', '.*?', '.*?', '.*?', '.*?', '.*?', \d+, \d+, '(.*?)', '(.*?)'.*\)[,;]
-{"image":"$1", "date":"$2", "address":"$3 | $4 | $5 | $6 | $7", "didascalie":"$8 | $9"},
-
+------------> extract image, date, address and didascalie
 \((\d*?), '(\d\d\d\d-\d\d-\d\d)', '(.*?)', (\d*?), (\d*?), '(.*?)', '(.*?)', '(.*?)', '.*?', '.*?', '.*?', '.*?', \d+, \d+, '(.*?)', '(.*?)'.*\)[,;]
 {"image":"$1", "date":"$2", "address":"$3 | $4 | $5 | $6 | $7 | $8", "didascalie":"$9 | $10"},
 
+------------> extract town, district, department, number, street and legacy from address
 "address":"(.*?) \| (\d*?) \| (\d*?) \| (.*?) \| (.*?) \| (.*?)"
 "address": { "town": "$1", "district": $2, "department": $3, "number": "$4", "street": "$5", "legacy": "$6" }
 
+ouf!
 */
-    @Test
+
+	@Test
     public void testGetInstance() throws IOException {
         
         Photos photos = Photos.getInstance();
         
         assertNotNull(photos);
-        for (Photo photo : photos.list) {
-            System.out.println(photo);
-        }
     }
     
     private String makeKey(String district, String id) {
@@ -65,12 +67,14 @@ $1&apos;
     }
 
     // @Test
+    // match image + address.district from photos.json with location of file on the drive. store back into image field 
+    // e.g. 
     public void test() throws IOException, CloneNotSupportedException {
         // get photos
         Photos photos = Photos.getInstance();
         
-        Map<String, Photo> photoDistrictIdMap= new HashMap<>();
-        Map<String, Photo> photoIdMap= new HashMap<>();
+        Map<String, Photo> photoDistrictIdMap = new HashMap<>();
+        Map<String, Photo> photoIdMap = new HashMap<>();
         for (Photo photo : photos.list) {
             photoDistrictIdMap.put(makeKey(photo.getAddress().getDistrict().toString(), photo.getImage()), photo);
             photoIdMap.put(photo.getImage(), photo);

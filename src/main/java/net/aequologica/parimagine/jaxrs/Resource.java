@@ -18,16 +18,36 @@ import org.apache.lucene.queryparser.classic.ParseException;
 public class Resource {
 	
     @GET
+    @javax.ws.rs.Path("/data")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Photo> getPhotos() throws IOException {
+        return Photos.getInstance().getPhotos();
+    }
+
+    @GET
+    @javax.ws.rs.Path("/datum/{image}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Photo getPhoto(@PathParam("image") String image) throws IOException {
+        return Photos.getInstance().getPhoto(image);
+    }
+
+    @GET
     @javax.ws.rs.Path("/district/{district}/page/{page}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Photo> getSlice(
             @PathParam("district") Integer district,
             @PathParam("page") Integer page,
             @QueryParam("count") Integer count ) throws IOException {
-        if (count == null || count == 0 ) {
-            count = 12;
-        }
         return Photos.getInstance().getDistrictSlice(district, count, page);
+    }
+
+    @GET
+    @javax.ws.rs.Path("/theme/{theme}/page/{page}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Photo> getSlice( @PathParam("theme") String theme,
+            @PathParam("page") Integer page,
+            @QueryParam("count") Integer count  ) throws IOException {
+        return Photos.getInstance().getThemeSlice(theme, count, page);
     }
 
     @GET
@@ -36,25 +56,7 @@ public class Resource {
     public List<Photo> search(
             @QueryParam("for")   String  searchString, 
             @QueryParam("count") Integer count ) throws IOException, ParseException {
-        if (count == null || count == 0 ) {
-            count = 32;
-        }
-        return Photos.getInstance().search("\""+searchString+"\"");
-    }
-
-    @GET
-    @javax.ws.rs.Path("/datum/{image}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Photo photo(
-    		@PathParam("image") String  image) throws IOException {
-        return Photos.getInstance().getPhoto(image);
-    }
-
-    @GET
-    @javax.ws.rs.Path("/data")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Photo> photo() throws IOException {
-        return Photos.getInstance().getPhotos();
+        return Photos.getInstance().search("\""+searchString+"\"", count);
     }
 
 }
