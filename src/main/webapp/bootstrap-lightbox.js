@@ -172,10 +172,10 @@
 			var containerWidth = preloader.width;
 			var containerHeight= preloader.height;
 			if (that.options.maximize 
-				  || ((preloader.width + padLeft + padRight) >= windowWidth) 
+				  || ((preloader.width + padLeft + padRight)  >= windowWidth) 
 				  || ((preloader.height + padTop + padBottom) >= windowHeight)) {
-				var containerWidth = windowWidth     - 2*padLeft - 2*padRight;
-				var containerHeight= windowHeight    - 2*padTop  - 2*padBottom;
+				var containerWidth = Math.round(0.9*windowWidth  - padLeft - padRight);
+				var containerHeight= Math.round(0.9*windowHeight - padTop  - padBottom);
 			}
 			var originalRatio  = originalWidth   / originalHeight;
 			var containerRatio = containerWidth  / containerHeight;

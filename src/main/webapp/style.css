@@ -7,9 +7,7 @@
 }
 
 #photos_container {
-  background: #fff;
-  margin: 5px 0 10px 0;
-  padding: 5px 0 10px 0;
+  background: #fdfdfd;
   border-radius: 5px;
   -webkit-border-radius: 5px;
      -moz-border-radius: 5px;
@@ -150,7 +148,7 @@ html {
 }
 
 body {
-  background-color: rgb(240, 240, 240);
+  background-color: #fbfbfb;
   font-family: 'Ubuntu', sans-serif;
   font-size: 14px;
 }

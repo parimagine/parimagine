@@ -135,6 +135,7 @@
                 <i id="icon-remove" class="icon-remove"></i>
               </input>
             </form>
+            <!-- i id="icon-info-sign" class="icon-info-sign"></i -->
           </ul>  
         </div>
       </div>
@@ -830,14 +831,17 @@
           var panoramaOptions = {
               position: fenway,
               pov: {
-                heading: 34,
-                pitch: 10,
-                zoom: 1
+                heading: 0,
+                pitch: 0
               },
               visible: true,
           };
           var panorama = new google.maps.StreetViewPanorama($pano.get(0), panoramaOptions);
-          panorama.setPov(panorama.getPhotographerPov());
+          var pov = panorama.getPhotographerPov();
+          console.log("pov: "+pov);
+          if (pov) {
+            panorama.setPov(pov);
+          }
 
           map.setStreetView(panorama);
 
