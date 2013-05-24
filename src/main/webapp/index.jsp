@@ -78,6 +78,28 @@
 
 <body>
 
+  <!-- google maps modal -->
+  <div id="map-canvas" style="display:none;"></div>
+
+  <div id="myModal" class="modal hide" tabindex="-1" role="dialog" 
+       style="width: auto; height: auto;"> <!-- aria-labelledby="myModalLabel" aria-hidden="true" -->
+       <!--
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="myModalLabel" style="display:none;">Modal header</h3>
+    </div>
+    -->
+    <div class="modal-body" style="width: auto; height: auto; max-height: 800px;">
+      <div id="pano"></div>
+    </div>
+    <!--
+    <div class="modal-footer">
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+    -->
+  </div>
+  <!-- /google maps modal -->
+
   <!-- Navbar
   ================================================== -->
   <div class="navbar navbar-fixed-top">
@@ -148,7 +170,7 @@
   <div id="demoLightbox" class="lightbox hide"  tabindex="-1" role="dialog" aria-hidden="true">
     <div class='lightbox-content'>
       <img id='lightbox-img' src="stock-photo-5033318-eiffel-tower-statue.jpg"/>
-      <div id="lightbox-caption" class="lightbox-caption"><p></p></div>
+      <div id="lightbox-caption" class="lightbox-caption"><p/></div>
     </div>
   </div>    
   <!-- /lightbox -->
@@ -161,12 +183,18 @@
   <script type="text/javascript" src="handlebars.js"></script>
   <script type="text/javascript" src="loading-clock.js"></script>
 
+  <script
+    type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;key=AIzaSyDAH1H-jE9iwiP-sr6hsrlYr4DEghUMuWI&amp;sensor=false&amp;region=FR">
+  </script>
+
   <!-- handlebars template for photo box -->
   <!-- !!!! content inside script id="didascalie-template" MUST start with "<", otherwise jquery explodes !!!! -->
   <script id="didascalie-template" type="text/x-handlebars-template"><div class="centered box {{random}}">
     <a class="photo" href="<c:url value='/documents/'/>/{{photo.image}}">
       <img class="main_img" src="<c:url value='/documents/'/>{{photo.image}}" style="margin-bottom:5px;" />
     </a>
+    <span>
     <div class="didascalie-base">
       {{didascalie.base}}
     </div>
@@ -174,14 +202,18 @@
       <div class="didascalie-ext">
          {{didascalie.ext}}
       </div>
-      <span class="didascalie-url">
+      <span class="didascalie-url"
+            {{#if nomap}}style="display:none;"{{/if}} >
          [{{district}}] {{number}} {{photo.address.street}} {{photo.address.legacy}}
       </span>
 
-      <span style="position:relative; float: right; right:0;">
-        <a  href="https://maps.google.com/maps?q=Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}" 
-            title="search 'Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}' on google maps" 
-            target="google_maps" 
+      <span id="link2streetView" style="position:relative; float: right; right:0;">
+        <a  href="#" 
+            data-address = "Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}"
+            data-toggle="tooltip" 
+            data-placement="bottom" 
+            title="ça&nbsp;a&nbsp;quelle&nbsp;gueule&nbsp;aujourd'hui&nbsp;?" 
+            {{#if nomap}}style="display:none;"{{/if}}
             >
           <i class="icon-globe"></i>
           <!--  
@@ -190,6 +222,7 @@
         </a>
       </span>
     <div>
+    </span>
   <div></script>
   <!-- /handlebars template for photo box -->
 
@@ -218,6 +251,7 @@
 
     var current_state = {
       infscrPageview : 0,
+
       district  : undefined,
       theme     : undefined, 
       search    : undefined,
@@ -287,6 +321,7 @@
       // construct photo set query URL
       getPhotoSetUrl : function() {
         var ret = "<c:url value='/parimagine' />";
+
         if (this.search) {
           // search URL
           ret = ret+"/search?for="+encodeURIComponent(this.search);
@@ -309,6 +344,132 @@
 
         return ret;
       },
+
+      loadPhotoSet : function() {
+
+        // raz 
+        destroy_masonry();
+        
+        this.infscrPageview = 0;
+        console.log("infscrPageview:" +this.infscrPageview);
+
+        var that = this;
+
+        $.ajax(
+          {
+              type        : 'GET',
+              dataType    : "json",
+              url         : this.getPhotoSetUrl(),
+          }).done(function( data, textStatus, jqXHR ) {
+
+            that.infscrPageview = 1;
+            console.log("infscrPageview:" + that.infscrPageview);
+
+            $.each(data, function() {
+              $photos_container.append(create_new_box(this));
+            });  
+
+            setup_lightbox();  
+
+            $photos_container.imagesLoaded(function() {
+              initialize_masonry();
+              $(".box")
+                .animate({ 
+                  opacity: 1, 
+                  visibility: "visible"})
+                .tooltip({
+                  selector: "div span a[data-toggle=tooltip]"
+              });
+
+              // google maps
+              $(".box div span a").click(function(event) {
+                  event.preventDefault();
+                  geoLocate($(this).attr('data-address'), $('#myModal'));
+              });
+
+            });
+
+            if (that.search) { // no infinites croll on search results
+              $photos_container.infinitescroll('pause');
+            } else {
+              $photos_container.infinitescroll(
+                {
+                  navSelector  : "a#next0:last",   // selector for the paged navigation (it will be hidden)
+                  nextSelector : "a#next:last",   // selector for the NEXT link (to page 2)
+                  itemSelector : '.box',     // selector for all items you'll retrieve
+
+                  dataType: 'json',
+                  appendCallback: false,
+                  // prefill: true,
+                  path : function(current) {
+                    return that.getPhotoSetUrl();
+                  },
+                  loading: {
+                    speed: 0,
+                    img: 'ajax-loader.gif',
+                    finishedMsg: '',
+                    msgText: '',
+                  }
+                }, function(arrayOfNewElems, data, url) {
+                  that.infscrPageview++;
+                  console.log("infscrPageview:" +that.infscrPageview);
+
+                  // an array of DOM elements
+                  var newElements = [];
+                  $.each(arrayOfNewElems, function() {
+                    var newElement = $(create_new_box(this)).get()[0];
+                    newElements.push(newElement);
+                  });
+
+                  // wrapp array of DOM elemnts in a jquery object
+                  var $newElements = $(newElements);
+
+                  $newElements.imagesLoaded(function(){
+                    initialize_masonry(); // in case we arrive here before the 'normal' initiation
+                    
+                    // show elems now they're ready
+                    $photos_container.masonry( 'appended', $newElements, true ); 
+                    $newElements
+                      .animate({ 
+                        opacity: 1, 
+                        visibility: "visible"})
+                      .tooltip({
+                        selector: "div span a[data-toggle=tooltip]"
+                    });
+                    // google maps
+                    $newElements.find("div span a").click(function(event) {
+                        event.preventDefault();
+                        geoLocate($(this).attr('data-address'), $('#myModal'));
+                    });
+
+                  });
+
+                  $photos_container.append($newElements);
+
+                  setup_lightbox();  
+
+                  return false;
+                }
+              );
+
+              // unbind normal behavior. needs to occur after normal infinite scroll setup.
+              // $(window).unbind('.infscr');
+
+              // cf. http://stackoverflow.com/questions/10762656/infinite-scroll-manual-trigger
+              $("a#next").click(function(){
+                $photos_container.infinitescroll('retrieve');
+                return false;
+              });
+
+              $photos_container.infinitescroll('resume');
+            }
+
+          }).fail(function(jqXHR, textStatus, errorThrown){
+              console.log(textStatus + ' ' + errorThrown);
+          }
+        );
+      }
+
     };
 
     // -------------------------------------------------------------------
@@ -377,7 +538,7 @@
           current_state.setDistrict(index);
 
           // destroy/re-create masonry, load images into boxes
-          load_photo_set();
+          current_state.loadPhotoSet();
         }
       );
       $("#districts .dropdown-menu").append($menu_item);
@@ -413,11 +574,11 @@
           // get theme
           var index = $(this).parent().children().index(this);
 
-          // give visual feedback
+          // change state, & give visual feedback
           current_state.setTheme(index);
 
           // destroy/re-create masonry, load images into boxes
-          load_photo_set();
+          current_state.loadPhotoSet();
         }
       );
       $("#themes .dropdown-menu").append($menu_item);
@@ -426,11 +587,11 @@
     $('#random_menu').click(function(event) {
       event.preventDefault();
 
-      // give visual feedback
+      // change state, & give visual feedback
       current_state.setRandom();
 
       // destroy/re-create masonry, load images into boxes
-      load_photo_set();
+      current_state.loadPhotoSet();
     });
 
     // -------------------------------------------------------------------
@@ -464,6 +625,12 @@
       // convert e.g. &apos; to '
       dida.base = $('<span>').html(dida.base).html().trim();
       dida.ext  = $('<span>').html(dida.ext).html().trim();
+
+      var nomap = true;
+      // is there enough address to show link to google map ?
+      if (districts[photo.address.district] && photo.address.street) {
+        nomap = false;
+      }
         
       // ask handlebars to render the template
       return handlebars_template(
@@ -472,7 +639,8 @@
           didascalie : dida,
           number     : (photo.address.number=='0'?'':photo.address.number), 
           random     : get_random_width_class(), 
-          district   : districts[photo.address.district]
+          district   : districts[photo.address.district],
+          nomap      : nomap,
         }
       );
     }
@@ -480,11 +648,11 @@
     function search(searchString) {
 
       if (searchString) {
-        // give visual feedback
+        // change state, & give visual feedback
         current_state.setSearch(searchString);
 
         // destroy/re-create masonry, load images into boxes
-        load_photo_set();
+        current_state.loadPhotoSet();
       }
     }
 
@@ -606,7 +774,9 @@
         {
           event.preventDefault();
           $('#lightbox-img').attr('src', $(this).attr('href'));
-          $('#lightbox-caption p').html($(this).parent().find('div').clone());
+          var $didascalieBase = $(this).parent().children("span:first").clone();
+          $didascalieBase.remove('#link2streetView');
+          $('#lightbox-caption p').html($didascalieBase);
           $('#lightbox-img').load(function() {
             $('#demoLightbox').lightbox({maximize: true});
           });
@@ -615,110 +785,78 @@
       return;
     }
 
-    function load_photo_set() {
-
-      // raz 
-      destroy_masonry();
-      
-      current_state.infscrPageview = 0;
-      console.log("infscrPageview:" +current_state.infscrPageview);
-
-      $.ajax(
-        {
-            type        : 'GET',
-            dataType    : "json",
-            url         : current_state.getPhotoSetUrl(),
-        }).done(function( data, textStatus, jqXHR ) {
-
-          current_state.infscrPageview = 1;
-          console.log("infscrPageview:" +current_state.infscrPageview);
-
-          $.each(data, function() {
-            $photos_container.append(create_new_box(this));
-          });  
-
-          setup_lightbox();  
-
-          $photos_container.imagesLoaded(function() {
-            initialize_masonry();
-            $(".box").animate({opacity: 1, visibility: "visible"});
-          });
-
-          if (current_state.text) { // no infinites croll on search results
-            $photos_container.infinitescroll('pause');
-          } else {
-            $photos_container.infinitescroll(
-              {
-                navSelector  : "a#next0:last",   // selector for the paged navigation (it will be hidden)
-                nextSelector : "a#next:last",   // selector for the NEXT link (to page 2)
-                itemSelector : '.box',     // selector for all items you'll retrieve
-
-                dataType: 'json',
-                appendCallback: false,
-                // prefill: true,
-                path : function(current) {
-                  return current_state.getPhotoSetUrl();
-                },
-                loading: {
-                  speed: 0,
-                  img: 'ajax-loader.gif',
-                  finishedMsg: '',
-                  msgText: '',
-                }
-              }, function(arrayOfNewElems, data, url) {
-                current_state.infscrPageview++;
-                console.log("infscrPageview:" +current_state.infscrPageview);
-
-                // an array of DOM elements
-                var newElements = [];
-                $.each(arrayOfNewElems, function() {
-                  var newElement = $(create_new_box(this)).get()[0];
-                  newElements.push(newElement);
-                });
-
-                // wrapp array of DOM elemnts in a jquery object
-                var $newElements = $(newElements);
-
-                $newElements.imagesLoaded(function(){
-                  initialize_masonry(); // in case we arrive here before the 'normal' initiation
-                  
-                  // show elems now they're ready
-                  $photos_container.masonry( 'appended', $newElements, true ); 
-                  $newElements.animate({ opacity: 1, visibility: "visible"});
-                });
-
-                $photos_container.append($newElements);
-
-                setup_lightbox();  
-
-                return false;
-              }
-            );
-
-            // unbind normal behavior. needs to occur after normal infinite scroll setup.
-            // $(window).unbind('.infscr');
-
-            // cf. http://stackoverflow.com/questions/10762656/infinite-scroll-manual-trigger
-            $("a#next").click(function(){
-              $photos_container.infinitescroll('retrieve');
-              return false;
-            });
-
-            $photos_container.infinitescroll('resume');
-          }
-
-        }).fail(function(jqXHR, textStatus, errorThrown){
-            console.log(textStatus + ' ' + errorThrown);
-        }
-      );
-    }
-
     <c:if test="${not empty param.search}" >
       current_state.setSearch('<%= new String(request.getParameter("search").getBytes("ISO-8859-1"), "UTF-8") %>');
     </c:if>
 
-    load_photo_set();
+    current_state.loadPhotoSet();
 
+    // cf . http://stackoverflow.com/questions/387942/google-street-view-url-question
+    function buildGoogleMapsStreeViewURL(address, location) {
+      var ret = "http://maps.google.com/maps?q=";
+      ret += address;
+      ret += "&layer=c";
+      ret += "&cbll=";
+      ret += location.jb;
+      ret += ",";
+      ret += location.kb;
+      ret += "&cbp=12,0,0,0,0";
+      return ret;
+    }
+
+    var geocoder = new google.maps.Geocoder();
+
+    function geoLocate(address, $myModal) {
+      geocoder.geocode( { 'address': address }, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+
+          /*
+          var remote = buildGoogleMapsStreeViewURL(address, results[0].geometry.location);
+          console.log(remote);
+          */
+
+          var fenway = new google.maps.LatLng(results[0].geometry.location.jb, results[0].geometry.location.kb);
+
+          var $mapCanvas = $('#map-canvas');
+          var $pano      = $myModal.find('.modal-body');
+
+          var mapOptions = {
+            center : fenway,
+            zoom : 13,
+            mapTypeId : google.maps.MapTypeId.ROADMAP,
+          };
+          var map = new google.maps.Map($mapCanvas.get(0), mapOptions);
+
+          var panoramaOptions = {
+              position: fenway,
+              pov: {
+                heading: 34,
+                pitch: 10,
+                zoom: 1
+              },
+              visible: true,
+          };
+          var panorama = new google.maps.StreetViewPanorama($pano.get(0), panoramaOptions);
+          panorama.setPov(panorama.getPhotographerPov());
+
+          map.setStreetView(panorama);
+
+          var windowHeight = $(window).height();
+          var windowWidth  = $(window).width();
+          $pano.css({width: Math.round(0.9*windowWidth)+'px', height: Math.round(0.9*windowHeight)+'px'});
+          panorama.setVisible(true);
+
+          $myModal.modal().css({
+            'margin-left': function () {
+              return -($(this).width() / 2);
+            }
+          }).show();
+
+        } else {
+          alert('Street View data not found for this location.');
+        }
+      });
+    }
   });  
 
   </script>

@@ -175,8 +175,8 @@ body {
   opacity: .3;
   cursor: pointer;
 }
-.icon-globe:hover {
-  opacity: 1;
+.box:hover div span i.icon-globe {
+  opacity: .8;
 }
 
 header  {
