@@ -51,6 +51,15 @@ public class Resource {
     }
 
     @GET
+    @javax.ws.rs.Path("/random/page/{page}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Photo> getSlice(
+    		@PathParam("page") Integer page,
+            @QueryParam("count") Integer count  ) throws IOException {
+        return Photos.getInstance().getRandomSlice(count, page);
+    }
+
+    @GET
     @javax.ws.rs.Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Photo> search(

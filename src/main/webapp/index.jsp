@@ -91,7 +91,7 @@
         <div class="brand">Photothèque des Jeunes Parisiens</div>
         <div class="nav-collapse collapse">
           <ul class="nav"> 
-            <li><a id="random_menu" href="#">au hasard</a>
+            <li class="active"><a id="random_menu" href="#">au hasard</a>
             </li>
             <li class="dropdown" id="districts">  
                 <a id="districts_menu" class="dropdown-toggle" data-toggle="dropdown" href="#"><span>arrondissements</span><b class="caret"></b></a>  
@@ -159,7 +159,6 @@
   <script type="text/javascript" src="jquery.infinitescroll.js"></script>
   <script type="text/javascript" src="jquery.masonry.js"></script>
   <script type="text/javascript" src="handlebars.js"></script>
-
   <script type="text/javascript" src="loading-clock.js"></script>
 
   <!-- handlebars template for photo box -->
@@ -217,6 +216,101 @@
 
   $(document).ready(function(){
 
+    var current_state = {
+      infscrPageview : 0,
+      district  : undefined,
+      theme     : undefined, 
+      search    : undefined,
+      random    : true,
+
+      raz : function() {
+        this.district = undefined;
+        this.theme    = undefined; 
+        this.search   = undefined; 
+        this.random   = false; 
+      },
+
+      setSearch : function(param) {
+        this.raz();
+        this.search = param;
+        this.setupNavBar();
+      },
+
+      setDistrict : function(param) {
+        this.raz();
+        this.district = param;
+        this.setupNavBar();
+      },
+
+      setTheme : function(param) {
+        this.raz();
+        this.theme = param;
+        this.setupNavBar();
+      },
+
+      setRandom : function() {
+        this.raz();
+        this.random = true;
+        this.setupNavBar();
+      },
+
+      // ...................................................................
+      // update navbar display with current random|district|theme|search state
+      setupNavBar : function() {
+        if (this.district) {
+          $('#districts_menu span').html(districts[this.district]);
+          $('#districts_menu').parent().addClass('active');
+        } else {
+          $('#districts_menu span').html('arrondissements');
+          $('#districts_menu').parent().removeClass('active');
+        }
+        if (this.theme) {
+          $('#themes_menu span').html(themes[this.theme]);
+          $('#themes_menu').parent().addClass('active');
+        } else {
+          $('#themes_menu span').html('thèmes');
+          $('#themes_menu').parent().removeClass('active');
+        }
+        if (this.search) {
+          $('.navbar-search input').val( this.search);
+        } else {
+          $('.navbar-search input').val('');
+        }
+        if (this.random) {
+          $('#random_menu').parent().addClass('active');
+        } else {
+          $('#random_menu').parent().removeClass('active');
+        }
+      },
+
+      // ...................................................................
+      // construct photo set query URL
+      getPhotoSetUrl : function() {
+        var ret = "<c:url value='/parimagine' />";
+        if (this.search) {
+          // search URL
+          ret = ret+"/search?for="+encodeURIComponent(this.search);
+        } else {
+          if (this.theme) {
+            // themes URL 
+            ret = ret+"/theme/"+themes[this.theme]+"/page/"+this.infscrPageview;
+          } else {
+            if (this.district) {
+              // district URL. district == 0 -> all districts
+              ret = ret+"/district/"+this.district+"/page/"+this.infscrPageview;
+            } else {
+              // random URL
+              ret = ret+"/random/page/"+this.infscrPageview;
+            }
+          }
+        }
+
+        console.log(ret);
+
+        return ret;
+      },
+    };
+
     // -------------------------------------------------------------------
     // masonry
     var masonry_initiation_done = false;
@@ -226,16 +320,15 @@
           itemSelector : '.box',
           columnWidth : 90,
           gutterWidth: 40,
-          isAnimated: true
-          // isFitWidth: true,
+          isAnimated: true,
         });
         masonry_initiation_done = true;
       }
     }
 
     function destroy_masonry() {
+      $('.box').remove();
       if (masonry_initiation_done) {
-          $('.box').remove();
           $photos_container.masonry( 'destroy' );
           masonry_initiation_done = false;
       }
@@ -244,14 +337,6 @@
     // -------------------------------------------------------------------
     // search tooltip
     $search_tooltip = $("a[data-toggle=tooltip]");
-    
-    // -------------------------------------------------------------------
-    // update navbar display with current random|district|theme|search state
-    function setup_navbar(three) {
-      $('#districts_menu span').html(three.district);
-      $('#themes_menu span').html(three.theme);
-      current_search_object.set(three.search);
-    }
 
     // -------------------------------------------------------------------
     // districts
@@ -278,7 +363,6 @@
       "19ème",
       "20ème"
     ];
-    var current_district = 0;
 
     // add districts to navbar dropdown
     $.each(districts, function() {
@@ -290,15 +374,10 @@
           var index = $(this).parent().children().index(this);
 
           // give visual feedback
-          setup_navbar({
-            district:index==0?'arrondissements':districts[index],
-            theme: 'thèmes',
-            search: ''
-            }
-          );
+          current_state.setDistrict(index);
 
           // destroy/re-create masonry, load images into boxes
-          load_photo_set(index);
+          load_photo_set();
         }
       );
       $("#districts .dropdown-menu").append($menu_item);
@@ -335,18 +414,23 @@
           var index = $(this).parent().children().index(this);
 
           // give visual feedback
-          setup_navbar({
-            district:'arrondissements',
-            theme: index==0?'thèmes':themes[index],
-            search: ''
-            }
-          );
+          current_state.setTheme(index);
 
           // destroy/re-create masonry, load images into boxes
-          load_photo_set(themes[index]);
+          load_photo_set();
         }
       );
       $("#themes .dropdown-menu").append($menu_item);
+    });
+
+    $('#random_menu').click(function(event) {
+      event.preventDefault();
+
+      // give visual feedback
+      current_state.setRandom();
+
+      // destroy/re-create masonry, load images into boxes
+      load_photo_set();
     });
 
     // -------------------------------------------------------------------
@@ -354,62 +438,6 @@
     var handlebars_source   = $("#didascalie-template").html();
     var handlebars_template = Handlebars.compile(handlebars_source);
 
-    // -------------------------------------------------------------------
-    // construct photo set query URL
-    var current_search_object = {
-      text : undefined,
-      set : function(text) {
-        this.text = text;
-        $('.navbar-search input').val(this.text);
-      },
-      get : function() {
-        return encodeURIComponent(this.text);
-      },
-      is_valid : function() {
-        if (typeof this.text === "undefined") {
-          return false;
-        }
-        if (typeof this.text == "undefined") {
-          return false;
-        }
-        if (typeof this.text == undefined) {
-          return false;
-        }
-        if (this.text.length == 0) {
-          return false;
-        }
-        if (this.text == "") {
-          return false;
-        }
-        if (this.text == '') {
-          return false;
-        }
-        return true;
-      },
-    }
-
-    var infscrPageview = 0;
-
-    function get_photo_set_url(district, theme) {
-      var ret = "";
-      if (!current_search_object.is_valid()) {
-        if (theme != "") {
-          // themes
-          ret = "<c:url value='/parimagine' />"+"/theme/"+theme+"/page/"+infscrPageview+"?count="+10;
-        } else {
-          // district URL. district == 0 -> all districts
-          ret = "<c:url value='/parimagine' />"+"/district/"+district+"/page/"+infscrPageview+"?count="+10;
-        }
-      } else {
-      // search URL
-        ret = "<c:url value='/parimagine' />"+"/search?for="+current_search_object.get() 
-      }
-
-      console.log(ret);
-
-      return ret;
-    }
-    
     var $photos_container  = $('#photos_container');
 
     function get_random_width_class() {
@@ -451,16 +479,13 @@
 
     function search(searchString) {
 
-      // give visual feedback
-      setup_navbar({
-        district:'arrondissements',
-        theme: 'thèmes',
-        search: searchString
-        }
-      );
+      if (searchString) {
+        // give visual feedback
+        current_state.setSearch(searchString);
 
-      // destroy/re-create masonry, load images into boxes
-      load_photo_set(0);
+        // destroy/re-create masonry, load images into boxes
+        load_photo_set();
+      }
     }
 
     $('.navbar-search .icon-search').click(function(event) {
@@ -470,7 +495,7 @@
 
     $('.navbar-search .icon-remove').click(function(event) {
         $('.navbar-search input').val('');
-        search(undefined);
+        // search(undefined);
       }
     );
 
@@ -590,34 +615,23 @@
       return;
     }
 
-    function load_photo_set(district_or_theme) {
+    function load_photo_set() {
 
       // raz 
       destroy_masonry();
       
-      console.log("(district || theme) == "+district_or_theme);
-
-      if (0 <= district_or_theme && district_or_theme <= 20) {
-        // fetch the inital 10 photos objects in json format from the server
-        current_district = district_or_theme; // save in global. I know it is BAD. 
-        current_theme = "";
-      } else {
-        current_district = 0; 
-        current_theme = district_or_theme;
-      }
-
-      infscrPageview = 0;
-      console.log("infscrPageview:" +infscrPageview);
+      current_state.infscrPageview = 0;
+      console.log("infscrPageview:" +current_state.infscrPageview);
 
       $.ajax(
         {
             type        : 'GET',
             dataType    : "json",
-            url         : get_photo_set_url(current_district, current_theme, current_search_object.get()),
+            url         : current_state.getPhotoSetUrl(),
         }).done(function( data, textStatus, jqXHR ) {
 
-          infscrPageview = 1;
-          console.log("infscrPageview:" +infscrPageview);
+          current_state.infscrPageview = 1;
+          console.log("infscrPageview:" +current_state.infscrPageview);
 
           $.each(data, function() {
             $photos_container.append(create_new_box(this));
@@ -630,7 +644,7 @@
             $(".box").animate({opacity: 1, visibility: "visible"});
           });
 
-          if (current_search_object.is_valid()) { // no infinites croll on search results
+          if (current_state.text) { // no infinites croll on search results
             $photos_container.infinitescroll('pause');
           } else {
             $photos_container.infinitescroll(
@@ -643,7 +657,7 @@
                 appendCallback: false,
                 // prefill: true,
                 path : function(current) {
-                  return get_photo_set_url(current_district, current_theme);
+                  return current_state.getPhotoSetUrl();
                 },
                 loading: {
                   speed: 0,
@@ -652,8 +666,8 @@
                   msgText: '',
                 }
               }, function(arrayOfNewElems, data, url) {
-                infscrPageview++; 
-                console.log("infscrPageview:" +infscrPageview);
+                current_state.infscrPageview++;
+                console.log("infscrPageview:" +current_state.infscrPageview);
 
                 // an array of DOM elements
                 var newElements = [];
@@ -700,10 +714,10 @@
     }
 
     <c:if test="${not empty param.search}" >
-      current_search_object.set('<%= new String(request.getParameter("search").getBytes("ISO-8859-1"), "UTF-8") %>');
+      current_state.setSearch('<%= new String(request.getParameter("search").getBytes("ISO-8859-1"), "UTF-8") %>');
     </c:if>
 
-    load_photo_set(0); // 0 -> district == 0 -> all districts, all themes
+    load_photo_set();
 
   });  
 

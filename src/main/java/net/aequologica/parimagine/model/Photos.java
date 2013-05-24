@@ -9,9 +9,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.fr.FrenchAnalyzer;
@@ -50,7 +52,8 @@ public class Photos {
         return Photos.instance;
     }
 
-    final List<Photo> list; // toutes les photos
+    final static int DEFAULT_SIZE_OF_SLICE = 12;
+    final ArrayList<Photo> list; // toutes les photos
     final Map<String, Photo> image2photoMap; // image 2 photo map
     final Map<Integer, List<Photo>> districtLists = new HashMap<>();
     final Map<String, List<Photo>> themeLists = new HashMap<>();
@@ -138,7 +141,7 @@ public class Photos {
 
     public List<Photo> getDistrictSlice(Integer district, Integer sizeOfSlice, Integer offset) {
         if (sizeOfSlice == null || sizeOfSlice == 0 ) {
-        	sizeOfSlice = 12;
+        	sizeOfSlice = DEFAULT_SIZE_OF_SLICE;
         }
         if (district == null || district == 0) {
             return getSlice(sizeOfSlice, offset);
@@ -165,7 +168,7 @@ public class Photos {
     
     public List<Photo> getThemeSlice(String theme, Integer sizeOfSlice, Integer offset) {
         if (sizeOfSlice == null || sizeOfSlice == 0 ) {
-        	sizeOfSlice = 12;
+        	sizeOfSlice = DEFAULT_SIZE_OF_SLICE;
         }
         if (theme == null || theme.length() == 0)  {
             return getSlice(sizeOfSlice, offset);
@@ -192,9 +195,22 @@ public class Photos {
         return themeList.subList(from, to);
     }
     
+	public List<Photo> getRandomSlice(Integer sizeOfSlice, Integer offset) {
+        if (sizeOfSlice == null || sizeOfSlice == 0 ) {
+        	sizeOfSlice = DEFAULT_SIZE_OF_SLICE;
+        }
+        Random r = new Random(new Date().getTime());
+        int max = list.size();
+        List<Photo> ret = new ArrayList<>(sizeOfSlice);
+        for (int i = 0; i < sizeOfSlice; i++) {
+        	ret.add(list.get(r.nextInt(max)));
+		}
+		return ret;
+	}
+	
     public List<Photo> search(String searchString, Integer sizeOfSlice) throws IOException, ParseException {
         if (sizeOfSlice == null || sizeOfSlice == 0 ) {
-        	sizeOfSlice = 32;
+        	sizeOfSlice = 2*DEFAULT_SIZE_OF_SLICE;
         }
         List<Photo> list = new ArrayList<>(sizeOfSlice); 
         IndexReader reader = DirectoryReader.open(index);
@@ -215,7 +231,7 @@ public class Photos {
         return list;
     }
 
-    private static List<Photo> load() throws IOException {
+    private static ArrayList<Photo> load() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         
         URL json = Photos.class.getResource("/photos-test.json");
@@ -227,7 +243,7 @@ public class Photos {
         }
         
         try (InputStream jsonSource = json.openStream()) {
-            return mapper.readValue(jsonSource, new TypeReference<List<Photo>>() { } );
+            return mapper.readValue(jsonSource, new TypeReference<ArrayList<Photo>>() { } );
         }
         
     }
@@ -263,4 +279,5 @@ public class Photos {
 	public List<Photo> getPhotos() {
 		return list;
 	}
+
 }
