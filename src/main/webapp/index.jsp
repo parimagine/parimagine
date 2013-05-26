@@ -13,12 +13,12 @@
   <meta http-equiv="Content-Language" content="fr" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <meta property="og:title" content="parimagine"/>
-  <meta property="og:description" content="photothèque des jeunes parisiens"/>
+  <meta property="og:title" content="Photothèque des Jeunes Parisiens"/>
+  <meta property="og:description" content="Photothèque des Jeunes Parisiens"/>
   <meta property="og:image" content="https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/documents/photos-presse/cinema/P318.jpg"/>
   <meta property="og:type" content="website"/>
 
-  <title>parimagine</title>
+  <title>Photothèque des Jeunes Parisiens</title>
       
   <meta name="HandheldFriendly" content="True"/>
   <meta name="MobileOptimized" content="320"/>
@@ -37,8 +37,10 @@
   <link rel="stylesheet" href="bootstrap-combined.min.css">
   <link rel="stylesheet" href="bootstrap-lightbox.css">
   
+  <!--
   <link href='//fonts.googleapis.com/css?family=Ubuntu:400' rel='stylesheet' type='text/css'>
-  
+  -->
+
   <style type="text/css">
   @font-face {
     font-family: 'Peignot';
@@ -155,16 +157,24 @@
   <!-- ==================================================
   /page container -->
 
+  <div id="loadingWrapper" style="position: fixed; bottom: 0; left:0; width:100%; margin: 0; padding:0; display:none; opacity:.3333; background: #4682b4;">
+    <div id="loading" style="width:32px; height:32px; margin: 0 auto; padding:0;">
+      <img src="ajax-loader4.gif"/>
+    </div>
+  </div>
+
   <!-- footer -->
-  <footer>
-    <a id="next" class="btn btn-mini" href="#">
-      <span class="centered">…</span>
+  <footer class="row" style="width:100%; display:none;">
+    <a id="start" class="span12" href="#">
+      <span class="centered">start infinite scroll</span>
+    </a>
+    <a id="next" class="span12" href="#">
+      <span class="centered">next infinite scroll</span>
     </a>
   </footer>
   <!-- /footer -->
 
   <!-- ?????????????????????????? -->
-  <a id="next0" href="#" style="display:none">what the heck ?! why this element ?</a>
   <!-- /?????????????????????????? -->
 
   <!-- lightbox -->
@@ -184,50 +194,48 @@
   <script type="text/javascript" src="handlebars.js"></script>
   <script type="text/javascript" src="loading-clock.js"></script>
 
+  <!--
   <script
     type="text/javascript"
     src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;key=AIzaSyDAH1H-jE9iwiP-sr6hsrlYr4DEghUMuWI&amp;sensor=false&amp;region=FR">
   </script>
+  -->
 
   <!-- handlebars template for photo box -->
   <!-- !!!! content inside script id="didascalie-template" MUST start with "<", otherwise jquery explodes !!!! -->
-  <script id="didascalie-template" type="text/x-handlebars-template"><div class="centered box {{random}}">
+  <script id="didascalie-template" type="text/x-handlebars-template"
+  ><div class="centered box {{random_width_class}}">
     <a class="photo" href="<c:url value='/documents/'/>/{{photo.image}}">
-      <img class="main_img" src="<c:url value='/documents/'/>{{photo.image}}" style="margin-bottom:5px;" />
+      <img class="box_img" src="<c:url value='/documents/'/>{{photo.image}}" />
     </a>
     <span>
     <div class="didascalie-base">
       {{didascalie.base}}
     </div>
-    <div style="width=110%;">
+    <div>
       <div class="didascalie-ext">
          {{didascalie.ext}}
       </div>
       <span class="didascalie-url"
-            {{#if nomap}}style="display:none;"{{/if}} >
+            {{#if noaddress}}style="display:none;"{{/if}} >
          [{{district}}] {{number}} {{photo.address.street}} {{photo.address.legacy}}
       </span>
 
-      <span id="link2streetView" style="position:relative; float: right; right:0;">
+      <span class="link2streetView" style="">
         <a  href="#" 
-            data-address = "Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}"
+            data-address="Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}"
             data-toggle="tooltip" 
             data-placement="bottom" 
             title="ça&nbsp;a&nbsp;quelle&nbsp;gueule&nbsp;aujourd'hui&nbsp;?" 
-            {{#if nomap}}style="display:none;"{{/if}}
+            {{#if noaddress}}style="display:none;"{{/if}}
             >
           <i class="icon-globe"></i>
-          <!--  
-          <img src="<c:url value='/assets/images/40px-Mobile_Contributors_icon1.png'/>" style="width:20px; height: auto; opacity: .5;"> 
-          -->
         </a>
       </span>
     <div>
     </span>
   <div></script>
   <!-- /handlebars template for photo box -->
-
-  <div id="dvLoading"></div>
 
   <!-- le javascript -->
   <script type="text/javascript">
@@ -395,21 +403,44 @@
             } else {
               $photos_container.infinitescroll(
                 {
-                  navSelector  : "a#next0:last",   // selector for the paged navigation (it will be hidden)
-                  nextSelector : "a#next:last",   // selector for the NEXT link (to page 2)
-                  itemSelector : '.box',     // selector for all items you'll retrieve
-
-                  dataType: 'json',
-                  appendCallback: false,
+                  navSelector     : "a#start:last",   // selector for the paged navigation (it will be hidden)
+                  nextSelector    : "a#next:last",   // selector for the NEXT link (to page 2)
+                  itemSelector    : '.box',     // selector for all items you'll retrieve
+                  dataType        : 'json',
+                  appendCallback  : false,
                   // prefill: true,
-                  path : function(current) {
-                    return that.getPhotoSetUrl();
-                  },
-                  loading: {
-                    speed: 0,
+                  // animate         : true,
+                  // extraScrollPx   : 300,
+                  path            : function(current) { return that.getPhotoSetUrl(); },
+                  loading         : {
+                    start: function(opts) {
+                      console.log('start.this: '+this);
+                      console.log('start.opts: '+opts);
+                      //$(opts.navSelector).hide();
+                      $('#loadingWrapper').show();
+                      /* 
+                        { 
+                          easing: 'linear',
+                          complete: function() {
+                          }
+                        }                        
+                      );
+                      */
+                      $photos_container.infinitescroll('beginAjax', opts);
+                      
+                      /*
+                      opts.loading.msg
+                        .appendTo(opts.loading.selector)
+                        .show(opts.loading.speed, $.proxy(function() {
+                          this.beginAjax(opts);
+                        }, this));                      
+                      */
+                    },
+                    finished: function() {},
                     img: 'ajax-loader.gif',
-                    finishedMsg: '',
+                    msg: null,
                     msgText: '',
+                    selector: '#loading',
                   }
                 }, function(arrayOfNewElems, data, url) {
                   that.infscrPageview++;
@@ -443,6 +474,7 @@
                         geoLocate($(this).attr('data-address'), $('#myModal'));
                     });
 
+                    $('#loadingWrapper').hide();
                   });
 
                   $photos_container.append($newElements);
@@ -457,7 +489,7 @@
               // $(window).unbind('.infscr');
 
               // cf. http://stackoverflow.com/questions/10762656/infinite-scroll-manual-trigger
-              $("a#next").click(function(){
+              $("a#start, a#next").click(function(){
                 $photos_container.infinitescroll('retrieve');
                 return false;
               });
@@ -627,21 +659,21 @@
       dida.base = $('<span>').html(dida.base).html().trim();
       dida.ext  = $('<span>').html(dida.ext).html().trim();
 
-      var nomap = true;
+      var has_address = false;
       // is there enough address to show link to google map ?
       if (districts[photo.address.district] && photo.address.street) {
-        nomap = false;
+        has_address = true;
       }
         
       // ask handlebars to render the template
       return handlebars_template(
         {
-          photo      : photo,
-          didascalie : dida,
-          number     : (photo.address.number=='0'?'':photo.address.number), 
-          random     : get_random_width_class(), 
-          district   : districts[photo.address.district],
-          nomap      : nomap,
+          photo               : photo,
+          didascalie          : dida,
+          number              : photo.address.number?photo.address.number:'', 
+          random_width_class  : get_random_width_class(), 
+          district            : districts[photo.address.district],
+          noaddress           : !has_address,
         }
       );
     }
@@ -776,7 +808,7 @@
           event.preventDefault();
           $('#lightbox-img').attr('src', $(this).attr('href'));
           var $didascalieBase = $(this).parent().children("span:first").clone();
-          $didascalieBase.remove('#link2streetView');
+          $didascalieBase.remove('.link2streetView');
           $('#lightbox-caption p').html($didascalieBase);
           $('#lightbox-img').load(function() {
             $('#demoLightbox').lightbox({maximize: true});
@@ -805,9 +837,12 @@
       return ret;
     }
 
-    var geocoder = new google.maps.Geocoder();
+    var geocoder = ((typeof geocoder == undefined)?new google.maps.Geocoder():undefined);
 
     function geoLocate(address, $myModal) {
+      if (typeof geocoder == undefined) {
+        return;
+      }
       geocoder.geocode( { 'address': address }, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
 
@@ -867,6 +902,7 @@
   <!-- /le javascript -->
 
 <script>
+  /*
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -874,7 +910,7 @@
 
   ga('create', 'UA-41203938-1', 'ondemand.com');
   ga('send', 'pageview');
-
+  */
 </script>
 </body>
 </html>

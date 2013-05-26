@@ -174,18 +174,21 @@
 			if (that.options.maximize 
 				  || ((preloader.width + padLeft + padRight)  >= windowWidth) 
 				  || ((preloader.height + padTop + padBottom) >= windowHeight)) {
-				var containerWidth = Math.round(0.9*windowWidth  - padLeft - padRight);
-				var containerHeight= Math.round(0.9*windowHeight - padTop  - padBottom);
+				containerWidth = Math.round(0.96*windowWidth  - padLeft - padRight);
+				containerHeight= Math.round(0.96*windowHeight - padTop  - padBottom);
 			}
 			var originalRatio  = originalWidth   / originalHeight;
 			var containerRatio = containerWidth  / containerHeight;
 			if (originalRatio  > containerRatio) {
 				preloader.width  = containerWidth;
 				preloader.height = containerWidth  / originalRatio; 
-			} else {
+			} else if (originalRatio  < containerRatio) {
 				preloader.width  = containerHeight * originalRatio;
 				preloader.height = containerHeight;
-			}
+			} else {
+				preloader.width  = containerWidth;
+				preloader.height = containerHeight;
+			} 
 
 			that.$element.css({
 				'position': 'fixed',
