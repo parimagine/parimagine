@@ -80,8 +80,8 @@
 
   <!-- google maps modal -->
 
-  <div id="myModal" class="modal hide" tabindex="-1" role="dialog" 
-       style="width: auto; height: auto;"> <!-- aria-labelledby="myModalLabel" aria-hidden="true" -->
+  <div id="myModal" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true" 
+       style="width: auto; height: auto;"> <!-- aria-labelledby="myModalLabel" -->
     <!--
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -89,6 +89,9 @@
     </div>
     -->
     <div class="modal-body">
+      <div id="legacy" class="permanentBox" style="position:absolute; bottom:0; left:0; z-index:1000;">
+        <img/>
+      </div>
       <table style="width:100%; height: 100%; max-width:100%; max-height: 100%; ">
         <tr>
           <td>
@@ -107,6 +110,19 @@
     -->
   </div>
   <!-- /google maps modal -->
+
+  <!-- lightbox -->
+  <div id="demoLightbox" class="lightbox hide"  tabindex="-1" role="dialog" aria-hidden="true">
+    <div class='lightbox-content'>
+      <a id="switch2googleMaps" class="btn" href="#" style="position:absolute; bottom:0; right:0; margin: 5px; z-index:1000;">
+        switch2googleMaps
+      </a>
+      <img id='lightbox-img' src="stock-photo-5033318-eiffel-tower-statue.jpg"/>
+      <div id="lightbox-caption" class="lightbox-caption"><p/></div>
+    </div>
+  </div>    
+  <!-- /lightbox -->
+
 
   <!-- Navbar
   ================================================== -->
@@ -184,15 +200,6 @@
 
   <!-- ?????????????????????????? -->
   <!-- /?????????????????????????? -->
-
-  <!-- lightbox -->
-  <div id="demoLightbox" class="lightbox hide"  tabindex="-1" role="dialog" aria-hidden="true">
-    <div class='lightbox-content'>
-      <img id='lightbox-img' src="stock-photo-5033318-eiffel-tower-statue.jpg"/>
-      <div id="lightbox-caption" class="lightbox-caption"><p/></div>
-    </div>
-  </div>    
-  <!-- /lightbox -->
 
   <script type="text/javascript" src="jquery.js"></script>
   <script type="text/javascript" src="bootstrap.js"></script>
@@ -402,8 +409,9 @@
               });
 
               // google maps
-              $(".box div span a").click(function(event) {
+              $(".box div span a, #switch2googleMaps").click(function(event) {
                   event.preventDefault();
+                  $("#demoLightbox").modal('hide');
                   geoLocate($(this), $('#myModal'));
               });
 
@@ -482,8 +490,9 @@
                         selector: "div span a[data-toggle=tooltip]"
                     });
                     // google maps
-                    $newElements.find("div span a").click(function(event) {
+                    $newElements.find("div span a, #switch2googleMaps").click(function(event) {
                         event.preventDefault();
+                        $("#demoLightbox").modal('hide');
                         geoLocate($(this), $('#myModal'));
                     });
 
@@ -549,7 +558,7 @@
     // -------------------------------------------------------------------
     // districts
     var districts = [
-      "",
+      /* "", */
       "1er",
       "2ème",
       "3ème",
@@ -594,7 +603,7 @@
     // -------------------------------------------------------------------
     // themes
     var themes = [
-      "",
+      /* "", */
       "bals",
       "cinema",
       "enfants",
@@ -892,7 +901,6 @@
           var remote = buildGoogleMapsStreeViewURL(address, results[0].geometry.location);
           console.log(remote);
           */
-
           
           var lat = $theBox.attr('data-position-lat');
           var lng = $theBox.attr('data-position-lng');
@@ -908,12 +916,36 @@
           var $modalBody = $myModal.find('.modal-body');
           var $mapCanvas = $myModal.find('#map-canvas');
           var $pano      = $myModal.find('#pano');
+          var $legacy    = $myModal.find('.permanentBox');
 
           var windowWidth  = $(window).width();
           var windowHeight = $(window).height();
           var width = Math.round(0.9*windowWidth);
           var height = Math.round(0.8*windowHeight);
           var halfWidth = Math.round(width/2);
+
+          $legacy.hide();
+          var legacyImagePath = $theBox.parent().parent().parent().parent().children('a').attr('href');
+          $legacy.children('img').attr('src', legacyImagePath);
+          var preloader = new Image();
+          preloader.onload = function(){
+            var imgWidth  = preloader.width/2;
+            var imgHeight = preloader.height/2;
+            $legacy.children('img').css(
+              {
+                width  : imgWidth+'px',
+                height : imgHeight+'px', 
+              }
+            );
+            $legacy.css(
+              {
+                left   : halfWidth - (imgWidth/2) + 5 + 5, /* margin 5, padding 5 */
+                bottom : 0,
+              }
+            );
+            $legacy.show();
+          }
+          preloader.src = legacyImagePath;
 
           $modalBody.css(
             {

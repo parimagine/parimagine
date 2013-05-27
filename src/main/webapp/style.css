@@ -4,7 +4,7 @@ html {
 }
 
 body {
-  background-color: #fbfbfb;
+  background-color: #fafafa;
   font-family: 'Ubuntu', sans-serif;
   font-size: 14px;
 }
@@ -104,12 +104,25 @@ footer #next {
   margin: 5px;
   padding: 5px;
   background: #fff;
-  border: solid 1px #ddd;
+  border: solid 1px #d7e1ee; /* http://www.color-hex.com/color/b0c4de */
   font-size: 12px;
   line-height: 1.4em;
   float: left;
   opacity: 0;
-  // visibility: hidden;
+  /* visibility: hidden; */
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
+}
+
+.permanentBox {
+  margin: 5px;
+  padding: 5px;
+  background: #fff;
+  border: solid 1px #d7e1ee; /* http://www.color-hex.com/color/b0c4de */
+  font-size: 12px;
+  line-height: 1.4em;
+  /* visibility: hidden; */
   -webkit-border-radius: 5px;
      -moz-border-radius: 5px;
           border-radius: 5px;
