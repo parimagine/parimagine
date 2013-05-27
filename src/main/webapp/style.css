@@ -140,10 +140,14 @@ footer #next {
   margin-bottom: 5px;
 }
 
-.link2streetView {
+.iconLinks {
   position:relative; 
   float: right; 
   right:0;
+}
+
+.icon-star-empty {
+  opacity: 0.2;
 }
 
 .rtl .box {

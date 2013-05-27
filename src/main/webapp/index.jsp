@@ -62,6 +62,10 @@
     background-image: url("<c:url value='/img/glyphicons-halflings.png' />");
   }
 
+  .navbar-search .icon-search a {
+    opacity: 1;
+  }
+
   .navbar-search .icon-remove {
     opacity: 0.5;
     position: absolute;
@@ -114,9 +118,6 @@
   <!-- lightbox -->
   <div id="demoLightbox" class="lightbox hide"  tabindex="-1" role="dialog" aria-hidden="true">
     <div class='lightbox-content'>
-      <a id="switch2googleMaps" class="btn" href="#" style="position:absolute; bottom:0; right:0; margin: 5px; z-index:1000;">
-        switch2googleMaps
-      </a>
       <img id='lightbox-img' src="stock-photo-5033318-eiffel-tower-statue.jpg"/>
       <div id="lightbox-caption" class="lightbox-caption"><p/></div>
     </div>
@@ -153,8 +154,9 @@
           <ul class="nav pull-right">
             <form class="navbar-search">
               <input type="text" class="search-query" placeholder="search">
-                <i id="icon-search" class="add-on icon-search" >
-                  <a href="#"  data-toggle="tooltip" data-placement="left" data-content="" title="search" style="margin-left:-20px;"></a>
+                <i class="add-on icon-search" >
+                  <a href="#" id="a-search" data-toggle="tooltip" data-placement="left" data-content="" title="search" style="margin-left:-20px;">
+                  </a>
                 </i>
                 <i id="icon-remove" class="icon-remove"></i>
               </input>
@@ -237,8 +239,15 @@
          [{{district}}] {{number}} {{photo.address.street}} {{photo.address.legacy}}
       </span>
 
-      <span class="link2streetView" style="">
-        <a  href="#" 
+      <span class="iconLinks">
+        <a  id="favourite"
+            data-toggle="tooltip" 
+            data-placement="bottom" 
+            title="j'adore&nbsp;cette&nbsp;photo!&nbsp;(coming&nbsp;soon...)"
+          <i class="icon-star-empty"></i>
+        </a>
+        <a  id="streetView"
+            href="#" 
             data-address="Paris+{{district}}+{{photo.address.number}}+{{photo.address.street}}"
             data-toggle="tooltip" 
             data-placement="bottom" 
@@ -400,19 +409,22 @@
 
             $photos_container.imagesLoaded(function() {
               initialize_masonry();
-              $(".box")
-                .animate({ 
+              $('.box div span a[data-toggle=tooltip]').tooltip().hover(function() {changeTooltipColorTo('#4682b4')}); /* steel blue http://en.wikipedia.org/wiki/Steel_blue */
+              $(".box").animate(
+                { 
                   opacity: 1, 
-                  visibility: "visible"})
-                .tooltip({
-                  selector: "div span a[data-toggle=tooltip]"
-              });
+                  visibility: "visible"
+                }
+              );
 
               // google maps
-              $(".box div span a, #switch2googleMaps").click(function(event) {
+              $(".box div span a#streetView").click(function(event) {
                   event.preventDefault();
-                  $("#demoLightbox").modal('hide');
                   geoLocate($(this), $('#myModal'));
+              });
+
+              $(".box div span a#favourite").click(function(event) {
+                  event.preventDefault();
               });
 
               $('#loadingWrapper').hide();
@@ -482,18 +494,20 @@
                     
                     // show elems now they're ready
                     $photos_container.masonry( 'appended', $newElements, true ); 
-                    $newElements
-                      .animate({ 
+                    $newElements.find('div span a[data-toggle=tooltip]').tooltip().hover(function() {changeTooltipColorTo('#4682b4')}); /* steel blue http://en.wikipedia.org/wiki/Steel_blue */
+                    $newElements.animate(
+                      { 
                         opacity: 1, 
-                        visibility: "visible"})
-                      .tooltip({
-                        selector: "div span a[data-toggle=tooltip]"
-                    });
+                        visibility: "visible"
+                      }
+                    );
                     // google maps
-                    $newElements.find("div span a, #switch2googleMaps").click(function(event) {
+                    $newElements.find("div span a#streetView").click(function(event) {
                         event.preventDefault();
-                        $("#demoLightbox").modal('hide');
                         geoLocate($(this), $('#myModal'));
+                    });
+                    $newElements.find("div span a#favourite").click(function(event) {
+                        event.preventDefault();
                     });
 
                     $('#loadingWrapper').hide();
@@ -553,7 +567,17 @@
 
     // -------------------------------------------------------------------
     // search tooltip
+
+    function changeTooltipColorTo(color) {
+        $('.tooltip-inner').css('background-color', color)
+        $('.tooltip.top .tooltip-arrow').css('border-top-color', color);
+        $('.tooltip.right .tooltip-arrow').css('border-right-color', color);
+        $('.tooltip.left .tooltip-arrow').css('border-left-color', color);
+        $('.tooltip.bottom .tooltip-arrow').css('border-bottom-color', color);
+    }
+
     $search_tooltip = $("a[data-toggle=tooltip]");
+    $search_tooltip.tooltip().hover(function() {changeTooltipColorTo('#4682b4')}); /* steel blue http://en.wikipedia.org/wiki/Steel_blue */
 
     // -------------------------------------------------------------------
     // districts
@@ -831,7 +855,7 @@
           event.preventDefault();
           $('#lightbox-img').attr('src', $(this).attr('href'));
           var $didascalieBase = $(this).parent().children("span:first").clone();
-          $didascalieBase.remove('.link2streetView');
+          $didascalieBase.remove('.iconLinks');
           $('#lightbox-caption p').html($didascalieBase);
           $('#lightbox-img').load(function() {
             $('#demoLightbox').lightbox({maximize: true});
@@ -847,6 +871,7 @@
 
     current_state.loadPhotoSet();
 
+    /*
     // cf . http://stackoverflow.com/questions/387942/google-street-view-url-question
     function buildGoogleMapsStreeViewURL(address, location) {
       var ret = "http://maps.google.com/maps?q=";
@@ -858,34 +883,6 @@
       ret += location.kb;
       ret += "&cbp=12,0,0,0,0";
       return ret;
-    }
-
-    /*
-    var geocoder;
-    var map;
-    var marker;
-
-    function geoInit() {
-
-      var $mapCanvas = $('#map-canvas');
-
-      geocoder = new google.maps.Geocoder();
-      paris = new google.maps.LatLng(48.8742, 2.3470);
-      map = new google.maps.Map(
-        $mapCanvas.get(0), 
-        {
-          center : paris,
-          zoom : 18,
-          mapTypeId : google.maps.MapTypeId.ROADMAP,
-          streetViewControl: true,
-        }
-      );
-      marker = new google.maps.Marker(
-        {
-          position: paris,
-          map: map,
-        }
-      );          
     }
     */
 
