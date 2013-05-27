@@ -37,9 +37,7 @@
   <link rel="stylesheet" href="bootstrap-combined.min.css">
   <link rel="stylesheet" href="bootstrap-lightbox.css">
   
-  <!--
   <link href='//fonts.googleapis.com/css?family=Ubuntu:400' rel='stylesheet' type='text/css'>
-  -->
 
   <style type="text/css">
   @font-face {
@@ -81,18 +79,26 @@
 <body>
 
   <!-- google maps modal -->
-  <div id="map-canvas" style="display:none;"></div>
 
   <div id="myModal" class="modal hide" tabindex="-1" role="dialog" 
        style="width: auto; height: auto;"> <!-- aria-labelledby="myModalLabel" aria-hidden="true" -->
-       <!--
+    <!--
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
       <h3 id="myModalLabel" style="display:none;">Modal header</h3>
     </div>
     -->
-    <div class="modal-body" style="width: auto; height: auto; max-height: 800px;">
-      <div id="pano"></div>
+    <div class="modal-body">
+      <table style="width:100%; height: 100%; max-width:100%; max-height: 100%; ">
+        <tr>
+          <td>
+            <div id="map-canvas"></div>
+          </td>
+          <td>
+            <div id="pano"></div>
+          </td>
+        </tr>
+      </table>
     </div>
     <!--
     <div class="modal-footer">
@@ -149,6 +155,8 @@
   <div class="container" style="padding-top: 45px;">
     <section id="content">
       <div class="row-fluid">
+        <div id="phototheque" class="span12 clearfix">
+        </div>
         <div id="photos_container" class="span12 clearfix">
         </div>
       </div>
@@ -193,13 +201,14 @@
   <script type="text/javascript" src="jquery.masonry.js"></script>
   <script type="text/javascript" src="handlebars.js"></script>
   <script type="text/javascript" src="loading-clock.js"></script>
+  <!--script type="text/javascript" src="phototheque.js"></script-->
+  <script type="text/javascript" src="jquery.phototheque.js"></script>
 
-  <!--
+
   <script
     type="text/javascript"
-    src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;key=AIzaSyDAH1H-jE9iwiP-sr6hsrlYr4DEghUMuWI&amp;sensor=false&amp;region=FR">
+    src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;key=AIzaSyDAH1H-jE9iwiP-sr6hsrlYr4DEghUMuWI&amp;sensor=false&amp;region=FR&amp;language=fr">
   </script>
-  -->
 
   <!-- handlebars template for photo box -->
   <!-- !!!! content inside script id="didascalie-template" MUST start with "<", otherwise jquery explodes !!!! -->
@@ -252,11 +261,11 @@
     };
   }
 
-  $(window).load(function() {
-      animateStart();
-  });
-
   $(document).ready(function(){
+
+    var $phototheque = new $.Phototheque($('#phototheque')); 
+    // console.log($phototheque.settings.propertyName);
+
 
     var current_state = {
       infscrPageview : 0,
@@ -356,6 +365,8 @@
 
       loadPhotoSet : function() {
 
+        $('#loadingWrapper').show();
+
         // raz 
         destroy_masonry();
         
@@ -393,8 +404,10 @@
               // google maps
               $(".box div span a").click(function(event) {
                   event.preventDefault();
-                  geoLocate($(this).attr('data-address'), $('#myModal'));
+                  geoLocate($(this), $('#myModal'));
               });
+
+              $('#loadingWrapper').hide();
 
             });
 
@@ -471,7 +484,7 @@
                     // google maps
                     $newElements.find("div span a").click(function(event) {
                         event.preventDefault();
-                        geoLocate($(this).attr('data-address'), $('#myModal'));
+                        geoLocate($(this), $('#myModal'));
                     });
 
                     $('#loadingWrapper').hide();
@@ -499,6 +512,7 @@
 
           }).fail(function(jqXHR, textStatus, errorThrown){
               console.log(textStatus + ' ' + errorThrown);
+          }).always(function(){
           }
         );
       }
@@ -837,13 +851,41 @@
       return ret;
     }
 
-    var geocoder = ((typeof geocoder == undefined)?new google.maps.Geocoder():undefined);
+    /*
+    var geocoder;
+    var map;
+    var marker;
 
-    function geoLocate(address, $myModal) {
-      if (typeof geocoder == undefined) {
+    function geoInit() {
+
+      var $mapCanvas = $('#map-canvas');
+
+      geocoder = new google.maps.Geocoder();
+      paris = new google.maps.LatLng(48.8742, 2.3470);
+      map = new google.maps.Map(
+        $mapCanvas.get(0), 
+        {
+          center : paris,
+          zoom : 18,
+          mapTypeId : google.maps.MapTypeId.ROADMAP,
+          streetViewControl: true,
+        }
+      );
+      marker = new google.maps.Marker(
+        {
+          position: paris,
+          map: map,
+        }
+      );          
+    }
+    */
+
+    function geoLocate($theBox, $myModal) {
+      if (typeof google.maps.Geocoder == undefined) {
         return;
       }
-      geocoder.geocode( { 'address': address }, function(results, status) {
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode( { 'address': $theBox.attr('data-address') }, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
 
           /*
@@ -851,45 +893,130 @@
           console.log(remote);
           */
 
-          var fenway = new google.maps.LatLng(results[0].geometry.location.jb, results[0].geometry.location.kb);
-
-          var $mapCanvas = $('#map-canvas');
-          var $pano      = $myModal.find('.modal-body');
-
-          var mapOptions = {
-            center : fenway,
-            zoom : 13,
-            mapTypeId : google.maps.MapTypeId.ROADMAP,
-          };
-          var map = new google.maps.Map($mapCanvas.get(0), mapOptions);
-
-          var panoramaOptions = {
-              position: fenway,
-              pov: {
-                heading: 0,
-                pitch: 0
-              },
-              visible: true,
-          };
-          var panorama = new google.maps.StreetViewPanorama($pano.get(0), panoramaOptions);
-          var pov = panorama.getPhotographerPov();
-          console.log("pov: "+pov);
-          if (pov) {
-            panorama.setPov(pov);
+          
+          var lat = $theBox.attr('data-position-lat');
+          var lng = $theBox.attr('data-position-lng');
+          var lat_lng;
+          if (!lat || !lng) {
+            lat_lng = new google.maps.LatLng(results[0].geometry.location.jb, results[0].geometry.location.kb); 
+            $theBox.attr('data-position-lat', lat_lng.lat()); 
+            $theBox.attr('data-position-lng', lat_lng.lng()); 
+          } else {
+            lat_lng = new google.maps.LatLng(parseFloat(lat), parseFloat(lng)); 
           }
 
-          map.setStreetView(panorama);
+          var $modalBody = $myModal.find('.modal-body');
+          var $mapCanvas = $myModal.find('#map-canvas');
+          var $pano      = $myModal.find('#pano');
 
-          var windowHeight = $(window).height();
           var windowWidth  = $(window).width();
-          $pano.css({width: Math.round(0.9*windowWidth)+'px', height: Math.round(0.9*windowHeight)+'px'});
-          panorama.setVisible(true);
+          var windowHeight = $(window).height();
+          var width = Math.round(0.9*windowWidth);
+          var height = Math.round(0.8*windowHeight);
+          var halfWidth = Math.round(width/2);
+
+          $modalBody.css(
+            {
+              'max-height' : '100%',
+              width      : width+'px', 
+              height     : height+'px'
+            }
+          );
+          $mapCanvas.css(
+            {
+              width     : (halfWidth)+'px', 
+              height    : (height-15)+'px'
+            }
+          );
+          $pano.css(
+            {
+              width     : (halfWidth)+'px', 
+              height    : (height-15)+'px'
+            }
+          );
 
           $myModal.modal().css({
             'margin-left': function () {
               return -($(this).width() / 2);
             }
           }).show();
+
+          var map = new google.maps.Map(
+            $mapCanvas.get(0), 
+            {
+              center : lat_lng,
+              zoom : 18,
+              mapTypeId : google.maps.MapTypeId.ROADMAP,
+              streetViewControl: true,
+            }
+          );
+          var marker = new google.maps.Marker(
+            {
+              position: lat_lng,
+              map: map,
+            }
+          ); 
+
+          var povHeading = $theBox.attr('data-pov-heading');
+          if (povHeading) {
+            povHeading = parseFloat(povHeading); 
+          } else {
+            povHeading = 0;
+          }
+          var povPitch   = parseFloat($theBox.attr('data-pov-pitch'));
+          if (povPitch) {
+            povPitch = parseFloat(povPitch); 
+          } else {
+            povPitch = 0;
+          }
+          var zoom       = parseFloat($theBox.attr('data-zoom'));
+          if (zoom) {
+            zoom = parseFloat(zoom); 
+          } else {
+            zoom = 0;
+          }
+
+          var panorama = new google.maps.StreetViewPanorama(
+            $pano.get(0), 
+            {
+              position: lat_lng,
+              pov: {
+                heading: povHeading,
+                pitch: povPitch,
+              },
+              zoom: zoom,
+              visible: true,
+            }
+          );
+
+          panorama.setVisible(true);
+          map.setStreetView(panorama);
+
+          google.maps.event.addListener(panorama, 'position_changed', function() {
+            var position = panorama.getPosition();
+            console.log(position);
+            marker.setPosition(position);
+            $theBox.attr('data-position-lat', position.lat()); 
+            $theBox.attr('data-position-lng', position.lng()); 
+          });          
+
+          google.maps.event.addListener(panorama, 'pov_changed', function() {
+            var pov = panorama.getPov();
+            console.log(pov);
+            $theBox.attr('data-pov-heading', pov.heading); 
+            $theBox.attr('data-pov-pitch', pov.pitch); 
+          });          
+
+          google.maps.event.addListener(panorama, 'zoom_changed', function() {
+            var zoom = panorama.getZoom();
+            console.log(zoom);
+            $theBox.attr('data-zoom', zoom); 
+          });          
+
+          $myModal.on('hidden', function () {
+            $mapCanvas.parent().empty().html('<div id="map-canvas"></div>');
+            $pano.parent().empty().html('<div id="pano"></div>');
+          });
 
         } else {
           alert('Street View data not found for this location.');
@@ -902,7 +1029,6 @@
   <!-- /le javascript -->
 
 <script>
-  /*
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -910,7 +1036,6 @@
 
   ga('create', 'UA-41203938-1', 'ondemand.com');
   ga('send', 'pageview');
-  */
 </script>
 </body>
 </html>
