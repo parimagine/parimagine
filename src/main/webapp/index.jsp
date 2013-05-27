@@ -83,15 +83,7 @@
 <body>
 
   <!-- google maps modal -->
-
-  <div id="myModal" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true" 
-       style="width: auto; height: auto;"> <!-- aria-labelledby="myModalLabel" -->
-    <!--
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-      <h3 id="myModalLabel" style="display:none;">Modal header</h3>
-    </div>
-    -->
+  <div id="myModal" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true" style="width: auto; height: auto;"> 
     <div class="modal-body">
       <div id="legacy" class="permanentBox" style="position:absolute; bottom:0; left:0; z-index:1000;">
         <img/>
@@ -107,11 +99,6 @@
         </tr>
       </table>
     </div>
-    <!--
-    <div class="modal-footer">
-      <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-    </div>
-    -->
   </div>
   <!-- /google maps modal -->
 
@@ -123,7 +110,6 @@
     </div>
   </div>    
   <!-- /lightbox -->
-
 
   <!-- Navbar
   ================================================== -->
@@ -200,9 +186,7 @@
   </footer>
   <!-- /footer -->
 
-  <!-- ?????????????????????????? -->
-  <!-- /?????????????????????????? -->
-
+  <!-- le javascript -->
   <script type="text/javascript" src="jquery.js"></script>
   <script type="text/javascript" src="bootstrap.js"></script>
   <script type="text/javascript" src="bootstrap-lightbox.js"></script>
@@ -212,7 +196,6 @@
   <script type="text/javascript" src="loading-clock.js"></script>
   <!--script type="text/javascript" src="phototheque.js"></script-->
   <script type="text/javascript" src="jquery.phototheque.js"></script>
-
 
   <script
     type="text/javascript"
@@ -262,7 +245,6 @@
   <div></script>
   <!-- /handlebars template for photo box -->
 
-  <!-- le javascript -->
   <script type="text/javascript">
 
   if (typeof String.prototype.startsWith != 'function') {
@@ -281,7 +263,6 @@
 
     var $phototheque = new $.Phototheque($('#phototheque')); 
     // console.log($phototheque.settings.propertyName);
-
 
     var current_state = {
       infscrPageview : 0,
@@ -374,7 +355,7 @@
           }
         }
 
-        console.log(ret);
+        // console.log(ret);
 
         return ret;
       },
@@ -387,7 +368,7 @@
         destroy_masonry();
         
         this.infscrPageview = 0;
-        console.log("infscrPageview:" +this.infscrPageview);
+        // console.log("infscrPageview:" +this.infscrPageview);
 
         var that = this;
 
@@ -399,13 +380,13 @@
           }).done(function( data, textStatus, jqXHR ) {
 
             that.infscrPageview = 1;
-            console.log("infscrPageview:" + that.infscrPageview);
+            // console.log("infscrPageview:" + that.infscrPageview);
 
             $.each(data, function() {
               $photos_container.append(create_new_box(this));
             });  
 
-            setup_lightbox();  
+            setup_lightbox();
 
             $photos_container.imagesLoaded(function() {
               initialize_masonry();
@@ -441,35 +422,15 @@
                   itemSelector    : '.box',     // selector for all items you'll retrieve
                   dataType        : 'json',
                   appendCallback  : false,
-                  // prefill: true,
-                  // animate         : true,
-                  // extraScrollPx   : 300,
                   path            : function(current) { return that.getPhotoSetUrl(); },
                   loading         : {
                     start: function(opts) {
-                      console.log('start.this: '+this);
-                      console.log('start.opts: '+opts);
-                      //$(opts.navSelector).hide();
                       $('#loadingWrapper').show();
-                      /* 
-                        { 
-                          easing: 'linear',
-                          complete: function() {
-                          }
-                        }                        
-                      );
-                      */
                       $photos_container.infinitescroll('beginAjax', opts);
-                      
-                      /*
-                      opts.loading.msg
-                        .appendTo(opts.loading.selector)
-                        .show(opts.loading.speed, $.proxy(function() {
-                          this.beginAjax(opts);
-                        }, this));                      
-                      */
                     },
-                    finished: function() {},
+                    finished: function() {
+
+                    },
                     img: 'ajax-loader.gif',
                     msg: null,
                     msgText: '',
@@ -477,7 +438,6 @@
                   }
                 }, function(arrayOfNewElems, data, url) {
                   that.infscrPageview++;
-                  console.log("infscrPageview:" +that.infscrPageview);
 
                   // an array of DOM elements
                   var newElements = [];
@@ -486,10 +446,10 @@
                     newElements.push(newElement);
                   });
 
-                  // wrapp array of DOM elemnts in a jquery object
+                  // wrap array of DOM elements in a jquery object
                   var $newElements = $(newElements);
 
-                  $newElements.imagesLoaded(function(){
+                  $newElements.imagesLoaded(function() {
                     initialize_masonry(); // in case we arrive here before the 'normal' initiation
                     
                     // show elems now they're ready
@@ -539,7 +499,6 @@
           }
         );
       }
-
     };
 
     // -------------------------------------------------------------------
@@ -567,7 +526,7 @@
 
     // -------------------------------------------------------------------
     // search tooltip
-
+    // cf. http://stackoverflow.com/questions/12639708/modifying-twitter-bootstraps-tooltip-colors-based-on-position
     function changeTooltipColorTo(color) {
         $('.tooltip-inner').css('background-color', color)
         $('.tooltip.top .tooltip-arrow').css('border-top-color', color);
@@ -582,7 +541,6 @@
     // -------------------------------------------------------------------
     // districts
     var districts = [
-      /* "", */
       "1er",
       "2ème",
       "3ème",
@@ -627,7 +585,6 @@
     // -------------------------------------------------------------------
     // themes
     var themes = [
-      /* "", */
       "bals",
       "cinema",
       "enfants",
@@ -743,13 +700,12 @@
 
     $('.navbar-search .icon-remove').click(function(event) {
         $('.navbar-search input').val('');
-        // search(undefined);
       }
     );
 
     $('.navbar-search input').bind('keypress', function(event) {
       var code = (event.keyCode ? event.keyCode : event.which);
-      if (code == 13) { //Enter keycode
+      if (code == 13) { // Enter keycode
         event.preventDefault();
         search($(this).val().trim());
       }
@@ -828,25 +784,28 @@
         );
       }
     }
+
     function singleClick(e) {
       snapSelectionToWord();
       doubleClick(e);
     }
 
-    $photos_container.click(function(e) {
-      var that = this;
-      setTimeout(function() {
-        var dblclick = parseInt($(that).data('double'), 10);
-        if (dblclick > 0) {
-            $(that).data('double', dblclick-1);
-        } else {
-            singleClick.call(that, e);
-        }
-      }, 333);
-    }).dblclick(function(e) {
-      $(this).data('double', 2);
-      doubleClick.call(this, e);
-    });    
+    $photos_container.click(function(e) 
+      {
+        var that = this;
+        setTimeout(function() {
+          var dblclick = parseInt($(that).data('double'), 10);
+          if (dblclick > 0) {
+              $(that).data('double', dblclick-1);
+          } else {
+              singleClick.call(that, e);
+          }
+        }, 333);
+      }).dblclick(function(e) {
+        $(this).data('double', 2);
+        doubleClick.call(this, e);
+      }
+    );
 
     // lightbox will be shown when any element with class 'photo' is clicked
     function setup_lightbox() {
@@ -1023,7 +982,7 @@
 
           google.maps.event.addListener(panorama, 'position_changed', function() {
             var position = panorama.getPosition();
-            console.log(position);
+            // console.log(position);
             marker.setPosition(position);
             $theBox.attr('data-position-lat', position.lat()); 
             $theBox.attr('data-position-lng', position.lng()); 
@@ -1031,14 +990,14 @@
 
           google.maps.event.addListener(panorama, 'pov_changed', function() {
             var pov = panorama.getPov();
-            console.log(pov);
+            // console.log(pov);
             $theBox.attr('data-pov-heading', pov.heading); 
             $theBox.attr('data-pov-pitch', pov.pitch); 
           });          
 
           google.maps.event.addListener(panorama, 'zoom_changed', function() {
             var zoom = panorama.getZoom();
-            console.log(zoom);
+            // console.log(zoom);
             $theBox.attr('data-zoom', zoom); 
           });          
 
