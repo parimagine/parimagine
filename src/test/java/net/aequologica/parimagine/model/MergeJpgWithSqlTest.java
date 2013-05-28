@@ -22,7 +22,7 @@ import com.google.common.base.Charsets;
 
 public class MergeJpgWithSqlTest {
 
-	@Test
+	// @Test
 	public void test() throws IOException {
 		List<Photo> jpgs;
 		List<Photo> sqls;

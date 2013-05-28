@@ -30,7 +30,6 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
-import com.drew.metadata.iptc.IptcDescriptor;
 import com.drew.metadata.iptc.IptcDirectory;
 import com.google.common.base.Charsets;
 
@@ -43,7 +42,7 @@ public class JpgMetadataExtractorTest {
 	Path piwi 		   = new File("C:/^/parimagine/SiteParimagine/Piwi").toPath();
 	Path piwiGalleries = new File("C:/^/parimagine/SiteParimagine/Piwi/galleries").toPath();
 
-	@Test
+	// @Test
 	public void test() throws ImageProcessingException, IOException {
 
 		List<Photo> photoList = new ArrayList<>();
@@ -222,7 +221,7 @@ public class JpgMetadataExtractorTest {
 		return ret;
 	}
 	
-	// @Test
+	@Test
 	public void testExtractNumber() throws ImageProcessingException, IOException {
 		{
 			String qwe = "53 ABOUKIR (RUE D) Stoppeurs Stoppeurs du n°53 75002 - Paris";
@@ -274,7 +273,7 @@ public class JpgMetadataExtractorTest {
 
 	}
 
-	// @Test
+	@Test
 	public void testExtractStreet() throws ImageProcessingException, IOException {
 		{
 			String qwe = "ABOUKIR (RUE D) Stoppeurs Stoppeurs du n°53 75002 - Paris";
@@ -332,7 +331,7 @@ public class JpgMetadataExtractorTest {
 		return ret;
 	}
 
-	// @Test
+	@Test
 	public void testExtractParis() throws ImageProcessingException, IOException {
 		{
 			String qwe = "Stoppeurs Stoppeurs du n°53 75002 - Paris";
@@ -367,7 +366,7 @@ public class JpgMetadataExtractorTest {
 		return ret;
 	}
 
-	// @Test
+	@Test
 	public void testExtractDistrict() throws ImageProcessingException, IOException {
 		{
 			String qwe = "Stoppeurs Stoppeurs du n°53    75002";

@@ -65,7 +65,7 @@ ouf!
         return district+"."+id;
     }
 
-    @Test
+    // @Test
     // match image + address.district from photos.json with location of file on the drive. store back into image field 
     // e.g. 
     public void test() throws IOException, CloneNotSupportedException {

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -29,10 +28,10 @@ public class PhotosTest {
         for (Photo photo : list) {
 			System.out.println(photo);
 		}
-        writePhotoList(photos.list);
+        // writePhotoList(photos.list);
     }
 	
-    private void writePhotoList(List<Photo> photoList) throws IOException {
+    void writePhotoList(List<Photo> photoList) throws IOException {
 		File tmp = File.createTempFile("jsonMetadata", ".json");
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(tmp), Charsets.UTF_8)) {
             Photos.writePhotoList(writer, photoList);
