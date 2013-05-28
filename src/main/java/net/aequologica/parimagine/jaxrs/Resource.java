@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 
 import net.aequologica.parimagine.model.Photo;
 import net.aequologica.parimagine.model.Photos;
+import net.aequologica.parimagine.model.Slice;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 
@@ -27,7 +28,8 @@ public class Resource {
     @GET
     @javax.ws.rs.Path("/datum/{image}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Photo getPhoto(@PathParam("image") String image) throws IOException {
+    public Photo getPhoto(
+    		@PathParam("image") String image ) throws IOException {
         return Photos.getInstance().getPhoto(image);
     }
 
@@ -38,16 +40,17 @@ public class Resource {
             @PathParam("district") Integer district,
             @PathParam("page") Integer page,
             @QueryParam("count") Integer count ) throws IOException {
-        return Photos.getInstance().getDistrictSlice(district, count, page);
+        return Photos.getInstance().getDistrictSlice(district, new Slice(page, count));
     }
 
     @GET
     @javax.ws.rs.Path("/theme/{theme}/page/{page}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Photo> getSlice( @PathParam("theme") String theme,
+    public List<Photo> getSlice( 
+    		@PathParam("theme") String theme,
             @PathParam("page") Integer page,
             @QueryParam("count") Integer count  ) throws IOException {
-        return Photos.getInstance().getThemeSlice(theme, count, page);
+        return Photos.getInstance().getThemeSlice(theme, new Slice(page, count));
     }
 
     @GET
@@ -56,16 +59,15 @@ public class Resource {
     public List<Photo> getSlice(
     		@PathParam("page") Integer page,
             @QueryParam("count") Integer count  ) throws IOException {
-        return Photos.getInstance().getRandomSlice(count, page);
+        return Photos.getInstance().getRandomSlice(new Slice(page, count));
     }
 
     @GET
     @javax.ws.rs.Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Photo> search(
-            @QueryParam("for")   String  searchString, 
-            @QueryParam("count") Integer count ) throws IOException, ParseException {
-        return Photos.getInstance().search("\""+searchString+"\"", count);
+    		@QueryParam("for") String  searchString) throws IOException, ParseException {
+        return Photos.getInstance().search("\""+searchString+"\"", new Slice(null, 2*Slice.DEFAULT_SIZE));
     }
 
 }

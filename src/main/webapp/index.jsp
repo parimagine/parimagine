@@ -287,13 +287,13 @@
 
       setDistrict : function(param) {
         this.raz();
-        this.district = param;
+        this.district = param+1;
         this.setupNavBar();
       },
 
       setTheme : function(param) {
         this.raz();
-        this.theme = param;
+        this.theme = param+1;
         this.setupNavBar();
       },
 
@@ -307,14 +307,14 @@
       // update navbar display with current random|district|theme|search state
       setupNavBar : function() {
         if (this.district) {
-          $('#districts_menu span').html(districts[this.district]);
+          $('#districts_menu span').html(districts[(this.district-1)]);
           $('#districts_menu').parent().addClass('active');
         } else {
           $('#districts_menu span').html('arrondissements');
           $('#districts_menu').parent().removeClass('active');
         }
         if (this.theme) {
-          $('#themes_menu span').html(themes[this.theme]);
+          $('#themes_menu span').html(themes[(this.theme-1)]);
           $('#themes_menu').parent().addClass('active');
         } else {
           $('#themes_menu span').html('thèmes');
@@ -343,11 +343,11 @@
         } else {
           if (this.theme) {
             // themes URL 
-            ret = ret+"/theme/"+themes[this.theme]+"/page/"+this.infscrPageview;
+            ret = ret+"/theme/"+themes[(this.theme-1)]+"/page/"+this.infscrPageview;
           } else {
             if (this.district) {
-              // district URL. district == 0 -> all districts
-              ret = ret+"/district/"+this.district+"/page/"+this.infscrPageview;
+              // district URL 
+              ret = ret+"/district/"+(this.district-1)+"/page/"+this.infscrPageview;
             } else {
               // random URL
               ret = ret+"/random/page/"+this.infscrPageview;
@@ -508,8 +508,8 @@
       if (!masonry_initiation_done) {
         $photos_container.masonry({
           itemSelector : '.box',
-          columnWidth : 90,
-          gutterWidth: 40,
+          /* columnWidth : 90,
+          gutterWidth: 40, */
           isAnimated: true,
         });
         masonry_initiation_done = true;
@@ -639,7 +639,7 @@
     var $photos_container  = $('#photos_container');
 
     function get_random_width_class() {
-      return "col"+(2+Math.round(1*Math.random()));
+      return "col3"; // +(2+Math.round(1*Math.random()));
     }
 
     function create_new_box(photo) {

@@ -60,6 +60,11 @@ ouf!
         Photos photos = Photos.getInstance();
         
         assertNotNull(photos);
+        
+        List<Photo> list = photos.getSlice(new Slice(null, null));
+        for (Photo photo : list) {
+			System.out.println(photo);
+		}
     }
     
     private String makeKey(String district, String id) {

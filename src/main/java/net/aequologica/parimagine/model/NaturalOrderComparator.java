@@ -25,7 +25,7 @@ misrepresented as being the original software.
 
 import java.util.*;
 
-public class NaturalOrderComparator implements Comparator
+public class NaturalOrderComparator implements Comparator<String>
 {
    int compareRight(String a, String b)
    {
@@ -73,11 +73,8 @@ public class NaturalOrderComparator implements Comparator
        }
    }
 
-   public int compare(Object o1, Object o2)
+   public int compare(String a, String b)
    {
-       String a = o1.toString();
-       String b = o2.toString();
-
        int ia = 0, ib = 0;
        int nza = 0, nzb = 0;
        char ca, cb;
@@ -171,11 +168,11 @@ public class NaturalOrderComparator implements Comparator
            "pic 5 something", "pic 6", "pic   7", "pic100", "pic100a", "pic120", "pic121",
            "pic02000", "tom", "x2-g8", "x2-y7", "x2-y08", "x8-y8" };
 
-       List orig = Arrays.asList(strings);
+       List<String> orig = Arrays.asList(strings);
 
        System.out.println("Original: " + orig);
 
-       List scrambled = Arrays.asList(strings);
+       List<String> scrambled = Arrays.asList(strings);
        Collections.shuffle(scrambled);
 
        System.out.println("Scrambled: " + scrambled);

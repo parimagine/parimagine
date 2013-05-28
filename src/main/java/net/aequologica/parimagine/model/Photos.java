@@ -52,12 +52,12 @@ public class Photos {
         return Photos.instance;
     }
 
-    final static int DEFAULT_SIZE_OF_SLICE = 12;
-    final ArrayList<Photo> list; // toutes les photos
-    final Map<String, Photo> image2photoMap; // image 2 photo map
+    final ArrayList<Photo> list; // toutes les photos, must be array list
+    final Map<String, Photo> image2photoMap; 
     final Map<Integer, List<Photo>> districtLists = new HashMap<>();
     final Map<String, List<Photo>> themeLists = new HashMap<>();
-    
+
+    // must be sorted ! (used in binary search)
     String[] themes = new String[] {
     	    "bals",
     	    "cinema",
@@ -113,7 +113,7 @@ public class Photos {
         }
         createIndex();
         Collections.sort(list);
-        for (int i = 1; i<= 20; i++) {
+        for (int i = 1; i <= 20; i++) {
             List<Photo> districtList = newArrayList(filter(list, new PredicateDistrict(i)));
             districtLists.put(i, districtList );
         }
@@ -127,103 +127,76 @@ public class Photos {
         return this.list.size();
     }
 
-    public List<Photo> getSlice(int sizeOfSlice, int offset) {
-    	int from = offset*sizeOfSlice;
-        int to   = (offset+1)*sizeOfSlice;
-        if (!(from < this.list.size())) {
+    private static List<Photo> getSlice(List<Photo> aList, Slice slice) {
+    	if (aList == null || aList.size() == 0) {
         	return Collections.emptyList();
-        }
-        if (!(to <= this.list.size())) {
-        	to = this.list.size(); 
-        }
-        return this.list.subList(from, to);
+    	}
+    	int from = slice.getFrom(aList.size());
+        int to   = slice.getTo(aList.size());
+        
+        return aList.subList(from, to);
     }
 
-    public List<Photo> getDistrictSlice(Integer district, Integer sizeOfSlice, Integer offset) {
-        if (sizeOfSlice == null || sizeOfSlice == 0 ) {
-        	sizeOfSlice = DEFAULT_SIZE_OF_SLICE;
-        }
+    public List<Photo> getSlice( Slice slice ) {
+    	return getSlice(this.list, slice);
+    }
+
+    public List<Photo> getDistrictSlice(Integer district, Slice slice) {
+    	
         if (district == null || district == 0) {
-            return getSlice(sizeOfSlice, offset);
+            return getSlice(slice);
         }
+        
         if (20 < district) {
             throw new IllegalArgumentException("Il n'y a que 20 arrondissements à Paris. Tu demandes le N° "+district);
         }
         
         List<Photo> districtList = districtLists.get(district);
-        if (districtList == null) {
-        	return Collections.emptyList();
-        }
         
-    	int from = offset*sizeOfSlice;
-        int to   = (offset+1)*sizeOfSlice;
-        if (!(from < districtList.size())) {
-        	return Collections.emptyList();
-        }
-        if (!(to <= districtList.size())) {
-        	to = districtList.size(); 
-        }
-        return districtList.subList(from, to);
+        return getSlice(districtList, slice);
     }
     
-    public List<Photo> getThemeSlice(String theme, Integer sizeOfSlice, Integer offset) {
-        if (sizeOfSlice == null || sizeOfSlice == 0 ) {
-        	sizeOfSlice = DEFAULT_SIZE_OF_SLICE;
+    public List<Photo> getThemeSlice(String theme, Slice slice) {
+
+    	if (theme == null || theme.length() == 0)  {
+            return getSlice(slice);
         }
-        if (theme == null || theme.length() == 0)  {
-            return getSlice(sizeOfSlice, offset);
-        }
+    	
         int iTheme = Arrays.binarySearch(themes, theme);
         
         if (iTheme == -1) {
-            throw new IllegalArgumentException("Je nai pas trouvé ce thème dans ma liste. Tu demandes le thème '"+theme+"'");
+            throw new IllegalArgumentException("Je n'ai pas trouvé ce thème dans la liste. Tu demandes le thème '"+theme+"'. Voici la liste : "+themes);
         }
         
         List<Photo> themeList = themeLists.get(theme);
-        if (themeList == null) {
-        	return Collections.emptyList();
-        }
         
-    	int from = offset*sizeOfSlice;
-        int to   = (offset+1)*sizeOfSlice;
-        if (!(from < themeList.size())) {
-        	return Collections.emptyList();
-        }
-        if (!(to <= themeList.size())) {
-        	to = themeList.size(); 
-        }
-        return themeList.subList(from, to);
+        return getSlice(themeList, slice);
     }
     
-	public List<Photo> getRandomSlice(Integer sizeOfSlice, Integer offset) {
-        if (sizeOfSlice == null || sizeOfSlice == 0 ) {
-        	sizeOfSlice = DEFAULT_SIZE_OF_SLICE;
-        }
+	public List<Photo> getRandomSlice(Slice slice) {
+        List<Photo> randomSlice = new ArrayList<>(slice.size);
+        
         Random r = new Random(new Date().getTime());
         int max = list.size();
-        List<Photo> ret = new ArrayList<>(sizeOfSlice);
-        for (int i = 0; i < sizeOfSlice; i++) {
-        	ret.add(list.get(r.nextInt(max)));
+        for (int i = 0; i < slice.size; i++) {
+        	randomSlice.add(list.get(r.nextInt(max)));
 		}
-		return ret;
+		return randomSlice;
 	}
 	
-    public List<Photo> search(String searchString, Integer sizeOfSlice) throws IOException, ParseException {
-        if (sizeOfSlice == null || sizeOfSlice == 0 ) {
-        	sizeOfSlice = 2*DEFAULT_SIZE_OF_SLICE;
-        }
-        List<Photo> list = new ArrayList<>(sizeOfSlice); 
+    public List<Photo> search(String searchString, Slice slice) throws IOException, ParseException {
+        List<Photo> list = new ArrayList<>(slice.size); 
         IndexReader reader = DirectoryReader.open(index);
         IndexSearcher searcher = new IndexSearcher(reader);
         QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_43, new String[] { "didascalie", "street", "legacy" }, analyzer);
         Query query = parser.parse(searchString);
-        TopDocs results = searcher.search(query, sizeOfSlice);
+        TopDocs results = searcher.search(query, slice.size);
         ScoreDoc[] hits = results.scoreDocs;
         for (ScoreDoc scoreDoc : hits) {
             Document doc = searcher.doc(scoreDoc.doc);
             String image = doc.get("image");
             list.add(image2photoMap.get(image));
-            if (list.size()>=sizeOfSlice) {
+            if (list.size()>=slice.size) {
                 break;
             }
         }

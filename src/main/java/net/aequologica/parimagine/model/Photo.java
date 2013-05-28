@@ -12,36 +12,45 @@ public class Photo implements Comparable<Photo> {
     public String getImage() {
         return image;
     }
+    
     public void setImage(String image) {
         this.image = image;
     }
+    
     public String getDate() {
         return date;
     }
+    
     public void setDate(String date) {
         this.date = date;
     }
+    
     public Address getAddress() {
         return address;
     }
+    
     public void setAddress(Address address) {
         this.address = address;
     }
+    
     public String getDidascalie() {
         return didascalie;
     }
+    
     public void setDidascalie(String didascalie) {
         this.didascalie = didascalie;
-    } 
-
+    }
+    
     @Override
     public String toString() {
         return "Photo [image=\"" + image + "\", date=\"" + date + "\", address=\"" + address + "\", didascalie=\"" + didascalie + "\"]";
     }
+
     @Override
     public int compareTo(Photo o) {
         return comparator.compare(this, o);
     }
+    
     @Override
     protected Object clone() throws CloneNotSupportedException {
         Photo clone = new Photo();
@@ -52,27 +61,26 @@ public class Photo implements Comparable<Photo> {
         return clone;
     }
 
-    Comparator<String> comparatorMoinsPourri = new NaturalOrderComparator(); 
     Comparator<Photo> comparator = new ComparatorPourri();
+    Comparator<String> naturalOrderComparator = new NaturalOrderComparator(); 
     
     class ComparatorPourri implements Comparator<Photo> {
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         public int compare(Photo o1, Photo o2) {
-            String[] a1 = getComparableArray(o1); 
-            String[] a2 = getComparableArray(o2);
-            int first = comparatorMoinsPourri.compare(a1[0], a2[0]);
+            String[] a1 = splitImage(o1); 
+            String[] a2 = splitImage(o2);
+            int first = naturalOrderComparator.compare(a1[0], a2[0]);
             if (first != 0) {
                 return first;
             }
-            int second = comparatorMoinsPourri.compare(a1[1], a2[1]);
+            int second = naturalOrderComparator.compare(a1[1], a2[1]);
             return second;
         }
-        @SuppressWarnings("rawtypes")
-        String[] getComparableArray(Photo p) {
+        
+        String[] splitImage(Photo p) {
             String rest = p.getImage();
-            String id = p.getImage();
+            String id   = p.getImage();
             int lastSlash = id.lastIndexOf('/');
             if (lastSlash != -1) {
                 id = id.substring(lastSlash+1);
@@ -82,22 +90,11 @@ public class Photo implements Comparable<Photo> {
                     rest = rest.substring(lastMinus+1);
                 }
             }
-            if (id.endsWith(".jpg")) {
-                id = id.substring(0, id.length()-4); 
+            String extension = ".jpg";
+            if (id.endsWith(extension)) {
+                id = id.substring(0, id.length()-extension.length()); 
             }
             
-            /*
-            try {
-				Integer iRest = Integer.parseInt(rest);
-			} catch (NumberFormatException e) {
-			}
-            try {
-				Integer iId = Integer.parseInt(id);
-			} catch (NumberFormatException e) {
-			}
-            // java.lang.NumberFormatException: For input string: "presse/saisons"
-            */
-
             return new String[] {rest, id};
         }
     }
@@ -109,6 +106,7 @@ public class Photo implements Comparable<Photo> {
         result = prime * result + ((image == null) ? 0 : image.hashCode());
         return result;
     }
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
