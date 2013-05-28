@@ -211,11 +211,11 @@
     </a>
     <span>
     <div class="didascalie-base">
-      {{didascalie.base}}
+      {{photo.didascalie.base}}
     </div>
     <div>
       <div class="didascalie-ext">
-         {{didascalie.ext}}
+         {{photo.didascalie.ext}}
       </div>
       <span class="didascalie-url"
             {{#if noaddress}}style="display:none;"{{/if}} >
@@ -280,21 +280,27 @@
       },
 
       setSearch : function(param) {
-        this.raz();
-        this.search = param;
-        this.setupNavBar();
+        if (param) {
+          this.raz();
+          this.search = param;
+          this.setupNavBar();
+        }
       },
 
       setDistrict : function(param) {
-        this.raz();
-        this.district = param+1;
-        this.setupNavBar();
+        if (param) {
+          this.raz();
+          this.district = param;
+          this.setupNavBar();
+        }
       },
 
       setTheme : function(param) {
-        this.raz();
-        this.theme = param+1;
-        this.setupNavBar();
+        if (param) {
+          this.raz();
+          this.theme = param;
+          this.setupNavBar();
+        }
       },
 
       setRandom : function() {
@@ -347,7 +353,7 @@
           } else {
             if (this.district) {
               // district URL 
-              ret = ret+"/district/"+(this.district-1)+"/page/"+this.infscrPageview;
+              ret = ret+"/district/"+this.district+"/page/"+this.infscrPageview; /* from 1 to 20 incl. */
             } else {
               // random URL
               ret = ret+"/random/page/"+this.infscrPageview;
@@ -573,7 +579,7 @@
           var index = $(this).parent().children().index(this);
 
           // give visual feedback
-          current_state.setDistrict(index);
+          current_state.setDistrict(index+1); /* index = (from 0 incl. to 20 excl.) -> district = (from 1 incl. to 20 incl.) */
 
           // destroy/re-create masonry, load images into boxes
           current_state.loadPhotoSet();
@@ -612,7 +618,7 @@
           var index = $(this).parent().children().index(this);
 
           // change state, & give visual feedback
-          current_state.setTheme(index);
+          current_state.setTheme(index+1);  /* super-mega-ugly +1 to avoid getting false when testing 'if (theme) { ... ' */
 
           // destroy/re-create masonry, load images into boxes
           current_state.loadPhotoSet();
@@ -643,29 +649,13 @@
     }
 
     function create_new_box(photo) {
-      var dida = { 
-        base: photo.didascalie, 
-        ext: '' 
-      };
-
-      // parse didascalie
-      var arr = photo.didascalie.split(" | ");
-      if (arr.length > 1) {
-        if (arr[1].startsWith(arr[0])) {
-          arr[1] = arr[1].substring(arr[0].length);
-        }
-
-        dida.base = arr[0];
-        dida.ext  = arr[1];
-      }
-
       // convert e.g. &apos; to '
-      dida.base = $('<span>').html(dida.base).html().trim();
-      dida.ext  = $('<span>').html(dida.ext).html().trim();
+      photo.didascalie.base = $('<span>').html(photo.didascalie.base).html().trim();
+      photo.didascalie.ext  = $('<span>').html(photo.didascalie.ext).html().trim();
 
       var has_address = false;
       // is there enough address to show link to google map ?
-      if (districts[photo.address.district] && photo.address.street) {
+      if (photo.address.district && districts[photo.address.district-1] && photo.address.street) {
         has_address = true;
       }
         
@@ -673,10 +663,9 @@
       return handlebars_template(
         {
           photo               : photo,
-          didascalie          : dida,
           number              : photo.address.number?photo.address.number:'', 
           random_width_class  : get_random_width_class(), 
-          district            : districts[photo.address.district],
+          district            : photo.address.district?districts[photo.address.district-1]:"?",
           noaddress           : !has_address,
         }
       );

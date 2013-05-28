@@ -3,8 +3,10 @@ package net.aequologica.parimagine.model;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.newArrayList;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +39,10 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Predicate;
 
@@ -188,7 +193,7 @@ public class Photos {
         List<Photo> list = new ArrayList<>(slice.size); 
         IndexReader reader = DirectoryReader.open(index);
         IndexSearcher searcher = new IndexSearcher(reader);
-        QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_43, new String[] { "didascalie", "street", "legacy" }, analyzer);
+        QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_43, new String[] { "didascalie.base", "didascalie.ext", "street", "legacy" }, analyzer);
         Query query = parser.parse(searchString);
         TopDocs results = searcher.search(query, slice.size);
         ScoreDoc[] hits = results.scoreDocs;
@@ -218,7 +223,15 @@ public class Photos {
         try (InputStream jsonSource = json.openStream()) {
             return mapper.readValue(jsonSource, new TypeReference<ArrayList<Photo>>() { } );
         }
+    }
+    
+    public static void writePhotoList(Writer writer, List<Photo> photoList) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+
+        Collections.sort(photoList, Photo.comparator);
         
+        mapper.writer(prettyPrinter).writeValue(writer, photoList);
     }
 
     Directory index = new RAMDirectory();
@@ -236,7 +249,8 @@ public class Photos {
     
             Field image = new StringField("image", photo.getImage(), Field.Store.YES);
             doc.add(image);
-            doc.add(new TextField("didascalie", photo.getDidascalie(), Field.Store.NO));
+            doc.add(new TextField("didascalie.base", photo.getDidascalie().getBase(), Field.Store.NO));
+            doc.add(new TextField("didascalie.ext", photo.getDidascalie().getExt(), Field.Store.NO));
             doc.add(new TextField("street", photo.getAddress().getStreet(), Field.Store.NO));
             doc.add(new TextField("legacy", photo.getAddress().getLegacy(), Field.Store.NO));
     
@@ -253,4 +267,35 @@ public class Photos {
 		return list;
 	}
 
+	public static class Slice {
+		
+	    final public static int DEFAULT_SIZE = 12;
+	    
+	    final Integer offset;
+	    final Integer size;
+	    
+		public Slice(final Integer offset, final Integer size) {
+
+		    if (offset == null) {
+		    	this.offset = 0;
+		    } else {
+		    	this.offset = offset;	
+		    }
+		    
+		    if (size == null || size == 0 ) {
+		    	this.size = DEFAULT_SIZE;
+		    } else {
+		    	this.size = size;
+		    }
+		}
+		
+	    int getFrom(final int max) {
+	    	return Math.min(this.size*offset, max);
+	    }
+		
+	    int getTo(final int max) {
+	    	return Math.min(this.size*(offset+1), max);
+	    }
+		
+	}
 }

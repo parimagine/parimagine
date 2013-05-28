@@ -2,13 +2,26 @@ package net.aequologica.parimagine.model;
 
 public class Address {
 
-    private String town;
-    private Integer  district;
+	private String town;
+	private Integer  district;
     private Integer department;
     private String number;
     private String street;
     private String legacy;
     
+    public Address() {
+	}
+
+    public Address(String town, Integer district, Integer department, String number, String street, String legacy) {
+		super();
+		this.town = town;
+		this.district = district;
+		this.department = department;
+		this.number = number;
+		this.street = street;
+		this.legacy = legacy;
+	}
+
     public String getTown() {
         return town;
     }

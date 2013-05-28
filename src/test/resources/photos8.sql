@@ -1,4 +1,3 @@
-[
 {"image":"1", "date":"0000-00-00", "address": { "town": "Paris", "district": 2, "department": 75, "number": "0", "street": "ABOUKIR (RUE D)", "legacy": "" }, "didascalie": { "base": "", "ext": "" }},
 {"image":"2", "date":"0000-00-00", "address": { "town": "Paris", "district": 2, "department": 75, "number": "0", "street": "ABOUKIR (RUE D)", "legacy": "" }, "didascalie": { "base": "", "ext": "" }},
 {"image":"3", "date":"0000-00-00", "address": { "town": "Paris", "district": 2, "department": 75, "number": "0", "street": "", "legacy": "" }, "didascalie": { "base": "Souvenir de Paris IIe Arr;", "ext": "Souvenir de Paris, IIè arrondissement" }},
@@ -7345,5 +7344,4 @@
 {"image":"7348", "date":"0000-00-00", "address": { "town": "Paris", "district": 14, "department": 75, "number": "3", "street": "EDGAR QUINET (BOULEVARD)", "legacy": "" }, "didascalie": { "base": "", "ext": "Cimetière Montparnasse Le matin de la Toussaint." }},
 {"image":"7349", "date":"0000-00-00", "address": { "town": "Paris", "district": 14, "department": 75, "number": "", "street": "EDGAR QUINET (BOULEVARD)", "legacy": "" }, "didascalie": { "base": "", "ext": "Le marché." }},
 {"image":"7350", "date":"0000-00-00", "address": { "town": "Paris", "district": 14, "department": 75, "number": "", "street": "EDGAR QUINET (BOULEVARD)", "legacy": "" }, "didascalie": { "base": "", "ext": "Véspasiène." }},
-{"image":"7351", "date":"0000-00-00", "address": { "town": "Paris", "district": 0, "department": 75, "number": "", "street": "EDGAR QUINET (BOULEVARD)", "legacy": "" }, "didascalie": { "base": "", "ext": "" }}
-]
+{"image":"7351", "date":"0000-00-00", "address": { "town": "Paris", "district": 0, "department": 75, "number": "", "street": "EDGAR QUINET (BOULEVARD)", "legacy": "" }, "didascalie": { "base": "", "ext": "" }},

@@ -11,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 
 import net.aequologica.parimagine.model.Photo;
 import net.aequologica.parimagine.model.Photos;
-import net.aequologica.parimagine.model.Slice;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 
@@ -40,7 +39,7 @@ public class Resource {
             @PathParam("district") Integer district,
             @PathParam("page") Integer page,
             @QueryParam("count") Integer count ) throws IOException {
-        return Photos.getInstance().getDistrictSlice(district, new Slice(page, count));
+        return Photos.getInstance().getDistrictSlice(district, new Photos.Slice(page, count));
     }
 
     @GET
@@ -50,7 +49,7 @@ public class Resource {
     		@PathParam("theme") String theme,
             @PathParam("page") Integer page,
             @QueryParam("count") Integer count  ) throws IOException {
-        return Photos.getInstance().getThemeSlice(theme, new Slice(page, count));
+        return Photos.getInstance().getThemeSlice(theme, new Photos.Slice(page, count));
     }
 
     @GET
@@ -59,7 +58,7 @@ public class Resource {
     public List<Photo> getSlice(
     		@PathParam("page") Integer page,
             @QueryParam("count") Integer count  ) throws IOException {
-        return Photos.getInstance().getRandomSlice(new Slice(page, count));
+        return Photos.getInstance().getRandomSlice(new Photos.Slice(page, count));
     }
 
     @GET
@@ -67,7 +66,7 @@ public class Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Photo> search(
     		@QueryParam("for") String  searchString) throws IOException, ParseException {
-        return Photos.getInstance().search("\""+searchString+"\"", new Slice(null, 2*Slice.DEFAULT_SIZE));
+        return Photos.getInstance().search("\""+searchString+"\"", new Photos.Slice(null, 2*Photos.Slice.DEFAULT_SIZE));
     }
 
 }

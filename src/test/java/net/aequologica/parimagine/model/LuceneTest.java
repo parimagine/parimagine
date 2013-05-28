@@ -14,7 +14,7 @@ public class LuceneTest {
     public void searchPhotos() throws IOException, ParseException {
         if (photos == null) photos = Photos.getInstance();
 
-        List<Photo> list = photos.search("Henri IV", new Slice(0, 12));
+        List<Photo> list = photos.search("Henri IV", new Photos.Slice(0, 12));
         for (Photo p : list) {
             System.out.println(p);
         }

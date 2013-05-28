@@ -1,18 +1,27 @@
 package net.aequologica.parimagine.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -23,27 +32,27 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import com.drew.metadata.iptc.IptcDescriptor;
 import com.drew.metadata.iptc.IptcDirectory;
+import com.google.common.base.Charsets;
 
 public class JpgMetadataExtractorTest {
 
-	PathMatcher onlyJpegs = FileSystems.getDefault().getPathMatcher("glob:*.{jpg}");
-	PathMatcher noDistrict= FileSystems.getDefault().getPathMatcher("glob:{Arrondissements}");
-	
-    Path root = new File("C:/^/parimagine/SiteParimagine/Piwi/galleries").toPath();
-    
+	PathMatcher jpegPathMatcher      = FileSystems.getDefault().getPathMatcher("glob:*.{jpg}");
+	PathMatcher districtPathMatcher  = FileSystems.getDefault().getPathMatcher("glob:{Arrondissements}");
+	PathMatcher thumbnailPathMatcher = FileSystems.getDefault().getPathMatcher("glob:{thumbnail}");
+
+	Path piwi 		   = new File("C:/^/parimagine/SiteParimagine/Piwi").toPath();
+	Path piwiGalleries = new File("C:/^/parimagine/SiteParimagine/Piwi/galleries").toPath();
+
 	@Test
 	public void test() throws ImageProcessingException, IOException {
 
-		// get files
-		File file = File.createTempFile("jpegMetadata", ".json");
-		try (FileWriter writer = new FileWriter(file)) {
-			ProcessFile processFile = new ProcessFile(writer);
-			FileVisitor<Path> fileProcessor = processFile;
-			Path piwi = new File("C:/^/parimagine/SiteParimagine/Piwi/").toPath();
-			Files.walkFileTree(new File(piwi.toFile(), "galleries").toPath(), fileProcessor);
-		}
-
-		System.out.println(file.getAbsolutePath());
+		List<Photo> photoList = new ArrayList<>();
+		
+		ProcessFile processFile = new ProcessFile(photoList);
+		
+		Files.walkFileTree(piwiGalleries, processFile);
+		
+		writePhotoList(photoList);
 	}
 
 	// @Test
@@ -54,15 +63,16 @@ public class JpgMetadataExtractorTest {
 
 	private final class ProcessFile extends SimpleFileVisitor<Path> {
 
-		final Writer writer;
-		private ProcessFile(Writer writer) {
+		final List<Photo> photoList;
+
+		private ProcessFile(List<Photo> photoList) {
 			super();
-			this.writer = writer;
+			this.photoList = photoList;
 		}
 
 		@Override
 		public FileVisitResult visitFile(Path aFile, BasicFileAttributes aAttrs) throws IOException {
-			if (!onlyJpegs.matches(aFile.getFileName())) {
+			if (!jpegPathMatcher.matches(aFile.getFileName())) {
 				System.err.println("ignored " + aFile.toString());
 				return FileVisitResult.CONTINUE;
 			}
@@ -70,14 +80,43 @@ public class JpgMetadataExtractorTest {
 			try {
 				String caption = getMatadata(aFile, false);
 				if (caption != null) {
-					// writer.write(caption);
-					String pathAsString = root.relativize(aFile).toString().toLowerCase().replace('\\', '/');
-					caption = caption.replaceAll("\"", "&apos;");
-					writer.write("{  \"image\" : \""+pathAsString+"\",  \"date\" : \"0000-00-00\",  \"address\" : { \"town\" : \"Paris\", \"district\" : 0, \"department\" : 75, \"number\" : \"\", \"street\" : \"\", \"legacy\" : \"\" },  \"didascalie\" : \" | "+caption+"\"},");					
-					writer.write("\n");
+
+					String pathAsString = piwiGalleries.relativize(aFile).toString().toLowerCase().replace('\\', '/');
+					caption = fixQuotes(caption);
+					String[] qwe = extractNumber(caption);
+					String number = qwe[1] != null ? qwe[1] : "";   
+					String newCaption = qwe[0];
+					String[] asd = extractStreets(newCaption);
+					String street = asd[1] != null ? asd[1] : "";   
+					String oldStreet = asd[2] != null ? asd[2] : "";   
+					newCaption = asd[0];
+					newCaption = extractParis(newCaption);
+					
+					Object[] yxc = extractDistrict(newCaption);					
+					Integer district = yxc[1] != null ? (Integer)yxc[1] : null;
+					newCaption = (String)yxc[0];
+					
+					if (district == null || district == 0) {
+						String[] wer = Photo.getDistrictFromImage(pathAsString);
+						if (wer[0] != null) {
+							try {
+								district = Integer.parseInt(wer[0]);
+							} catch (Exception e) {
+								System.err.println(e.getMessage());
+							}
+						}
+					}
+					
+					Address address = new Address("Paris", district, 75, number, street, oldStreet);
+					newCaption = newCaption.replace("&", "&amp;");
+					newCaption = newCaption.replace("\"", "&quot;");
+					newCaption = newCaption.replace("'", "&apos;");
+					Didascalie didascalie = new Didascalie(newCaption, "");
+					Photo photo = new Photo(pathAsString, "0000-00-00", didascalie, address, null);
+					
+					photoList.add(photo);
 				}
 			} catch (ImageProcessingException e) {
-				// TODO Auto-generated catch block
 				System.err.println("Exception in " + aFile.toString() + ": " + e.getMessage());
 				return FileVisitResult.CONTINUE;
 			}
@@ -86,10 +125,10 @@ public class JpgMetadataExtractorTest {
 
 		@Override
 		public FileVisitResult preVisitDirectory(Path aDir, BasicFileAttributes aAttrs) throws IOException {
-			if (noDistrict.matches(aDir.getFileName())) {
+			if (thumbnailPathMatcher.matches(aDir.getFileName())) {
 				return FileVisitResult.SKIP_SUBTREE;
 			}
-			
+
 			return FileVisitResult.CONTINUE;
 		}
 	}
@@ -97,7 +136,10 @@ public class JpgMetadataExtractorTest {
 	String getMatadata(Path aFile, Boolean verbose) throws IOException, ImageProcessingException {
 		File jpegFile = aFile.toFile();
 		Metadata metadata;
-		metadata = ImageMetadataReader.readMetadata(jpegFile);
+		FileInputStream fis = new FileInputStream(jpegFile);
+		// InputStream isr = new InputStream(fis, Charsets.ISO_8859_1);
+		BufferedInputStream bis = new BufferedInputStream(fis);
+		metadata = ImageMetadataReader.readMetadata(bis, true);
 
 		if (verbose) {
 			for (Directory directory : metadata.getDirectories()) {
@@ -111,24 +153,252 @@ public class JpgMetadataExtractorTest {
 		IptcDirectory directory = metadata.getDirectory(IptcDirectory.class);
 
 		if (directory == null) {
-			System.err.println("no directory for "+jpegFile.getAbsolutePath() );
+			System.err.println("no directory for " + jpegFile.getAbsolutePath());
 			return null;
 		}
-		
+
+		String caption = directory.getString(IptcDirectory.TAG_CAPTION, Charsets.ISO_8859_1.toString());
+		/*
 		// create a descriptor
 		IptcDescriptor descriptor = new IptcDescriptor(directory);
-		
+
 		// query the tag's value
 		String caption = descriptor.getCaptionDescription();
+		*/
 		if (caption == null) {
-			System.err.println("no caption for "+jpegFile.getAbsolutePath() );
+			System.err.println("no caption for " + jpegFile.getAbsolutePath());
 			return null;
 		}
-		
-		// System.out.println(jpegFile.getAbsolutePath() + ": " + new String(caption.getBytes("UTF-8")));
 		
 		return caption;
 
 	}
 
+	public static int countOccurrences(String haystack, char needle) {
+		int count = 0;
+		for (int i = 0; i < haystack.length(); i++) {
+			if (haystack.charAt(i) == needle) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	public String fixQuotes(String caption) {
+		int c = countOccurrences(caption, '"');
+		if (c%2 != 0) {
+			int last = caption.lastIndexOf('"');
+			if (last != -1) {
+				caption = caption.substring(0, last-1) + caption.substring(last+1);  
+			}
+		}
+
+		return caption;
+	}
+
+	public String[] extractNumber(String caption) {
+		{		 
+			Pattern p = Pattern.compile("^(\\d+ bis).*$");
+			Matcher m = p.matcher(caption);
+			if (m.matches()) {
+				String group = m.group(1);
+				String[] split = group.split(" ");
+				String newCaption = caption.substring(0, m.start(1));
+				for (String s : split) {
+					newCaption += s; 	
+				}
+				newCaption += caption.substring(m.end(1));
+				caption = newCaption;
+			}
+		}
+		 
+		String[] ret = new String[] {caption, null};
+		Pattern p = Pattern.compile("^(\\d[^\\s]*\\s).*$");
+		Matcher m = p.matcher(caption);
+		if (m.matches()) {
+			ret[0] = caption.substring(0, m.start(1))+caption.substring(m.end(1));
+			ret[1] = m.group(1);
+		}
+		return ret;
+	}
+	
+	// @Test
+	public void testExtractNumber() throws ImageProcessingException, IOException {
+		{
+			String qwe = "53 ABOUKIR (RUE D) Stoppeurs Stoppeurs du n°53 75002 - Paris";
+			String[] asd = extractNumber(qwe);
+			assertEquals("53 ", asd[1]);
+		}
+		
+		{
+			String qwe = "62 bis JEAN PIERRE TIMBAUD (RUE) ANGOULEME (RUE D) Blanchisseurs Pas de légende Façade d'une blanchisserie 75011 Paris";
+			String[] asd = extractNumber(qwe);
+			assertEquals("62bis ", asd[1]);
+		}
+		
+		{
+			String qwe = "LOUVRE (RUE DU) DEUX ECUS (RUE DES)  Société d'approvisionnement général des charcutiers de France Rue des deux écus (1er arrt) 75001 - Paris";
+			String[] asd = extractNumber(qwe);
+			assertNull(asd[1]);
+		}
+	}
+	
+	public String[] extractStreets(String caption) {
+		String[] ret = new String[] {caption, null, null};
+
+		{
+			Pattern p = Pattern.compile("^((?:[^a-z])*\\)\\s*).*$");
+			Matcher m = p.matcher(caption);
+			if (m.matches()) {
+				ret[0] = caption.substring(0, m.start(1))+caption.substring(m.end(1));
+				ret[0] = removeTrailingChars(ret[0], " -");
+				ret[1] = m.group(1);
+				ret[1] = removeTrailingChars(ret[1], " -");
+			}
+		}
+		
+		{
+			if (ret[1] != null) {
+				Pattern p2 = Pattern.compile("^([^\\(]*\\([^\\)]*\\)\\s)?.*$");
+				Matcher m2 = p2.matcher(ret[1]);
+				if (m2.matches()) {
+					String g = m2.group(1);
+					if (g != null) {
+						ret[2] = ret[1].substring(m2.end(1));
+						ret[1] = removeTrailingChars(g, " -");
+					}
+				}
+			}
+		}
+		return ret;
+
+	}
+
+	// @Test
+	public void testExtractStreet() throws ImageProcessingException, IOException {
+		{
+			String qwe = "ABOUKIR (RUE D) Stoppeurs Stoppeurs du n°53 75002 - Paris";
+			String[] asd = extractStreets(qwe);
+			assertEquals("Stoppeurs Stoppeurs du n°53 75002 - Paris", asd[0]);
+			assertEquals("ABOUKIR (RUE D)", asd[1]);
+			assertNull(asd[2]);
+		}
+		
+		{
+			String qwe = "JEAN PIERRE TIMBAUD (RUE) ANGOULEME (RUE D) Blanchisseurs Pas de légende Façade d'une blanchisserie 75011 Paris";
+			String[] asd = extractStreets(qwe);
+			assertEquals("Blanchisseurs Pas de légende Façade d'une blanchisserie 75011 Paris", asd[0]);
+			assertEquals("JEAN PIERRE TIMBAUD (RUE)", asd[1]);
+			assertEquals("ANGOULEME (RUE D)", asd[2]);
+		}
+
+		{
+			String qwe = "LOUVRE (RUE DU) DEUX ECUS (RUE DES)  Société d'approvisionnement général des charcutiers de France Rue des deux écus (1er arrt) 75001 - Paris";
+			String[] asd = extractStreets(qwe);
+			assertEquals("Société d'approvisionnement général des charcutiers de France Rue des deux écus (1er arrt) 75001 - Paris", asd[0]);
+			assertEquals("LOUVRE (RUE DU)", asd[1]);
+			assertEquals("DEUX ECUS (RUE DES)", asd[2]);
+		}
+
+		{
+			String qwe = "37 BERGER (RUE)   75001 - Paris";
+			String[] asd = extractStreets(qwe);
+			assertEquals("75001 - Paris", asd[0]);
+			assertEquals("37 BERGER (RUE)", asd[1]);
+			assertNull(asd[2]);
+		}
+	}
+
+	public String extractParis(String caption) {
+		String ret = caption;
+		if (caption.endsWith("Paris")) {
+			ret = caption.substring(0, caption.length()-5);
+		}
+		ret = removeTrailingChars(ret, " -");
+		return ret;
+	}
+
+	private String removeTrailingChars(String ret, String chars) {
+		if (ret.length() > 0) {
+			char last = (char)ret.charAt(ret.length()-1);
+			while (chars.indexOf(last) != -1) {
+				ret = ret.substring(0, ret.length()-1);
+				if (ret.length() == 0) {
+					break;
+				}
+				last = ret.charAt(ret.length()-1);
+			}
+		}
+		return ret;
+	}
+
+	// @Test
+	public void testExtractParis() throws ImageProcessingException, IOException {
+		{
+			String qwe = "Stoppeurs Stoppeurs du n°53 75002 - Paris";
+			String asd = extractParis(qwe);
+			assertEquals("Stoppeurs Stoppeurs du n°53 75002", asd);
+		}
+		
+		{
+			String qwe = "Blanchisseurs Pas de légende Façade d'une blanchisserie 75011 Paris";
+			String asd = extractParis(qwe);
+			assertEquals("Blanchisseurs Pas de légende Façade d'une blanchisserie 75011", asd);
+		}
+
+		{
+			String qwe = "75001 - Paris";
+			String asd = extractParis(qwe);
+			assertEquals("75001", asd);
+		}
+
+	}
+
+	public Object[] extractDistrict(String caption) {
+		Object[] ret = new Object[] {caption, 0};
+
+		Pattern p = Pattern.compile("^.*(750\\d\\d)$");
+		Matcher m = p.matcher(caption);
+		if (m.matches()) {
+			ret[0] = caption.substring(0, m.start(1));
+			ret[1] = Integer.parseInt(m.group(1).substring(3));
+		}
+		ret[0] = removeTrailingChars((String)ret[0], " -");
+		return ret;
+	}
+
+	// @Test
+	public void testExtractDistrict() throws ImageProcessingException, IOException {
+		{
+			String qwe = "Stoppeurs Stoppeurs du n°53    75002";
+			Object[] asd = extractDistrict(qwe);
+			assertEquals("Stoppeurs Stoppeurs du n°53", asd[0]);
+			assertEquals(2, asd[1]);
+		}
+		
+		{
+			String qwe = "Blanchisseurs Pas de légende Façade d'une blanchisserie 75011";
+			Object[] asd = extractDistrict(qwe);
+			assertEquals("Blanchisseurs Pas de légende Façade d'une blanchisserie", asd[0]);
+			assertEquals(11, asd[1]);
+		}
+
+		{
+			String qwe = "75001";
+			Object[] asd = extractDistrict(qwe);
+			assertEquals("", asd[0]);
+			assertEquals(1, asd[1]);
+		}
 }
+
+
+    private void writePhotoList(List<Photo> photoList) throws IOException {
+		File tmp = File.createTempFile("jpegMetadata", ".json");
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(tmp), Charsets.UTF_8)) {
+            Photos.writePhotoList(writer, photoList);
+        }
+        System.out.println(tmp.getAbsolutePath());
+    }
+
+}
+
