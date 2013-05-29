@@ -950,7 +950,7 @@
           if (zoom) {
             zoom = parseFloat(zoom); 
           } else {
-            zoom = 0;
+            zoom = 2;
           }
 
           var panorama = new google.maps.StreetViewPanorama(
@@ -986,7 +986,7 @@
 
           google.maps.event.addListener(panorama, 'zoom_changed', function() {
             var zoom = panorama.getZoom();
-            // console.log(zoom);
+            console.log(zoom);
             $theBox.attr('data-zoom', zoom); 
           });          
 
