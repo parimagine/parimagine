@@ -7,7 +7,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 @WebServlet(
-        urlPatterns = "/parimagine/*", 
+        urlPatterns = {"/parimagine/*", "/photo/*"}, 
         initParams = { 
                 @WebInitParam(
                         name = "javax.ws.rs.Application", 

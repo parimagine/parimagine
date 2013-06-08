@@ -1,13 +1,17 @@
 package net.aequologica.parimagine.jaxrs;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 
 import net.aequologica.parimagine.model.Photo;
 import net.aequologica.parimagine.model.Photos;
@@ -22,6 +26,29 @@ public class Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Photo> getPhotos() throws IOException {
         return Photos.getInstance().getPhotos();
+    }
+
+    @GET
+    @javax.ws.rs.Path("{index : \\d+}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void getPhotoJsp(
+    		@PathParam("index") int index ) throws IOException {
+    	int max = Photos.getInstance().getSize();
+    	if (index < 0 || max <= index ) {
+        	throw new WebApplicationException(Response.noContent().build());
+        }
+    	Photo photo = Photos.getInstance().getPhoto(index);
+    	if (photo == null) {
+        	throw new WebApplicationException(Response.noContent().build());
+    	}
+    	URI location = UriBuilder
+    			.fromUri("../photo.jsp")
+    			.queryParam("index", index)
+    			.queryParam("prev", 0<index?index-1:-1)
+    			.queryParam("next", index<max-1?index+1:-1)
+    			.queryParam("image", photo.getImage())
+    			.build();
+    	throw new WebApplicationException(Response.temporaryRedirect(location).build());
     }
 
     @GET

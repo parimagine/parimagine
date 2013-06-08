@@ -263,6 +263,10 @@ public class Photos {
 		return image2photoMap.get(image);
 	}
 
+	public Photo getPhoto(int index) {
+		return list.get(index);
+	}
+
 	public List<Photo> getPhotos() {
 		return list;
 	}
