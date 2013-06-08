@@ -24,9 +24,9 @@ import org.w3c.dom.Element;
 
 public class ResizeImagesTest {
 
-	Path alImages = new File("C:/^/parimagine/Site Web").toPath();
+	Path alImages = new File("C:/_parimagine/Site Web").toPath();
 
-	@Test
+	// @Test
 	public void test() throws IOException {
 		ProcessFile processFile = new ProcessFile();
 		Files.walkFileTree(alImages, processFile);

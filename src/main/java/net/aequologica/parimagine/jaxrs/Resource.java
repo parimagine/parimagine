@@ -29,7 +29,7 @@ public class Resource {
     }
 
     @GET
-    @javax.ws.rs.Path("{index : \\d+}")
+    @javax.ws.rs.Path("{index: \\d+}")
     @Produces(MediaType.APPLICATION_JSON)
     public void getPhotoJsp(
     		@PathParam("index") int index ) throws IOException {

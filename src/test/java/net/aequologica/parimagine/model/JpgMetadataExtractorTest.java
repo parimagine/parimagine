@@ -39,8 +39,8 @@ public class JpgMetadataExtractorTest {
 	PathMatcher districtPathMatcher  = FileSystems.getDefault().getPathMatcher("glob:{Arrondissements}");
 	PathMatcher thumbnailPathMatcher = FileSystems.getDefault().getPathMatcher("glob:{thumbnail}");
 
-	Path piwi 		   = new File("C:/^/parimagine/SiteParimagine/Piwi").toPath();
-	Path piwiGalleries = new File("C:/^/parimagine/SiteParimagine/Piwi/galleries").toPath();
+	Path piwi 		   = new File("C:/_parimagine/SiteParimagine/Piwi").toPath();
+	Path piwiGalleries = new File("C:/_parimagine/SiteParimagine/Piwi/galleries").toPath();
 
 	// @Test
 	public void test() throws ImageProcessingException, IOException {
@@ -56,8 +56,8 @@ public class JpgMetadataExtractorTest {
 
 	// @Test
 	public void testOneFile() throws ImageProcessingException, IOException {
-		getMatadata(Paths.get("C:/^/parimagine/SiteParimagine/Piwi/galleries/Photos-Presse/Cinema/P375.jpg"), false);
-		getMatadata(Paths.get("C:/^/parimagine/SiteParimagine/Piwi/galleries/Photos-Presse/Cinema/P304.jpg"), false);
+		getMatadata(Paths.get("C:/_parimagine/SiteParimagine/Piwi/galleries/Photos-Presse/Cinema/P375.jpg"), false);
+		getMatadata(Paths.get("C:/_parimagine/SiteParimagine/Piwi/galleries/Photos-Presse/Cinema/P304.jpg"), false);
 	}
 
 	private final class ProcessFile extends SimpleFileVisitor<Path> {

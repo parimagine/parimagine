@@ -93,35 +93,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <div class="brand">Photothèque des Jeunes Parisiens</div>
-        <div class="nav-collapse collapse">
-          <ul class="nav"> 
-            <li class=""><a id="random_menu" href="#">au hasard</a>
-            </li>
-            <li class="dropdown" id="districts">  
-                <a id="districts_menu" class="dropdown-toggle" data-toggle="dropdown" href="#"><span>arrondissements</span><b class="caret"></b></a>  
-                <ul class="dropdown-menu">  
-                </ul>  
-            </li> 
-            <li class="dropdown" id="themes">  
-                <a id="themes_menu" class="dropdown-toggle" data-toggle="dropdown" href="#"><span>thèmes</span><b class="caret"></b></a>  
-                <ul class="dropdown-menu">  
-                </ul>  
-            </li> 
-          </ul>  
-          <ul class="nav pull-right">
-            <form class="navbar-search">
-              <input type="text" class="search-query" placeholder="search">
-                <i class="add-on icon-search" >
-                  <a href="#" id="a-search" data-toggle="tooltip" data-placement="left" data-content="" title="search" style="margin-left:-20px;">
-                  </a>
-                </i>
-                <i id="icon-remove" class="icon-remove"></i>
-              </input>
-            </form>
-            <!-- i id="icon-info-sign" class="icon-info-sign"></i -->
-          </ul>  
-        </div>
+        <div class="brand"><a id="index" href="index.jsp">Photothèque des Jeunes Parisiens</a></div>
       </div>
     </div>
   </div>
@@ -149,7 +121,7 @@
          <a id="next" class="btn" href="photo/${param.next}"><i class="icon-chevron-right"></i></a>
        </c:if>
       </div>
-      <!-- div class="span12 text-right fb-like" data-href='${baseURL}/photo/${param.index}/>' data-send="false" data-layout="button_count" data-show-faces="false" data-font="tahoma"></div -->
+      <div class="span12 text-right fb-like" data-href='${baseURL}/photo/${param.index}/>' data-send="false" data-layout="button_count" data-show-faces="false" data-font="tahoma"></div>
     </div>
   </div>
   <!-- ==================================================
