@@ -25,7 +25,12 @@ public class Application extends javax.ws.rs.core.Application {
 
 		instances.add(new LoggingFilter(Logger.getLogger(Application.class.getName()), false));
 		instances.add(new JacksonJsonProvider());
-
+		/*
+		 * https://jersey.java.net/nonav/documentation/latest/user-guide.html#d0e5895
+		 * Jersey web applications that want to use MVC templating support feature should be registered as Servlet filters rather than Servlets in the application's web.xml. 
+		 * The web.xml-less deployment style introduced in Servlet 3.0 is not supported at the moment for web applications that require use of Jersey MVC templating support.
+		 */
+		// instances.add(new JspMvcFeature());
 		return instances;
 	}
 

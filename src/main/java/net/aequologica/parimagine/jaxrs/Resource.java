@@ -17,6 +17,7 @@ import net.aequologica.parimagine.model.Photo;
 import net.aequologica.parimagine.model.Photos;
 
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.glassfish.jersey.server.mvc.Viewable;
 
 @javax.ws.rs.Path("/")
 public class Resource {
@@ -31,7 +32,7 @@ public class Resource {
     @GET
     @javax.ws.rs.Path("{index: \\d+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public void getPhotoJsp(
+    public Viewable getPhotoJsp(
     		@PathParam("index") int index ) throws IOException {
     	int max = Photos.getInstance().getSize();
     	if (index < 0 || max <= index ) {
@@ -47,7 +48,9 @@ public class Resource {
     			.queryParam("prev", 0<index?index-1:-1)
     			.queryParam("next", index<max-1?index+1:-1)
     			.queryParam("image", photo.getImage())
+    			.queryParam("didascalie", photo.getDidascalie().toString())
     			.build();
+    	
     	throw new WebApplicationException(Response.temporaryRedirect(location).build());
     }
 

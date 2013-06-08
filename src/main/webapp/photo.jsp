@@ -15,8 +15,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
   <meta property="og:title" content="Photothèque des Jeunes Parisiens"/>
-  <meta property="og:description" content="Photothèque des Jeunes Parisiens"/>
-  <meta property="og:image" content="https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/documents/photos-presse/cinema/P318.jpg"/>
+  <c:if test="${not empty param.didascalie}">
+    
+    <% 
+      String    d = new String(request.getParameter("didascalie").getBytes("ISO-8859-1"), "UTF-8");
+      String[] ad = net.aequologica.parimagine.model.Didascalie.split(d);
+      pageContext.setAttribute("didascalie", d); 
+      pageContext.setAttribute("didascalie_base", ad[0]); 
+      pageContext.setAttribute("didascalie_ext", ad[1]); 
+    %>
+    <meta property="og:description" content="${didascalie}"/>
+  </c:if>
+  <c:if test="${not empty param.image}">
+    <meta property="og:image" content="https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/documents/${param.image}"/>
+  </c:if>
   <meta property="og:type" content="website"/>
 
   <title>Photothèque des Jeunes Parisiens</title>
@@ -83,6 +95,15 @@
 
 <body>
 
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=104250825478";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script> 
+
   <!-- Navbar
   ================================================== -->
   <div class="navbar navbar-fixed-top">
@@ -98,30 +119,35 @@
     </div>
   </div>
 
-  <div id="fb-root"></div>
-
   <c:set var="baseURL" value="${fn:replace(pageContext.request.requestURL, pageContext.request.requestURI, pageContext.request.contextPath)}" />
 
   <!-- page container
   ================================================== -->
   <div class="container" style="padding-top: 70px;">
     <div class="row-fluid">
-       <div class="span1 text-left" >
-       <c:if test="${param.prev != -1}">
-         <a id="prev" class="btn text-left" href="photo/${param.prev}"><i class="icon-chevron-left"></i></a>
-       </c:if>
-       </div>
-       <div id="photo_container" class="span10 pagination-centered">
-        <c:if test="${param.image != ''}">
-          <img id="photo", class="centered" src="documents/${param.image}" style="opacity: 0;">
+      <div class="span1 text-left" >
+        <c:if test="${param.prev != -1}">
+          <a id="prev" class="btn text-left" href='<c:url value="/photo/${param.prev}"/>'><i class="icon-chevron-left"></i></a>
+        </c:if>
+      </div>
+      <div id="photo_container" class="span10 pagination-centered" style="opacity: 0;">
+        <c:if test="${not empty param.image}">
+          <img id="photo", class="centered" src='<c:url value="/documents/${param.image}"/>' style="margin-bottom: 10px;">
+          <br/>
+          <c:if test="${not empty param.didascalie}">
+            <span id="didascalie" class="centered" style="font-size: larger;">${didascalie_base}</span>
+            <br/>
+            <span id="didascalie" class="centered" style="font-size: smaller;">${didascalie_ext}</span>
+          </c:if>
         </c:if>
       </div>
       <div class="span1 text-right" >
        <c:if test="${param.next != -1}">
-         <a id="next" class="btn" href="photo/${param.next}"><i class="icon-chevron-right"></i></a>
+         <a id="next" class="btn" href='<c:url value="/photo/${param.next}"/>'><i class="icon-chevron-right"></i></a>
        </c:if>
       </div>
-      <div class="span12 text-right fb-like" data-href='${baseURL}/photo/${param.index}/>' data-send="false" data-layout="button_count" data-show-faces="false" data-font="tahoma"></div>
+      <div class="span12 text-right fb-like" data-href="http://photos.parimagine.fr/photo/${param.index}" data-send="true" data-layout="button_count" data-width="200" data-show-faces="false" data-font="tahoma">
+      </div>
     </div>
   </div>
   <!-- ==================================================
@@ -132,14 +158,6 @@
   <script type="text/javascript" src="bootstrap.js"></script>
   <script type="text/javascript" src="handlebars.js"></script>
   <script type="text/javascript" src="imagesloaded.pkgd.js"></script>
-
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=104250825478";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>  
 
   <script type="text/javascript">
   $(document).ready(function(){
@@ -153,7 +171,7 @@
       window.location = "photo/${param.next}";
     });
     imagesLoaded( '#photo', function() {
-      $('#photo').animate({opacity: 1}, 500);
+      $('#photo').parent().animate({opacity: 1}, 500);
     });
   });  
   </script>

@@ -50,10 +50,13 @@
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet</artifactId>
         </dependency>
+		<dependency>
+		    <groupId>org.glassfish.jersey.ext</groupId>
+		    <artifactId>jersey-mvc-jsp</artifactId>
+		</dependency>
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-multipart</artifactId>
-            <version>2.0-rc1</version>
         </dependency>
         
         <!-- get jackson -->
