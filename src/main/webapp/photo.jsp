@@ -14,24 +14,38 @@
   <meta http-equiv="Content-Language" content="fr" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <meta property="og:title" content="Photothèque des Jeunes Parisiens"/>
-  <c:if test="${not empty param.didascalie}">
-    
-    <% 
-      String    d = new String(request.getParameter("didascalie").getBytes("ISO-8859-1"), "UTF-8");
-      String[] ad = net.aequologica.parimagine.model.Didascalie.split(d);
-      pageContext.setAttribute("didascalie", d); 
-      pageContext.setAttribute("didascalie_base", ad[0]); 
-      pageContext.setAttribute("didascalie_ext", ad[1]); 
-    %>
-    <meta property="og:description" content="${didascalie}"/>
-  </c:if>
+  <!-- facebook metadata 
+       cf. http://ogp.me/ -->
+  <c:choose>
+      <c:when test="${not empty param.didascalie}">
+        <% 
+          String    d = new String(request.getParameter("didascalie").getBytes("ISO-8859-1"), "UTF-8");
+          String[] ad = net.aequologica.parimagine.model.Didascalie.split(d);
+          pageContext.setAttribute("didascalie", d); 
+          pageContext.setAttribute("didascalie_base", ad[0]); 
+          pageContext.setAttribute("didascalie_ext", ad[1]); 
+        %>
+        <meta property="og:title" content="${didascalie}"/>
+        <meta property="og:description" content="Parimagine | Photothèque des Jeunes Parisiens"/>
+      </c:when>
+      <c:otherwise>
+        <meta property="og:title" content="Parimagine | Photothèque des Jeunes Parisiens"/>
+      </c:otherwise>
+  </c:choose>  
   <c:if test="${not empty param.image}">
     <meta property="og:image" content="https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/documents/${param.image}"/>
+    <meta property="og:image:type" content="image/jpeg" />
+  </c:if>
+  <c:if test="${not empty param.index}">
+    <meta property="og:url " content="http://photos.parimagine.fr/photo/${param.index}"/>
   </c:if>
   <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Parimagine"/>
+  <meta property="og:locale" content="fr_FR"/>
+  <meta property="fb:app_id" content="104250825478"/>
+  <!-- /facebook metadata -->
 
-  <title>Photothèque des Jeunes Parisiens</title>
+  <title>Parimagine | Photothèque des Jeunes Parisiens</title>
       
   <meta name="HandheldFriendly" content="True"/>
   <meta name="MobileOptimized" content="320"/>
@@ -133,8 +147,8 @@
       <div id="photo_container" class="span10 pagination-centered" style="opacity: 0;">
         <c:if test="${not empty param.image}">
           <img id="photo", class="centered" src='<c:url value="/documents/${param.image}"/>' style="margin-bottom: 10px;">
-          <br/>
           <c:if test="${not empty param.didascalie}">
+            <br/>
             <span id="didascalie" class="centered" style="font-size: larger;">${didascalie_base}</span>
             <br/>
             <span id="didascalie" class="centered" style="font-size: smaller;">${didascalie_ext}</span>
@@ -142,12 +156,16 @@
         </c:if>
       </div>
       <div class="span1 text-right" >
-       <c:if test="${param.next != -1}">
-         <a id="next" class="btn" href='<c:url value="/photo/${param.next}"/>'><i class="icon-chevron-right"></i></a>
-       </c:if>
+        <c:if test="${param.next != -1}">
+          <a id="next" class="btn" href='<c:url value="/photo/${param.next}"/>'>
+            <i class="icon-chevron-right"></i>
+          </a>
+        </c:if>
       </div>
-      <div class="span12 text-right fb-like" data-href="http://photos.parimagine.fr/photo/${param.index}" data-send="true" data-layout="button_count" data-width="200" data-show-faces="false" data-font="tahoma">
-      </div>
+      <c:if test="${not empty param.index}">
+        <div class="span12 text-right fb-like" data-href="http://photos.parimagine.fr/photo/${param.index}" data-send="true" data-layout="button_count" data-width="200" data-show-faces="false" data-font="tahoma">
+        </div>
+      </c:if>
     </div>
   </div>
   <!-- ==================================================
