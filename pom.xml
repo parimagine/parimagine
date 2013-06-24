@@ -134,6 +134,12 @@
             <systemPath>C:/Program Files (x86)/Sun Microsystems/Java Advanced Imaging 1.1.3/lib/jai_codec.jar</systemPath>
 		</dependency>
 
+		<dependency>
+			<groupId>org.ebaysf.web</groupId>
+			<artifactId>cors-filter</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
     </dependencies>
     
     <build>
