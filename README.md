@@ -60,19 +60,25 @@ Tout d’abord, j’ai séparé le site de la maison d’édition du site de la 
 
 Pour la photothèque, l’inspiration m’est venue du site [http://www.retronaut.com/](), « _see the past like you wouldn't believe_ », où les photos d’époques sont mises en valeur de manière fort plaisante.
 
-```Avertissement : toutes les photos des exemples suivants contiennent malheureusement un filigrane particulièrement intrusif, ce qui demande un grand effort au lecteur pour pouvoir imaginer de ce que sera le résultat final. Merci de votre indulgence.```
+```Avertissement : toutes les photos des exemples suivants contiennent malheureusement 
+un filigrane particulièrement intrusif, ce qui demande un grand effort au lecteur 
+pour pouvoir imaginer de ce que sera le résultat final. Merci de votre indulgence.```
 
 ##### Accueil
 
 La page d’accueil présente une sélection de photos choisies rigoureusement au hasard :
 
+![https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/](src/main/webapp/assets/images/parimagine_home.jpg)
+
 Il est aussi possible d’afficher les photos par
 
- arrondissements   ou par  thème   . 
+arrondissement ![arrondissements](src/main/webapp/assets/images/parimagine_arrondissements.jpg) ou par thème [thèmes](src/main/webapp/assets/images/parimagine_themes.jpg). 
 
 ##### Déroulement infini
 
 Toutes les pages utilisent la technique dite de l’infinite scrolling, (déroulement infini, en bon français ?), popularisée par facebook, twitter, et ce même retronaut : on déroule vers le bas, et de nouvelles photos apparaissent, à l’infini. J’en veux pour preuve, après une série de déroulement vers le bas, la taille minuscule du curseur ci-dessous : 
+
+![http://masonry.desandro.com/](src/main/webapp/assets/images/parimagine_infinite_scrolling.jpg)
 
 Cette technique met particulièrement en valeur la quantité vertigineuse des contenus.
 
