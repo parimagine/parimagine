@@ -25,7 +25,8 @@ Christophe Thiébaud, _development architect_ de profession pour SAP Walldorf, A
 + [LinkedIn](http://www.linkedin.com/profile/view?id=367152)
 + [Facebook](https://www.facebook.com/christophe.thiebaud)
 + [Twitter](https://twitter.com/cthiebaud)
- 
+
+
 ## Etat des lieux
 
 ### Aujourd’hui
@@ -34,13 +35,13 @@ __Parimagine Editions__ & __La Photothèque des Jeunes Parisiens__ sont déjà p
 
 ![http://www.parimagine.fr/](src/main/webapp/assets/images/parimagine_php.jpg)
  
-D’un point de vue technique, le site est réalisé en [http://php.net/](PHP), et est principalement basé sur le logiciel ouvert [http://fr.piwigo.org/](piwigo), « _un logiciel de galerie photo pour le web_ ».
+D’un point de vue technique, le site est réalisé en [PHP](http://php.net/), et est principalement basé sur le logiciel ouvert [piwigo](http://fr.piwigo.org/), « _un logiciel de galerie photo pour le web_ ».
 
 #### Avantages
 
-Une large partie ( > 8000 documents) du fond de documents photographiques de La Photothèque des Jeunes Parisiens est disponible sous [http://fr.piwigo.org/](piwigo). Cela comprend toutes les métadonnées (didascalies, adresses, propriétaires, etc.) sous forme structurée, i.e. dans une base de données relationnelle.
+Une large partie ( > 8000 documents) du fond de documents photographiques de La Photothèque des Jeunes Parisiens est disponible sous [piwigo](http://fr.piwigo.org/). Cela comprend toutes les métadonnées (didascalies, adresses, propriétaires, etc.) sous forme structurée, i.e. dans une base de données relationnelle.
 
-[http://fr.piwigo.org/](piwigo) est toujours activement développé, cf. [http://piwigo.com/blog/](). Des plugins et extensions récents existent pour le [http://fr.piwigo.org/releases/2.4.0#mobile_theme](mobile) ou le [http://piwigo.com/blog/2013/04/04/social-buttons-replaces-google1-and-tweetthis/](social web).
+[piwigo](http://fr.piwigo.org/) est toujours activement développé, cf. [http://piwigo.com/blog/](). Des plugins et extensions récents existent pour le [mobile](http://fr.piwigo.org/releases/2.4.0#mobile_theme) ou le [social web](http://piwigo.com/blog/2013/04/04/social-buttons-replaces-google1-and-tweetthis/).
 
 #### Inconvénients
 
@@ -52,7 +53,7 @@ La fonctionnalité de recherche textuelle est primitive.
  
 ### Prototype
 
-A la demande de [http://www.linkedin.com/profile/view?id=6351576](Manuel), ami de trente ans, fraîchement nommé président de l’association, j’ai donc développé un prototype de ce que pourrait être le(s) site(s) de __Parimagine Editions__ & de __La Photothèque des Jeunes Parisiens__.
+A la demande de [Manuel](http://www.linkedin.com/profile/view?id=6351576), ami de trente ans, fraîchement nommé président de l’association, j’ai donc développé un prototype de ce que pourrait être le(s) site(s) de __Parimagine Editions__ & de __La Photothèque des Jeunes Parisiens__.
 
 Tout d’abord, j’ai séparé le site de la maison d’édition du site de la photothèque.
 
@@ -166,7 +167,7 @@ En 2 mots : les 8000+ photos sont stockées sur une instance de [SAP HANA Cloud]
 (instance gracieusement offerte par SAP pour le test et le développement). Cette instance expose un [API REST pour sélectionner, trier, lire et écrire](https://github.com/parimagine/parimagine/blob/master/src/main/java/net/aequologica/parimagine/jaxrs/Resource.java) les photos. 
 
 L’interface utilisateur est basée principalement sur les logiciels ouverts [jquery](http://jquery.com/) et [twoitter bootstrap](http://twitter.github.io/bootstrap/) 
-et utilise des requêtes [ajax](http://en.wikipedia.org/wiki/Ajax_(programming)) pour accéder aux services [REST](http://en.wikipedia.org/wiki/REST) mentionné plus haut.
+et utilise des requêtes [ajax](http://www.w3schools.com/ajax/) pour accéder aux services [REST](http://en.wikipedia.org/wiki/REST) mentionnés plus haut.
 
 ## Demain (à finir)
 
@@ -174,7 +175,7 @@ A finir demain, d’ailleurs :)
 
 ### Les 10 Principes de Wilson
 
-L’application [http://www.avc.com/a_vc/2010/03/10-golden-principles-of-successful-web-apps.html](respecte les 10 principes de Wilson).
+L’application [respecte les 10 principes de Wilson](http://www.avc.com/a_vc/2010/03/10-golden-principles-of-successful-web-apps.html).
 
 ### Crowdsourcing
 
