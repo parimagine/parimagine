@@ -30,6 +30,8 @@ Christophe Thiébaud, _development architect_ de profession pour SAP Walldorf, A
 ### Aujourd’hui
 
 __Parimagine Editions__ & __La Photothèque des Jeunes Parisiens__ sont déjà présents sur internet à l’adresse [http://www.parimagine.fr/]().
+
+![http://www.parimagine.fr/](src/main/webapp/assets/images/parimagine_php.jpg)
  
 D’un point de vue technique, le site est réalisé en PHP, et se base principalement sur le logiciel open source piwigo, « un logiciel de galerie photo pour le web ».
 
