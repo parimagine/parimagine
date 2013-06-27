@@ -14,8 +14,9 @@ Le présent document a pour objectif de décrire comment les technologies les pl
      [Mobile](https://en.wikipedia.org/wiki/Mobile_computing), 
      [Social Web](https://en.wikipedia.org/wiki/Social_Web)
     ) peuvent être mises en place pour 
-1.  aider l’association La Photothèque des Jeunes Parisiens à remplir ses objectifs, et
-2.  assurer la pérennité économique de Parimagine Editions.
+
+1.  aider l’association __La Photothèque des Jeunes Parisiens__ à remplir ses objectifs, et
+2.  assurer la pérennité économique de __Parimagine Editions__.
 
 ### Qui suis-je ?
 
