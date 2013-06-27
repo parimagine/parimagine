@@ -34,13 +34,13 @@ __Parimagine Editions__ & __La Photothèque des Jeunes Parisiens__ sont déjà p
 
 ![http://www.parimagine.fr/](src/main/webapp/assets/images/parimagine_php.jpg)
  
-D’un point de vue technique, le site est réalisé en PHP, et se base principalement sur le logiciel open source piwigo, « un logiciel de galerie photo pour le web ».
+D’un point de vue technique, le site est réalisé en [http://php.net/](PHP), et est principalement basé sur le logiciel ouvert [http://fr.piwigo.org/](piwigo), « _un logiciel de galerie photo pour le web_ ».
 
 #### Avantages
 
-Une large partie ( > 8000 documents) du fond de documents photographiques de La Photothèque des Jeunes Parisiens est disponible sous piwigo. Cela comprend toutes les métadonnées (didascalies, adresses, propriétaires, etc.) sous forme structurée, i.e. dans une base de données relationnelle.
+Une large partie ( > 8000 documents) du fond de documents photographiques de La Photothèque des Jeunes Parisiens est disponible sous [http://fr.piwigo.org/](piwigo). Cela comprend toutes les métadonnées (didascalies, adresses, propriétaires, etc.) sous forme structurée, i.e. dans une base de données relationnelle.
 
-http://piwigo.com/blog/ est toujours activement développé. Des plugins et extensions récents existent pour le mobile ou le social web.
+[http://fr.piwigo.org/](piwigo) est toujours activement développé, cf. [http://piwigo.com/blog/](). Des plugins et extensions récents existent pour le [http://fr.piwigo.org/releases/2.4.0#mobile_theme](mobile) ou le [http://piwigo.com/blog/2013/04/04/social-buttons-replaces-google1-and-tweetthis/](social web).
 
 #### Inconvénients
 
@@ -52,15 +52,15 @@ La fonctionnalité de recherche textuelle est primitive.
  
 ### Prototype
 
-A la demande de Manuel, ami de trente ans, fraîchement nommé président de l’association, j’ai donc développé un prototype de ce que pourrait être le(s) site(s) de Parimagine Editions & de La Photothèque des Jeunes Parisiens.
+A la demande de [http://www.linkedin.com/profile/view?id=6351576](Manuel), ami de trente ans, fraîchement nommé président de l’association, j’ai donc développé un prototype de ce que pourrait être le(s) site(s) de __Parimagine Editions__ & de __La Photothèque des Jeunes Parisiens__.
 
 Tout d’abord, j’ai séparé le site de la maison d’édition du site de la photothèque.
 
 #### Photothèque
 
-Pour la photothèque, l’inspiration m’est venue du site http://www.retronaut.com/, « see the past like you wouldn't believe », où les photos d’époques sont mises en valeur de manière fort plaisante.
+Pour la photothèque, l’inspiration m’est venue du site [http://www.retronaut.com/](), « _see the past like you wouldn't believe_ », où les photos d’époques sont mises en valeur de manière fort plaisante.
 
-_Avertissement : toutes les photos des exemples suivants contiennent malheureusement un filigrane particulièrement intrusif, ce qui demande un grand effort au lecteur pour pouvoir imaginer de ce que sera le résultat final. Merci de votre indulgence._
+```Avertissement : toutes les photos des exemples suivants contiennent malheureusement un filigrane particulièrement intrusif, ce qui demande un grand effort au lecteur pour pouvoir imaginer de ce que sera le résultat final. Merci de votre indulgence.```
 
 ##### Accueil
 
@@ -130,9 +130,9 @@ Quelques pages statiques donnent accès aux informations concernant Parimagine E
 + [http://dev.parimagine.fr/contacts.html](Contacts)
 + [http://dev.parimagine.fr/who.html](Qui sommes-nous ?)
 
-#### Open Source
+#### Logiciel ouvert
 
-Ce prototype est open source, et les personnes intéressées par l’aspect technique peuvent accéder au code source ici : [https://github.com/parimagine/parimagine.]().
+Ce prototype est ouvert ('_open source_'), et les personnes intéressées par l’aspect technique peuvent accéder au code source ici : [https://github.com/parimagine/parimagine.]().
 
 En 2 mots : les 8000+ photos sont stockées sur une instance de SAP HANA Cloud (instance gracieusement offerte par SAP pour le test et le développement). Cette instance expose un API REST pour sélectionner, trier, lire et écrire les photos. 
 
