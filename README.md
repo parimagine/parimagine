@@ -60,19 +60,21 @@ Tout d’abord, j’ai séparé le site de la maison d’édition du site de la 
 
 Pour la photothèque, l’inspiration m’est venue du site [http://www.retronaut.com/](), « _see the past like you wouldn't believe_ », où les photos d’époques sont mises en valeur de manière fort plaisante.
 
-```Avertissement : toutes les photos des exemples suivants contiennent malheureusement 
+_Avertissement : toutes les photos des exemples suivants contiennent malheureusement 
 un filigrane particulièrement intrusif, ce qui demande un grand effort au lecteur 
-pour pouvoir imaginer de ce que sera le résultat final. Merci de votre indulgence.```
+pour pouvoir imaginer de ce que sera le résultat final. Merci de votre indulgence._
 
 ##### Accueil
 
 La page d’accueil présente une sélection de photos choisies rigoureusement au hasard :
 
+[https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/]()
+
 ![https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/](src/main/webapp/assets/images/parimagine_home.jpg)
 
 Il est aussi possible d’afficher les photos par
 
-arrondissement ![arrondissements](src/main/webapp/assets/images/parimagine_arrondissements.jpg) ou par thème [thèmes](src/main/webapp/assets/images/parimagine_themes.jpg). 
+arrondissement ![arrondissements](src/main/webapp/assets/images/parimagine_arrondissements.jpg) ou par thème ![thèmes](src/main/webapp/assets/images/parimagine_themes.jpg). 
 
 ##### Déroulement infini
 
@@ -86,21 +88,29 @@ Cette technique met particulièrement en valeur la quantité vertigineuse des co
 
 Il est aussi possible de rechercher dans l’ensemble des textes (didascalies, adresses, etc.) une série de termes particulier. Par exemple, le mot ‘rosiers’  nous offre - assez prévisiblement - les photos de la rue des rosiers, dans le 4ème arrondissement :
 
-[http://photos.parimagine.fr/?search=rosiers]()
+[https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/?search=rosiers]()
+
+![search=rosiers](src/main/webapp/assets/images/parimagine_search.jpg)
 
 ##### Plein écran 
 
 Cliquer sur une photo l’affiche plein écran :  
 
+![plein écran](src/main/webapp/assets/images/parimagine_lightbox.jpg)
+
 ##### Adressabilité 
 
 Chaque photo a sa propre page, accessible directement via la barre d’adresse du navigateur. La page inclut des boutons de navigation photo suivante / photo précédente, et un embryon de gadgets sociaux :
 
-[http://photos.parimagine.fr/photo/1698]()
+[https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/photo/1698]()
+
+![direct access](src/main/webapp/assets/images/parimagine_direct_access.jpg)
 
 ##### Réseau social
 
-Chaque photo peut donc être partagée sur votre réseau social préféré facebook, pour être le sujet de discussions fructueuses pour votre ego (le mien en l’occurrence dans l’exemple ci-dessous):
+Chaque photo peut donc être partagée sur votre réseau social préféré (euh ... facebook pour l'instant), pour être le sujet de discussions fructueuses pour votre ego (le mien en l’occurrence dans l’exemple ci-dessous):
+
+![conversation facebook](src/main/webapp/assets/images/parimagine_facebook.jpg)
 
 ##### Géo-localisation
 
@@ -108,7 +118,11 @@ Toute photo dont l’adresse est renseignée - même de façon incomplète - peu
 
 En cliquant sur l’icône de mappemonde en bas à droite de ces photos …
 
-  … on accède alors à la carte de Paris sur google maps, associée à la vue actuelle (‘street view’) du lieu.
+![mappemonde](src/main/webapp/assets/images/parimagine_mappemonde.jpg)
+
+… on accède alors à la carte de Paris sur google maps, associée à la vue actuelle (‘street view’) du lieu.
+
+![street view](src/main/webapp/assets/images/parimagine_stree_view.jpg)
 
 _Avertissement : l’état actuel du prototype ne sauvegarde pas la géo-localisation précise, vous n’obtiendrez pas un résultat aussi spectaculaire en testant in vivo … mais ça va venir !_
 
@@ -118,19 +132,27 @@ Il est alors possible, grâce à un effort raisonné et raisonnable de mise en p
 
 [http://dev.parimagine.fr/before-after.html]()
 
+![avant/après](src/main/webapp/assets/images/parimagine_avant_apres.jpg)
+
+![avant](src/main/webapp/assets/images/parimagine_avant.jpg)
+
+![après](src/main/webapp/assets/images/parimagine_apres.jpg)
+
 ##### Géo-localisation (2)
 
 Google maps permet aussi, à peu de frais, de lier les photos géo-localisée à la carte de Paris :
 
 [http://dev.parimagine.fr/maps.html ]()
 
-Cliquer sur la marque  (ci-dessus au bout de la grosse flèche rouge) nous télé-transporte immédiatement vers les photos de la rue L'Abbé Groult de la photothèque :  
+![carte de Paris](src/main/webapp/assets/images/parimagine_google_map.jpg)
 
+Cliquer sur la marque  (ci-dessus au bout de la grosse flèche rouge) nous télé-transporte immédiatement vers [les photos de la rue L'Abbé Groult](https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/?search=Groult) de la photothèque :  
+
+![rue L'Abbé Groult](src/main/webapp/assets/images/parimagine_abb_groult.jpg)
 
 #### Parimagine
 
 Quelques pages statiques donnent accès aux informations concernant Parimagine Editions :
-
 
 + [http://dev.parimagine.fr/](Nouveautés)
 + [http://dev.parimagine.fr/contacts.html](Contacts)
@@ -140,9 +162,11 @@ Quelques pages statiques donnent accès aux informations concernant Parimagine E
 
 Ce prototype est ouvert ('_open source_'), et les personnes intéressées par l’aspect technique peuvent accéder au code source ici : [https://github.com/parimagine/parimagine.]().
 
-En 2 mots : les 8000+ photos sont stockées sur une instance de SAP HANA Cloud (instance gracieusement offerte par SAP pour le test et le développement). Cette instance expose un API REST pour sélectionner, trier, lire et écrire les photos. 
+En 2 mots : les 8000+ photos sont stockées sur une instance de [SAP HANA Cloud](https://www54.sap.com/pc/tech/cloud/software/hana-cloud-platform-as-a-service/index.html) 
+(instance gracieusement offerte par SAP pour le test et le développement). Cette instance expose un [API REST pour sélectionner, trier, lire et écrire](https://github.com/parimagine/parimagine/blob/master/src/main/java/net/aequologica/parimagine/jaxrs/Resource.java) les photos. 
 
-L’interface utilisateur est basée principalement sur les logiciels ouverts jquery  et bootstrap et utilise des requêtes ajax pour accéder aux services REST.
+L’interface utilisateur est basée principalement sur les logiciels ouverts [jquery](http://jquery.com/) et [twoitter bootstrap](http://twitter.github.io/bootstrap/) 
+et utilise des requêtes [ajax](http://en.wikipedia.org/wiki/Ajax_(programming)) pour accéder aux services [REST](http://en.wikipedia.org/wiki/REST) mentionné plus haut.
 
 ## Demain (à finir)
 
@@ -156,11 +180,11 @@ L’application [http://www.avc.com/a_vc/2010/03/10-golden-principles-of-success
 
 L’application collecte et organise les données et informations provenant de son utilisation. Par exemple, elle présente sous forme de jeu la géo-localisation précise d’une photo, elle invite les utilisateurs à noter leurs préférences, etc. 
 
-Dans le style de stackoverflow ou wikipedia, elle permet aux utilisateurs d’influer sur le contenu même.
+Dans le style de [stackoverflow](http://stackoverflow.com/) ou [wikipedia](http://en.wikipedia.org/wiki/Arrondissements_of_Paris), elle permet aux utilisateurs d’influer sur le contenu même.
 
 ### Réseaux sociaux
 
-L’application s’intègre avec les réseaux sociaux les plus populaires (facebook, twitter, tumblr). Pour augmenter sa visibilité et pour éviter de réinventer la roue.
+L’application s’intègre avec les réseaux sociaux les plus populaires ([facebook](https://www.facebook.com/), [twitter](https://twitter.com/), [tumblr](https://www.tumblr.com/)). Pour augmenter sa visibilité et pour éviter de réinventer la roue.
 
 ### Téléphonie mobile et intelligente
 
