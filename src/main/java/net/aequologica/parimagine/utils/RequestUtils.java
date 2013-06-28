@@ -10,8 +10,8 @@ public class RequestUtils {
         String serverName = req.getServerName();     // hostname.com
         int serverPort = req.getServerPort();        // 80
         String contextPath = req.getContextPath();   // /mywebapp
-        String servletPath = req.getServletPath();   // /servlet/MyServlet
         /*
+        String servletPath = req.getServletPath();   // /servlet/MyServlet
         String pathInfo = req.getPathInfo();         // /a/b;c=123
         String queryString = req.getQueryString();   // d=789
         */
@@ -24,7 +24,7 @@ public class RequestUtils {
             url.append(":").append(serverPort);
         }
     
-        url.append(contextPath).append(servletPath);
+        url.append(contextPath);
     
         return url.toString();
     }

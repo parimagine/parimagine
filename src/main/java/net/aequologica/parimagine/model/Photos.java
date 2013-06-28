@@ -260,11 +260,13 @@ public class Photos {
             URL url = null;
             try {
                 url = new URL(toURL(null, photo.getImage()));
-                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-                try (InputStream is = conn.getInputStream()) {
-                    if (is != null) {
-                        photo.setReachable(true);
-                        continue;
+                if (url != null) {
+                    HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                    try (InputStream is = conn.getInputStream()) {
+                        if (is != null) {
+                            photo.setReachable(true);
+                            continue;
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -360,7 +362,7 @@ public class Photos {
 	    final String ret;
 	    if (documents == null || documents.length() == 0) {
 	        if (request != null) {
-	            ret = RequestUtils.getBaseURL(request);
+	            ret = RequestUtils.getBaseURL(request) + "/documents";
 	        } else {
 	            return null;
 	        }
