@@ -249,7 +249,7 @@ public class Photos {
     }
     
     private List<Photo> verify(List<Photo> list) {
-        if (documents == null) {
+        if (documents == null || documents.length() == 0) {
             return list;
         }
         for (Photo photo : list) {
@@ -358,7 +358,7 @@ public class Photos {
 	
 	public String toURL(HttpServletRequest request, String path) {
 	    final String ret;
-	    if (documents == null) {
+	    if (documents == null || documents.length() == 0) {
 	        if (request != null) {
 	            ret = RequestUtils.getBaseURL(request);
 	        } else {
