@@ -1,4 +1,4 @@
-package net.aequologica.parimagine.config;
+package com.sap.prd.parimagine.config;
 
 import java.io.IOException;
 
@@ -22,6 +22,16 @@ public final class ParimagineConfig extends AbstractConfig {
     @Managed
     public void setTitle(String title) {
         set("title", title);
+    }
+
+    @Managed
+    public String getDocuments() {
+        return get("documents");
+    }
+
+    @Managed
+    public void setDocuments(String documents) {
+        set("documents", documents);
     }
 
 }

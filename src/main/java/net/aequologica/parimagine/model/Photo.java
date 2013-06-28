@@ -14,6 +14,7 @@ public class Photo implements Comparable<Photo> {
     private Didascalie didascalie;
     private Address address;
     private GeoData geoData;
+    private Boolean reachable = Boolean.FALSE;
     
     public Photo() {
 	}
@@ -66,6 +67,14 @@ public class Photo implements Comparable<Photo> {
 	public void setGeoData(GeoData geoData) {
 		this.geoData = geoData;
 	}
+
+    public Boolean getReachable() {
+        return reachable;
+    }
+
+    public void setReachable(Boolean reachable) {
+        this.reachable = reachable;
+    }
 
     private static ObjectMapper mapper = new ObjectMapper();
     DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();

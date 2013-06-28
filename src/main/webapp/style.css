@@ -63,10 +63,10 @@ footer #next {
 }
 
 .navbar .brand {
-  font-family: 'ParmaPetit';
+  // font-family: 'ParmaPetit';
   font-style: normal;
   font-weight: 400;
-  font-size: 32px;
+  font-size: 20px;
   color: SteelBlue;
 }
 
@@ -88,12 +88,14 @@ footer #next {
 }
 
 #photos_container {
-  background: #ffffff;
+  /*
+  // background: #135864;
   border-radius: 5px;
   -webkit-border-radius: 5px;
      -moz-border-radius: 5px;
           border-radius: 5px;
   clear: both;
+  */
 }
 
 .centered { 
@@ -144,7 +146,7 @@ footer #next {
 .clearfix { zoom: 1; }
 
 .box {
-  margin: 5px 0 0 5px;
+  margin: 5px 5px 0 0;
   padding: 5px;
   background: #fff;
   border: solid 1px #d7e1ee; /* http://www.color-hex.com/color/b0c4de */

@@ -3,10 +3,10 @@ package net.aequologica.parimagine.model;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.newArrayList;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +16,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import javax.servlet.http.HttpServletRequest;
+
+import net.aequologica.parimagine.utils.RequestUtils;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.fr.FrenchAnalyzer;
@@ -38,18 +42,22 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Predicate;
+import com.sap.prd.geppaequo.config.ConfigRegistry;
+import com.sap.prd.parimagine.config.ParimagineConfig;
 
 public class Photos {
     
-    private static Photos instance = null;
+    private static Logger log = LoggerFactory.getLogger(Photos.class);
     
+    private static Photos instance = null;
+
     public static Photos getInstance() throws IOException {
         if (Photos.instance == null) {
             Photos.instance = new Photos();
@@ -61,6 +69,8 @@ public class Photos {
     final Map<String, Photo> image2photoMap; 
     final Map<Integer, List<Photo>> districtLists = new HashMap<>();
     final Map<String, List<Photo>> themeLists = new HashMap<>();
+    
+    final String documents;
 
     // must be sorted ! (used in binary search)
     String[] themes = new String[] {
@@ -111,6 +121,13 @@ public class Photos {
     }
     
     private Photos() throws IOException {
+        ParimagineConfig config = ConfigRegistry.getConfig(ParimagineConfig.class);
+        if (config != null) {
+            documents = config.getDocuments();
+        } else {
+            documents = null;
+        }
+        
         list = load();
         image2photoMap = new HashMap<>();
         for (Photo photo : list) {
@@ -132,14 +149,14 @@ public class Photos {
         return this.list.size();
     }
 
-    private static List<Photo> getSlice(List<Photo> aList, Slice slice) {
+    private List<Photo> getSlice(List<Photo> aList, Slice slice) {
     	if (aList == null || aList.size() == 0) {
         	return Collections.emptyList();
     	}
     	int from = slice.getFrom(aList.size());
         int to   = slice.getTo(aList.size());
         
-        return aList.subList(from, to);
+        return verify(aList.subList(from, to));
     }
 
     public List<Photo> getSlice( Slice slice ) {
@@ -179,14 +196,18 @@ public class Photos {
     }
     
 	public List<Photo> getRandomSlice(Slice slice) {
+        if (list.size() == 0) {
+            return Collections.emptyList();
+        }
+        
         List<Photo> randomSlice = new ArrayList<>(slice.size);
         
         Random r = new Random(new Date().getTime());
-        int max = list.size();
+        int max = Math.min(list.size(), slice.size);
         for (int i = 0; i < slice.size; i++) {
-        	randomSlice.add(list.get(r.nextInt(max)));
-		}
-		return randomSlice;
+            randomSlice.add(list.get(r.nextInt(max)));
+        }
+		return verify(randomSlice);
 	}
 	
     public List<Photo> search(String searchString, Slice slice) throws IOException, ParseException {
@@ -206,10 +227,11 @@ public class Photos {
             }
         }
         reader.close();
-        return list;
+        return verify(list);
     }
 
-    private static ArrayList<Photo> load() throws IOException {
+    private ArrayList<Photo> load() throws IOException {
+        ArrayList<Photo> fromJSON;
         ObjectMapper mapper = new ObjectMapper();
         
         URL json = Photos.class.getResource("/photos-test.json");
@@ -221,8 +243,40 @@ public class Photos {
         }
         
         try (InputStream jsonSource = json.openStream()) {
-            return mapper.readValue(jsonSource, new TypeReference<ArrayList<Photo>>() { } );
+            fromJSON = mapper.readValue(jsonSource, new TypeReference<ArrayList<Photo>>() { } );
         }
+        return fromJSON;
+    }
+    
+    private List<Photo> verify(List<Photo> list) {
+        if (documents == null) {
+            return list;
+        }
+        for (Photo photo : list) {
+            if (photo.getReachable()) {
+                continue;
+            }
+
+            URL url = null;
+            try {
+                url = new URL(toURL(null, photo.getImage()));
+                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                try (InputStream is = conn.getInputStream()) {
+                    if (is != null) {
+                        photo.setReachable(true);
+                        continue;
+                    }
+                }
+            } catch (Exception e) {
+            } finally {
+                if (photo.getReachable()) {
+                    log.info("FOUND {} @ {}", photo.getImage(), url.toString());
+                } else {
+                    log.info("NOT FOUND {}", photo.getImage());
+                }
+            }
+        }
+        return list;
     }
     
     public static void writePhotoList(Writer writer, List<Photo> photoList) throws IOException {
@@ -300,6 +354,24 @@ public class Photos {
 	    int getTo(final int max) {
 	    	return Math.min(this.size*(offset+1), max);
 	    }
-		
+	}
+	
+	public String toURL(HttpServletRequest request, String path) {
+	    final String ret;
+	    if (documents == null) {
+	        if (request != null) {
+	            ret = RequestUtils.getBaseURL(request);
+	        } else {
+	            return null;
+	        }
+	    } else {
+	        ret = documents; 
+	    }
+	    if (ret != null) {
+	        if (path != null) {
+	            return ret + path;
+	        }
+	    }
+	    return ret; 
 	}
 }

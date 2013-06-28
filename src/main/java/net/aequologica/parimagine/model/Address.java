@@ -2,21 +2,21 @@ package net.aequologica.parimagine.model;
 
 public class Address {
 
-	private String town;
-	private Integer  district;
-    private Integer department;
-    private String number;
-    private String street;
-    private String legacy;
+    private Integer department; // département:75
+	private String town; // ville:Paris
+    private Integer district; // arrondissment:18 
+    private String number; // numéro:101
+    private String street; // rue:rue du mont cenis
+    private String legacy; // vieux_nom_de_rue:rue de blablabla
     
     public Address() {
 	}
 
-    public Address(String town, Integer district, Integer department, String number, String street, String legacy) {
+    public Address(Integer department, String town, Integer district, String number, String street, String legacy) {
 		super();
+        this.department = department;
 		this.town = town;
 		this.district = district;
-		this.department = department;
 		this.number = number;
 		this.street = street;
 		this.legacy = legacy;
@@ -61,6 +61,6 @@ public class Address {
 
     @Override
     public String toString() {
-        return "Address [town=\"" + town + "\", district=" + district + ", department=" + department + ", number=\"" + number + "\", street=\"" + street + "\", legacy=\""+ legacy + "\"]";
+        return "Address [department=" + department + ", town=\"" + town + "\", district=" + district + ", number=\"" + number + "\", street=\"" + street + "\", legacy=\""+ legacy + "\"]";
     }
 }

@@ -4,17 +4,20 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import net.aequologica.parimagine.model.Photo;
 import net.aequologica.parimagine.model.Photos;
+import net.aequologica.parimagine.utils.RequestUtils;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.glassfish.jersey.server.mvc.Viewable;
@@ -30,10 +33,16 @@ public class Resource {
     }
 
     @GET
+    @javax.ws.rs.Path("/datum/{image}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Photo getPhoto(@PathParam("image") String image ) throws IOException {
+        return Photos.getInstance().getPhoto(image);
+    }
+
+    @GET
     @javax.ws.rs.Path("{index: \\d+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Viewable getPhotoJsp(
-    		@PathParam("index") int index ) throws IOException {
+    public Viewable getPhotoJsp(@PathParam("index") int index ) throws IOException {
     	int max = Photos.getInstance().getSize();
     	if (index < 0 || max <= index ) {
         	throw new WebApplicationException(Response.noContent().build());
@@ -52,14 +61,6 @@ public class Resource {
     			.build();
     	
     	throw new WebApplicationException(Response.temporaryRedirect(location).build());
-    }
-
-    @GET
-    @javax.ws.rs.Path("/datum/{image}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Photo getPhoto(
-    		@PathParam("image") String image ) throws IOException {
-        return Photos.getInstance().getPhoto(image);
     }
 
     @GET
@@ -82,6 +83,14 @@ public class Resource {
         return Photos.getInstance().getThemeSlice(theme, new Photos.Slice(page, count));
     }
 
+    @GET
+    @javax.ws.rs.Path("/random")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getRandom(@Context HttpServletRequest request) throws IOException {
+        List<Photo> singleton = Photos.getInstance().getRandomSlice(new Photos.Slice(0, 1));
+        return Photos.getInstance().toURL(request, singleton.get(0).getImage());
+    }
+    
     @GET
     @javax.ws.rs.Path("/random/page/{page}")
     @Produces(MediaType.APPLICATION_JSON)

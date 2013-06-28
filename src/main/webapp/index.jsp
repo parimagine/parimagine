@@ -16,7 +16,7 @@
 
   <meta property="og:title" content="Photothèque des Jeunes Parisiens"/>
   <meta property="og:description" content="Photothèque des Jeunes Parisiens"/>
-  <meta property="og:image" content="https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/documents/photos-presse/cinema/P318.jpg"/>
+  <meta property="og:image" content="<c:url value='/documents'/>/photos-presse/cinema/P318.jpg"/>
   <meta property="og:type" content="website"/>
 
   <title>Photothèque des Jeunes Parisiens</title>
@@ -41,6 +41,7 @@
   <link href='//fonts.googleapis.com/css?family=Ubuntu:400' rel='stylesheet' type='text/css'>
 
   <style type="text/css">
+  /*
   @font-face {
     font-family: 'Peignot';
     font-style: normal;
@@ -54,6 +55,7 @@
     font-weight: 400;
     src: local('ParmaPetit '), url('<c:url value="/assets/fonts/ParmaPetit-Normal.woff"/>') format('woff');
   }
+  */
 
   .navbar-search .icon-search {
     opacity: 0.5;
@@ -73,6 +75,10 @@
     top: 7px;
     right: 11px;
     background-image: url("<c:url value='/img/glyphicons-halflings.png' />");
+  }
+  
+  .lightbox-content .lightbox-caption {
+    opacity: 0;
   }
 
   </style>
@@ -160,8 +166,10 @@
   <div class="container" style="padding-top: 45px;">
     <section id="content">
       <div class="row-fluid">
-        <div id="phototheque" class="span12 clearfix">
+        <div id="phototheque" class="span12 clearfix" style="display:none; ">
         </div>
+      </div>
+      <div class="row-fluid">
         <div id="photos_container" class="span12 clearfix">
         </div>
       </div>
@@ -207,14 +215,14 @@
   <!-- !!!! content inside script id="didascalie-template" MUST start with "<", otherwise jquery explodes !!!! -->
   <script id="didascalie-template" type="text/x-handlebars-template"
   ><div class="centered box {{random_width_class}}">
-    <a class="photo" href="<c:url value='/documents/'/>/{{photo.image}}">
-      <img class="box_img" src="<c:url value='/documents/'/>{{photo.image}}" />
+    <a class="photo" href="{{baseURL}}/{{photo.image}}">
+      <img class="box_img" src="{{baseURL}}/{{photo.image}}" />
     </a>
     <span>
-    <div class="didascalie-base">
+     <div class="didascalie-base">
       {{photo.didascalie.base}}
-    </div>
-    <div>
+     </div>
+     <div>
       <div class="didascalie-ext">
          {{photo.didascalie.ext}}
       </div>
@@ -240,8 +248,8 @@
             >
           <i class="icon-globe"></i>
         </a>
-      </span>
-    <div>
+      </div>
+     <div>
     </span>
   <div></script>
   <!-- /handlebars template for photo box -->
@@ -663,6 +671,7 @@
       // ask handlebars to render the template
       return handlebars_template(
         {
+          baseURL             : "<%= net.aequologica.parimagine.model.Photos.getInstance().toURL(request, null) %>",
           photo               : photo,
           number              : photo.address.number?photo.address.number:'', 
           random_width_class  : get_random_width_class(), 
@@ -806,11 +815,26 @@
           var $didascalieBase = $(this).parent().children("span:first").clone();
           $didascalieBase.remove('.iconLinks');
           $('#lightbox-caption p').html($didascalieBase);
+          
+          $(".lightbox-content").hover(function() {
+            $(".lightbox-content .lightbox-caption").stop().animate({
+              opacity : 1
+            });
+          }, function() {
+            $(".lightbox-content .lightbox-caption").stop().animate({
+              opacity : 0
+            });
+          });
+          
           $('#lightbox-img').load(function() {
             $('#demoLightbox').lightbox({maximize: true});
           });
         }
       );
+      /*
+      */
+      
+      
       return;
     }
 

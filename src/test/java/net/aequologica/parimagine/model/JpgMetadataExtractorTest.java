@@ -106,7 +106,7 @@ public class JpgMetadataExtractorTest {
 						}
 					}
 					
-					Address address = new Address("Paris", district, 75, number, street, oldStreet);
+					Address address = new Address(75, "Paris", district, number, street, oldStreet);
 					newCaption = newCaption.replace("&", "&amp;");
 					newCaption = newCaption.replace("\"", "&quot;");
 					newCaption = newCaption.replace("'", "&apos;");
