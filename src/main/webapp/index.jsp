@@ -214,7 +214,7 @@
   <!-- handlebars template for photo box -->
   <!-- !!!! content inside script id="didascalie-template" MUST start with "<", otherwise jquery explodes !!!! -->
   <script id="didascalie-template" type="text/x-handlebars-template"
-  ><div class="centered box {{random_width_class}}">
+  ><div class="centered box col3">
     <a class="photo" href="{{documentsBaseURL}}{{photo.image}}" data-index="{{photo.index}}">
       <img class="box_img" src="{{documentsBaseURL}}{{photo.image}}" />
     </a>
@@ -659,10 +659,6 @@
 
     var $photos_container  = $('#photos_container');
 
-    function get_random_width_class() {
-      return "col3"; // +(2+Math.round(1*Math.random()));
-    }
-
     function create_new_box(photo) {
       // convert e.g. &apos; to '
       photo.didascalie.base = $('<span>').html(photo.didascalie.base).html().trim();
@@ -674,13 +670,17 @@
         has_address = true;
       }
         
+      var documentsBaseURL = "<%= net.aequologica.parimagine.model.Photos.getInstance().toURL(request, null) %>";
+      if (documentsBaseURL.substr(-1) != '/') {
+        documentsBaseURL += '/';
+      }
+      
       // ask handlebars to render the template
       return handlebars_template(
         {
-          documentsBaseURL             : "<%= net.aequologica.parimagine.model.Photos.getInstance().toURL(request, null) %>",
+          documentsBaseURL    : documentsBaseURL,
           photo               : photo,
           number              : photo.address.number?photo.address.number:'', 
-          random_width_class  : get_random_width_class(), 
           district            : photo.address.district?districts[photo.address.district-1]:"?",
           noaddress           : !has_address,
         }
