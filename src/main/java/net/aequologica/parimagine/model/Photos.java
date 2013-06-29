@@ -149,24 +149,14 @@ public class Photos {
         return this.list.size();
     }
 
-    private List<Photo> getSlice(List<Photo> aList, Slice slice) {
-    	if (aList == null || aList.size() == 0) {
-        	return Collections.emptyList();
-    	}
-    	int from = slice.getFrom(aList.size());
-        int to   = slice.getTo(aList.size());
-        
-        return verify(aList.subList(from, to));
+    public List<Photo> getSlice( int page, int count ) {
+    	return verify(new Slice(this.list, page, count).getPhotos());
     }
 
-    public List<Photo> getSlice( Slice slice ) {
-    	return getSlice(this.list, slice);
-    }
-
-    public List<Photo> getDistrictSlice(Integer district, Slice slice) {
+    public List<Photo> getDistrictSlice(Integer district, int page, int count) {
     	
         if (district == null || district == 0) {
-            return getSlice(slice);
+            return getSlice(page, count);
         }
         
         if (20 < district) {
@@ -175,54 +165,51 @@ public class Photos {
         
         List<Photo> districtList = districtLists.get(district);
         
-        return getSlice(districtList, slice);
+        return verify(new Slice(districtList, page, count).getPhotos());
     }
     
-    public List<Photo> getThemeSlice(String theme, Slice slice) {
+    public List<Photo> getThemeSlice(String theme, int page, int count) {
 
     	if (theme == null || theme.length() == 0)  {
-            return getSlice(slice);
+            return getSlice(page, count);
         }
     	
         int iTheme = Arrays.binarySearch(themes, theme);
         
         if (iTheme == -1) {
-            throw new IllegalArgumentException("Je n'ai pas trouvé ce thème dans la liste. Tu demandes le thème '"+theme+"'. Voici la liste : "+themes);
+            throw new IllegalArgumentException("Je n'ai pas trouvé ce thème dans la liste. Tu demandes le thème '"+theme+"'. Voici la liste : " + themes);
         }
         
         List<Photo> themeList = themeLists.get(theme);
         
-        return getSlice(themeList, slice);
+        return verify(new Slice(themeList, page, count).getPhotos());
     }
     
-	public List<Photo> getRandomSlice(Slice slice) {
-        if (list.size() == 0) {
-            return Collections.emptyList();
-        }
-        
-        List<Photo> randomSlice = new ArrayList<>(slice.size);
-        
-        Random r = new Random(new Date().getTime());
-        int max = Math.min(list.size(), slice.size);
-        for (int i = 0; i < slice.size; i++) {
-            randomSlice.add(list.get(r.nextInt(max)));
-        }
-		return verify(randomSlice);
+	public List<Photo> getRandomSlice(int page, int count) {
+        return verify(new Slice(this.list, page, count).getRandomPhotos());
 	}
 	
-    public List<Photo> search(String searchString, Slice slice) throws IOException, ParseException {
-        List<Photo> list = new ArrayList<>(slice.size); 
+    public List<Photo> search(String searchString, int maxResults) throws IOException, ParseException {
+        if (searchString == null || searchString.length()==0) {
+            throw new IllegalArgumentException();
+        }
+        if (maxResults<0) {
+            return Collections.emptyList();
+        }
+        List<Photo> list = new ArrayList<>(maxResults);
+        
         IndexReader reader = DirectoryReader.open(index);
         IndexSearcher searcher = new IndexSearcher(reader);
         QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_43, new String[] { "didascalie.base", "didascalie.ext", "street", "legacy" }, analyzer);
         Query query = parser.parse(searchString);
-        TopDocs results = searcher.search(query, slice.size);
+        TopDocs results = searcher.search(query, maxResults);
         ScoreDoc[] hits = results.scoreDocs;
+        int countResults = 0;
         for (ScoreDoc scoreDoc : hits) {
             Document doc = searcher.doc(scoreDoc.doc);
             String image = doc.get("image");
             list.add(image2photoMap.get(image));
-            if (list.size()>=slice.size) {
+            if (++countResults>=maxResults) {
                 break;
             }
         }
@@ -327,35 +314,49 @@ public class Photos {
 		return list;
 	}
 
-	public static class Slice {
+	private static class Slice {
 		
-	    final public static int DEFAULT_SIZE = 12;
+        final List<Photo>  set;
+	    final int          from;
+	    final int          to;
 	    
-	    final Integer offset;
-	    final Integer size;
-	    
-		public Slice(final Integer offset, final Integer size) {
+        public Slice(final List<Photo> photos, final Integer offset, final Integer size) {
+            if (photos == null) {
+                throw new IllegalArgumentException();
+            }
 
-		    if (offset == null) {
-		    	this.offset = 0;
-		    } else {
-		    	this.offset = offset;	
-		    }
-		    
-		    if (size == null || size == 0 ) {
-		    	this.size = DEFAULT_SIZE;
-		    } else {
-		    	this.size = size;
-		    }
+            if (offset == null) {
+                throw new IllegalArgumentException();
+            }
+
+            if (size == null) {
+                throw new IllegalArgumentException();
+            }
+
+            this.set    = photos;
+	    	this.from = Math.min(size*offset, this.set.size());	
+	    	this.to   = Math.min(size*(offset+1), this.set.size());
 		}
-		
-	    int getFrom(final int max) {
-	    	return Math.min(this.size*offset, max);
-	    }
-		
-	    int getTo(final int max) {
-	    	return Math.min(this.size*(offset+1), max);
-	    }
+        
+        List<Photo> getPhotos() {
+            if (from == to) {
+                return Collections.emptyList();
+            }
+            return this.set.subList(this.from, this.to);
+        }
+
+        List<Photo> getRandomPhotos() {
+            if (from == to) {
+                return Collections.emptyList();
+            }
+            List<Photo> randomSlice = new ArrayList<>(this.to);
+            
+            Random r = new Random(new Date().getTime());
+            for (int i = 0; i < this.to; i++) {
+                randomSlice.add(this.set.get(r.nextInt(this.set.size())));
+            }
+            return randomSlice;
+        }
 	}
 	
 	public String toURL(HttpServletRequest request, String path) {

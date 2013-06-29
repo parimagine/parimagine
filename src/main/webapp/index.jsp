@@ -354,18 +354,18 @@
 
         if (this.search) {
           // search URL
-          ret = ret+"/search?for="+encodeURIComponent(this.search);
+          ret = ret + "/search?for=" + encodeURIComponent(this.search);
         } else {
           if (this.theme) {
             // themes URL 
-            ret = ret+"/theme/"+themes[(this.theme-1)]+"/page/"+this.infscrPageview;
+            ret = ret + "/theme/" + themes[(this.theme-1)] + "/page/" + this.infscrPageview + "/count/12";
           } else {
             if (this.district) {
               // district URL 
-              ret = ret+"/district/"+this.district+"/page/"+this.infscrPageview; /* from 1 to 20 incl. */
+              ret = ret + "/district/" + this.district + "/page/" + this.infscrPageview + "/count/12"; /* from 1 to 20 incl. */
             } else {
               // random URL
-              ret = ret+"/random/page/"+this.infscrPageview;
+              ret = ret + "/random/page/" + this.infscrPageview + "/count/12";
             }
           }
         }

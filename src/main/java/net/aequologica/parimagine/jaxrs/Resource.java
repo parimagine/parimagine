@@ -64,48 +64,53 @@ public class Resource {
     }
 
     @GET
-    @javax.ws.rs.Path("/district/{district}/page/{page}")
+    @javax.ws.rs.Path("/district/{district}/page/{page}/count/{count}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Photo> getSlice(
+    public List<Photo> getDistrictSlice(
             @PathParam("district") Integer district,
             @PathParam("page") Integer page,
-            @QueryParam("count") Integer count ) throws IOException {
-        return Photos.getInstance().getDistrictSlice(district, new Photos.Slice(page, count));
+            @PathParam("count") Integer count ) throws IOException {
+        Photos photos = Photos.getInstance(); 
+        return photos.getDistrictSlice(district, page, count);
     }
 
     @GET
-    @javax.ws.rs.Path("/theme/{theme}/page/{page}")
+    @javax.ws.rs.Path("/theme/{theme}/page/{page}/count/{count}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Photo> getSlice( 
+    public List<Photo> getThemeSlice( 
     		@PathParam("theme") String theme,
             @PathParam("page") Integer page,
-            @QueryParam("count") Integer count  ) throws IOException {
-        return Photos.getInstance().getThemeSlice(theme, new Photos.Slice(page, count));
+            @PathParam("count") Integer count  ) throws IOException {
+        Photos photos = Photos.getInstance(); 
+        return photos.getThemeSlice(theme, page, count);
+    }
+
+    @GET
+    @javax.ws.rs.Path("/random/page/{page}/count/{count}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Photo> getRandomSlice(
+    		@PathParam("page") Integer page,
+    		@PathParam("count") Integer count  ) throws IOException {
+        Photos photos = Photos.getInstance(); 
+        return photos.getRandomSlice(page, count);
     }
 
     @GET
     @javax.ws.rs.Path("/random")
     @Produces(MediaType.TEXT_PLAIN)
     public String getRandom(@Context HttpServletRequest request) throws IOException {
-        List<Photo> singleton = Photos.getInstance().getRandomSlice(new Photos.Slice(0, 1));
-        return Photos.getInstance().toURL(request, singleton.get(0).getImage());
+        Photos photos = Photos.getInstance(); 
+        List<Photo> singleton = photos.getRandomSlice(0, 1);
+        return photos.toURL(request, singleton.get(0).getImage());
     }
     
-    @GET
-    @javax.ws.rs.Path("/random/page/{page}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Photo> getSlice(
-    		@PathParam("page") Integer page,
-            @QueryParam("count") Integer count  ) throws IOException {
-        return Photos.getInstance().getRandomSlice(new Photos.Slice(page, count));
-    }
-
     @GET
     @javax.ws.rs.Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Photo> search(
     		@QueryParam("for") String  searchString) throws IOException, ParseException {
-        return Photos.getInstance().search("\""+searchString+"\"", new Photos.Slice(null, 2*Photos.Slice.DEFAULT_SIZE));
+        Photos photos = Photos.getInstance(); 
+        return photos.search("\""+searchString+"\"", 32);
     }
 
 }

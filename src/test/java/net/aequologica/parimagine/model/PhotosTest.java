@@ -23,8 +23,7 @@ public class PhotosTest {
         
         assertNotNull(photos);
         
-        List<Photo> list = photos.getSlice(new Photos.Slice(null, null));
-        assertEquals(Photos.Slice.DEFAULT_SIZE, list.size());
+        List<Photo> list = photos.getRandomSlice(0, 12);
         for (Photo photo : list) {
 			System.out.println(photo);
 		}
