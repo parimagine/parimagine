@@ -34,4 +34,14 @@ public final class ParimagineConfig extends AbstractConfig {
         set("documents", documents);
     }
 
+    @Managed
+    public Boolean getVerify() {
+        return get("verify").equalsIgnoreCase("true");
+    }
+
+    @Managed
+    public void setVerify(Boolean verify) {
+        set("verify", verify.toString());
+    }
+
 }

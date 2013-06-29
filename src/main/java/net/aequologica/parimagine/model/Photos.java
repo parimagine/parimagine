@@ -71,6 +71,7 @@ public class Photos {
     final Map<String, List<Photo>> themeLists = new HashMap<>();
     
     final String documents;
+    final Boolean verify;
 
     // must be sorted ! (used in binary search)
     String[] themes = new String[] {
@@ -124,8 +125,10 @@ public class Photos {
         ParimagineConfig config = ConfigRegistry.getConfig(ParimagineConfig.class);
         if (config != null) {
             documents = config.getDocuments();
+            verify    = config.getVerify();
         } else {
             documents = null;
+            verify    = false;
         }
         
         list = load();
@@ -236,6 +239,9 @@ public class Photos {
     }
     
     private List<Photo> verify(List<Photo> list) {
+        if (!verify) {
+            return list;
+        }
         if (documents == null || documents.length() == 0) {
             return list;
         }
