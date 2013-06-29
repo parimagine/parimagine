@@ -16,33 +16,15 @@
 
   <!-- facebook metadata 
        cf. http://ogp.me/ -->
-  <c:choose>
-      <c:when test="${not empty param.didascalie}">
-        <% 
-          String    d = new String(request.getParameter("didascalie").getBytes("ISO-8859-1"), "UTF-8");
-          String[] ad = net.aequologica.parimagine.model.Didascalie.split(d);
-          pageContext.setAttribute("didascalie", d); 
-          pageContext.setAttribute("didascalie_base", ad[0]); 
-          pageContext.setAttribute("didascalie_ext", ad[1]); 
-        %>
-        <meta property="og:title" content="${didascalie}"/>
-        <meta property="og:description" content="Parimagine | Photothèque des Jeunes Parisiens"/>
-      </c:when>
-      <c:otherwise>
-        <meta property="og:title" content="Parimagine | Photothèque des Jeunes Parisiens"/>
-      </c:otherwise>
-  </c:choose>  
-  <c:if test="${not empty param.image}">
-    <meta property="og:image" content="https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/documents/${param.image}"/>
-    <meta property="og:image:type" content="image/jpeg" />
-  </c:if>
-  <c:if test="${not empty param.index}">
-    <meta property="og:url " content="http://photos.parimagine.fr/photo/${param.index}"/>
-  </c:if>
-  <meta property="og:type" content="website"/>
-  <meta property="og:site_name" content="Parimagine"/>
-  <meta property="og:locale" content="fr_FR"/>
-  <meta property="fb:app_id" content="104250825478"/>
+  <meta property="og:title"       content="Parimagine"/>
+  <meta property="og:description" content="Photothèque des Jeunes Parisiens"/>
+  <meta property="og:image"       content=""/>
+  <meta property="og:image:type"  content="image/jpeg" />
+  <meta property="og:url"         content="#"/>
+  <meta property="og:type"        content="website"/>
+  <meta property="og:site_name"   content="Parimagine"/>
+  <meta property="og:locale"      content="fr_FR"/>
+  <meta property="fb:app_id"      content="104250825478"/>
   <!-- /facebook metadata -->
 
   <title>Parimagine | Photothèque des Jeunes Parisiens</title>
@@ -141,7 +123,7 @@
 <!-- !!!! content inside script id="didascalie-template" MUST start with "<", otherwise jquery explodes !!!! -->
 <script id="photo-template" type="text/x-handlebars-template"
 ><div style="opacity: 0;">
-  <img id="photo", class="centered" src="{{baseURL}}/{{photo.image}}" style="margin-bottom: 10px;">
+  <img id="photo", class="centered" src="{{baseURL}}{{photo.image}}" style="margin-bottom: 10px;">
   <br/>
   <span id="didascalie" class="centered" style="font-size: larger;">{{{photo.didascalie.base}}}</span>
   <br/>
@@ -165,9 +147,19 @@
             dataType    : "json",
             url         : "<c:url value='/photo/datum/'/>"+${param.index},
         }).done(function( photo, textStatus, jqXHR ) {
+          var documentsBaseURL = "<%= net.aequologica.parimagine.model.Photos.getInstance().toURL(request, null) %>";
+          if (documentsBaseURL.substr(-1) != '/') {
+            documentsBaseURL += '/';
+          }
+          
+          $("meta[property='og:title']"      ).attr('content', photo.didascalie.base + " | " + photo.didascalie.ext);
+          $("meta[property='og:description']").attr('content', "Parimagine | Photothèque des Jeunes Parisiens");
+          $("meta[property='og:image']"      ).attr('content', documentsBaseURL+photo.image);
+          $("meta[property='og:url']"        ).attr('content', location.origin+"<c:url value='/photo.jsp?index='/>"+photo.index);
+          
           $('#photo_container').html(handlebars_template({
             photo: photo,
-            baseURL: "<%= net.aequologica.parimagine.model.Photos.getInstance().toURL(request, null) %>",
+            baseURL: documentsBaseURL,
           }));
 
           imagesLoaded( '#photo', function() {
