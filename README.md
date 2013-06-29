@@ -5,7 +5,12 @@ parimagine
 
 ### Contexte
 
-__Parimagine Editions__ & __La Photothèque des Jeunes Parisiens__ gèrent un fond de « _plus de 20 000 documents photographiques (...) représentant 20 années de recherches iconographiques auprès des familles, des collectionneurs de cartes postales et de photos de presse sur les rues du vieux Paris et des communes d’Ile-de-France_ » cf. [http://www.parimagine.fr/contents/parimagine]()
+__Parimagine Editions__ & __La Photothèque des Jeunes Parisiens__ 
+gèrent un fond de « _plus de 20 000 documents photographiques (...) 
+représentant 20 années de recherches iconographiques auprès des familles, 
+des collectionneurs de cartes postales et de photos de presse 
+sur les rues du vieux Paris et des communes d’Ile-de-France_ » 
+cf. [http://www.parimagine.fr/contents/parimagine](http://www.parimagine.fr/contents/parimagine)
 
 ### Objectif
 
@@ -20,46 +25,71 @@ Le présent document a pour objectif de décrire comment les technologies les pl
 
 ### Qui suis-je ?
 
-Christophe Thiébaud, _development architect_ de profession pour SAP Walldorf, Allemagne, et en ce moment _CTO, Chief Technical Officer_ absolument et totalement et pleinement bénévole de l’association __La Photothèque des Jeunes Parisiens__.
+Christophe Thiébaud, _development architect_ de profession pour SAP Walldorf, Allemagne, 
+et en ce moment _CTO, Chief Technical Officer_ absolument et totalement et pleinement 
+bénévole de l’association __La Photothèque des Jeunes Parisiens__.
 
-+ [LinkedIn](http://www.linkedin.com/profile/view?id=367152)
-+ [Facebook](https://www.facebook.com/christophe.thiebaud)
-+ [Twitter](https://twitter.com/cthiebaud)
++ [linkedIn](http://www.linkedin.com/profile/view?id=367152)
++ [facebook](https://www.facebook.com/christophe.thiebaud)
++ [twitter](https://twitter.com/cthiebaud)
++ [mail](mailto:christophe.thiebaud@aequologica.net) 
 
 
 ## Etat des lieux
 
 ### Aujourd’hui
 
-__Parimagine Editions__ & __La Photothèque des Jeunes Parisiens__ sont déjà présents sur internet à l’adresse [http://www.parimagine.fr/]().
+__Parimagine Editions__ & __La Photothèque des Jeunes Parisiens__ sont déjà 
+présents sur internet à l’adresse [http://www.parimagine.fr/](http://www.parimagine.fr/).
 
 ![http://www.parimagine.fr/](src/main/webapp/assets/images/parimagine_php.jpg)
  
-D’un point de vue technique, le site est réalisé en [PHP](http://php.net/), et est principalement basé sur le logiciel ouvert [piwigo](http://fr.piwigo.org/), « _un logiciel de galerie photo pour le web_ ».
+D’un point de vue technique, le site est réalisé en [PHP](http://php.net/), 
+et est principalement basé sur le logiciel ouvert [piwigo](http://fr.piwigo.org/), 
+« _un logiciel de galerie photo pour le web_ ».
 
 #### Avantages
 
-Une large partie ( > 8000 documents) du fond de documents photographiques de La Photothèque des Jeunes Parisiens est disponible sous [piwigo](http://fr.piwigo.org/). Cela comprend toutes les métadonnées (didascalies, adresses, propriétaires, etc.) sous forme structurée, i.e. dans une base de données relationnelle.
+Une large partie ( > 8000 documents) du fond de documents photographiques de 
+__La Photothèque des Jeunes Parisiens__ est disponible sous [piwigo](http://fr.piwigo.org/). 
+Cela comprend toutes les métadonnées (didascalies, adresses, propriétaires, etc.) 
+sous forme structurée, i.e. dans une base de données relationnelle.
 
-[piwigo](http://fr.piwigo.org/) est toujours activement développé, cf. [http://piwigo.com/blog/](). Des plugins et extensions récents existent pour le [mobile](http://fr.piwigo.org/releases/2.4.0#mobile_theme) ou le [social web](http://piwigo.com/blog/2013/04/04/social-buttons-replaces-google1-and-tweetthis/).
+[piwigo](http://fr.piwigo.org/) est toujours activement développé, 
+cf. [http://piwigo.com/blog/](http://piwigo.com/blog/). 
+Des plugins et extensions récents existent pour 
+le [mobile](http://fr.piwigo.org/releases/2.4.0#mobile_theme) ou 
+le [social web](http://piwigo.com/blog/2013/04/04/social-buttons-replaces-google1-and-tweetthis/).
 
 #### Inconvénients
 
-La mise à jour du site requiert des compétences d’administrateur système, voire de développeur PHP et/ou  base de données, compétences qui font malheureusement défaut à Parimagine actuellement. Cela vaut surtout pour la mise à jour technique, par ex. installation des nouvelles versions de piwigo, mais aussi pour la mise à jour des contenus, par ex. ajout de pages pour les nouvelles parutions, ou nouvelles photos.
+La mise à jour du site requiert des compétences d’administrateur système, 
+voire de développeur PHP et/ou  base de données, compétences 
+qui font malheureusement défaut à Parimagine actuellement. 
+Cela vaut surtout pour la mise à jour technique, par ex. installation 
+des nouvelles versions de piwigo, mais aussi pour la mise à jour des contenus, 
+par ex. ajout de pages pour les nouvelles parutions, ou nouvelles photos.
 
-Le look & feel de piwigo est quelque peu désuet. Etrangement (pour un site de partage de photos) les photos pourraient être mieux mises en valeur.
+Le look & feel de piwigo est quelque peu désuet. 
+Etrangement (pour un site de partage de photos) les photos 
+pourraient être mieux mises en valeur.
 
 La fonctionnalité de recherche textuelle est primitive.
  
 ### Prototype
 
-A la demande de [Manuel](http://www.linkedin.com/profile/view?id=6351576), ami de trente ans, fraîchement nommé président de l’association, j’ai donc développé un prototype de ce que pourrait être le(s) site(s) de __Parimagine Editions__ & de __La Photothèque des Jeunes Parisiens__.
+A la demande de [Manuel](http://www.linkedin.com/profile/view?id=6351576), ami de trente ans, 
+fraîchement nommé président de l’association, j’ai donc développé un prototype 
+de ce que pourrait être le(s) site(s) de __Parimagine Editions__ & de 
+__La Photothèque des Jeunes Parisiens__.
 
 Tout d’abord, j’ai séparé le site de la maison d’édition du site de la photothèque.
 
 #### Photothèque
 
-Pour la photothèque, l’inspiration m’est venue du site [http://www.retronaut.com/](), « _see the past like you wouldn't believe_ », où les photos d’époques sont mises en valeur de manière fort plaisante.
+Pour la photothèque, l’inspiration m’est venue du site [http://www.retronaut.com/](http://www.retronaut.com/), 
+« _see the past like you wouldn't believe_ », où les photos d’époques sont mises en valeur 
+de manière fort plaisante.
 
 _Avertissement : toutes les photos des exemples suivants contiennent malheureusement 
 un filigrane particulièrement intrusif, ce qui demande un grand effort au lecteur 
@@ -69,7 +99,7 @@ pour pouvoir imaginer de ce que sera le résultat final. Merci de votre indulgen
 
 La page d’accueil présente une sélection de photos choisies rigoureusement au hasard :
 
-[https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/]()
+[https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/](https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/)
 
 ![https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/](src/main/webapp/assets/images/parimagine_home.jpg)
 
@@ -89,7 +119,7 @@ Cette technique met particulièrement en valeur la quantité vertigineuse des co
 
 Il est aussi possible de rechercher dans l’ensemble des textes (didascalies, adresses, etc.) une série de termes particulier. Par exemple, le mot ‘rosiers’  nous offre - assez prévisiblement - les photos de la rue des rosiers, dans le 4ème arrondissement :
 
-[https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/?search=rosiers]()
+[https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/?search=rosiers](https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/?search=rosiers)
 
 ![search=rosiers](src/main/webapp/assets/images/parimagine_search.jpg)
 
@@ -103,7 +133,7 @@ Cliquer sur une photo l’affiche plein écran :
 
 Chaque photo a sa propre page, accessible directement via la barre d’adresse du navigateur. La page inclut des boutons de navigation photo suivante / photo précédente, et un embryon de gadgets sociaux :
 
-[https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/photo/1698]()
+[https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/photo/1698](https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/photo/1698)
 
 ![direct access](src/main/webapp/assets/images/parimagine_direct_access.jpg)
 
@@ -131,7 +161,7 @@ _Avertissement : l’état actuel du prototype ne sauvegarde pas la géo-localis
 
 Il est alors possible, grâce à un effort raisonné et raisonnable de mise en place des photos avant et après, de produire un artefact spectaculaire : 
 
-[http://dev.parimagine.fr/before-after.html]()
+[http://dev.parimagine.fr/before-after.html](http://dev.parimagine.fr/before-after.html)
 
 ![avant/après](src/main/webapp/assets/images/parimagine_avant_apres.jpg)
 
@@ -143,7 +173,7 @@ Il est alors possible, grâce à un effort raisonné et raisonnable de mise en p
 
 Google maps permet aussi, à peu de frais, de lier les photos géo-localisée à la carte de Paris :
 
-[http://dev.parimagine.fr/maps.html ]()
+[http://dev.parimagine.fr/maps.html](http://dev.parimagine.fr/maps.html)
 
 ![carte de Paris](src/main/webapp/assets/images/parimagine_google_map.jpg)
 
@@ -161,7 +191,8 @@ Quelques pages statiques donnent accès aux informations concernant Parimagine E
 
 #### Logiciel ouvert
 
-Ce prototype est ouvert ('_open source_'), et les personnes intéressées par l’aspect technique peuvent accéder au code source ici : [https://github.com/parimagine/parimagine.]().
+Ce prototype est ouvert ('_open source_'), et les personnes intéressées par l’aspect technique peuvent accéder au code source ici : 
+[https://github.com/parimagine/parimagine](https://github.com/parimagine/parimagine).
 
 En 2 mots : les 8000+ photos sont stockées sur une instance de [SAP HANA Cloud](https://www54.sap.com/pc/tech/cloud/software/hana-cloud-platform-as-a-service/index.html) 
 (instance gracieusement offerte par SAP pour le test et le développement). Cette instance expose un [API REST pour sélectionner, trier, lire et écrire](https://github.com/parimagine/parimagine/blob/master/src/main/java/net/aequologica/parimagine/jaxrs/Resource.java) les photos. 
