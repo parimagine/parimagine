@@ -19,7 +19,6 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
 
 import org.imgscalr.Scalr;
-import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class ResizeImagesTest {

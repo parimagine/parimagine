@@ -17,7 +17,6 @@ import javax.ws.rs.core.UriBuilder;
 
 import net.aequologica.parimagine.model.Photo;
 import net.aequologica.parimagine.model.Photos;
-import net.aequologica.parimagine.utils.RequestUtils;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.glassfish.jersey.server.mvc.Viewable;
