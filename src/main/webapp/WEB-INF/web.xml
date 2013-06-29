@@ -37,10 +37,11 @@
 			<url-pattern>/jolokia.jsp</url-pattern>
 			<url-pattern>/jndi.jsp</url-pattern>
 			<url-pattern>/db.jsp</url-pattern>
+			<url-pattern>/modules/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<!-- Role Everyone will not be assignable -->
-			<role-name>Everyone</role-name>
+			<role-name>wizard</role-name>
 		</auth-constraint>
 	</security-constraint>
 	
@@ -48,20 +49,15 @@
 		<description>All SAP HANA Cloud users</description>
 		<role-name>Everyone</role-name>
 	</security-role>
+
+	<security-role>
+		<description>All SAP HANA Cloud users</description>
+		<role-name>wizard</role-name>
+	</security-role>
 	
-	<!-- 
-	<session-config>
-		<tracking-mode>COOKIE</tracking-mode>
-	</session-config>
-
-
-	<filter>
-		<filter-name>CORS Filter</filter-name>
-		<filter-class>org.ebaysf.web.cors.CORSFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>CORS Filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	-->
+	<!-- Declare the document store service (SAP HANA Cloud document service) -->
+        <resource-ref>
+            <res-ref-name>EcmService</res-ref-name>
+            <res-type>com.sap.ecm.api.EcmService</res-type>
+        </resource-ref>
 </web-app>
