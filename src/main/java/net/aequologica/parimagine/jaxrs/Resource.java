@@ -51,9 +51,10 @@ public class Resource {
     @javax.ws.rs.Path("{index: \\d+}")
     @Produces(MediaType.APPLICATION_JSON)
     public Viewable getPhotoJsp(@PathParam("index") int index) throws IOException {
+        Photo photo = getPhoto(index); // will throw WebApplicationException if index out of range
     	URI location = UriBuilder
     			.fromUri("../photo.jsp")
-                .queryParam("index", index)
+                .queryParam("index", photo.getIndex()) 
     			.build();
     	throw new WebApplicationException(Response.temporaryRedirect(location).build());
     }

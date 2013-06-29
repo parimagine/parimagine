@@ -382,7 +382,11 @@ public class Photos {
 	    }
 	    if (ret != null) {
 	        if (path != null) {
-	            return ret + path;
+	            if (ret.endsWith("/")) {
+                    return ret + path;
+	            } else {
+                    return ret + "/" + path;
+	            }
 	        }
 	    }
 	    return ret; 

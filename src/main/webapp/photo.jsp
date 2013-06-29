@@ -18,7 +18,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
   <!-- facebook metadata 
-       cf. http://ogp.me/ -->
+       cf. http://ogp.me/ 
+       on-line debugger : http://developers.facebook.com/tools/debug
+  -->
   <%
     int     index  = Integer.parseInt(request.getParameter("index"));
     Photo   photo  = Photos.getInstance().getPhoto(index);
