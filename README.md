@@ -15,9 +15,9 @@ cf. [http://www.parimagine.fr/contents/parimagine](http://www.parimagine.fr/cont
 ### Objectif
 
 Le présent document a pour objectif de décrire comment les technologies les plus récentes 
-    ([Cloud](https://en.wikipedia.org/wiki/Cloud_computing), 
-     [Mobile](https://en.wikipedia.org/wiki/Mobile_computing), 
-     [Social Web](https://en.wikipedia.org/wiki/Social_Web)
+    ([Cloud](https://fr.wikipedia.org/wiki/Cloud_computing), 
+     [Mobile](https://fr.wikipedia.org/wiki/Smartphone), 
+     [Web Social](https://fr.wikipedia.org/wiki/Web_social)
     ) peuvent être mises en place pour 
 
 1.  aider l’association __La Photothèque des Jeunes Parisiens__ à remplir ses objectifs, et
@@ -40,9 +40,9 @@ bénévole de l’association __La Photothèque des Jeunes Parisiens__.
 ### Aujourd’hui
 
 __Parimagine Editions__ & __La Photothèque des Jeunes Parisiens__ sont déjà 
-présents sur internet à l’adresse [http://www.parimagine.fr/](http://www.parimagine.fr/).
+présents sur internet à l’adresse [http://www.parimagine.fr](http://www.parimagine.fr/).
 
-![http://www.parimagine.fr/](src/main/webapp/assets/images/parimagine_php.jpg)
+![http://www.parimagine.fr](src/main/webapp/assets/images/parimagine_php.jpg)
  
 D’un point de vue technique, le site est réalisé en [PHP](http://php.net/), 
 et est principalement basé sur le logiciel ouvert [piwigo](http://fr.piwigo.org/), 
@@ -51,15 +51,15 @@ et est principalement basé sur le logiciel ouvert [piwigo](http://fr.piwigo.org
 #### Avantages
 
 Une large partie ( > 8000 documents) du fond de documents photographiques de 
-__La Photothèque des Jeunes Parisiens__ est disponible sous [piwigo](http://fr.piwigo.org/). 
+__La Photothèque des Jeunes Parisiens__ est disponible sous piwigo. 
 Cela comprend toutes les métadonnées (didascalies, adresses, propriétaires, etc.) 
 sous forme structurée, i.e. dans une base de données relationnelle.
 
-[piwigo](http://fr.piwigo.org/) est toujours activement développé, 
-cf. [http://piwigo.com/blog/](http://piwigo.com/blog/). 
+piwigo est toujours activement développé, 
+cf. [http://piwigo.com/blog](http://piwigo.com/blog/). 
 Des plugins et extensions récents existent pour 
 le [mobile](http://fr.piwigo.org/releases/2.4.0#mobile_theme) ou 
-le [social web](http://piwigo.com/blog/2013/04/04/social-buttons-replaces-google1-and-tweetthis/).
+le [web social](http://piwigo.com/blog/2013/04/04/social-buttons-replaces-google1-and-tweetthis/).
 
 #### Inconvénients
 
@@ -87,7 +87,7 @@ Tout d’abord, j’ai séparé le site de la maison d’édition du site de la 
 
 #### Photothèque
 
-Pour la photothèque, l’inspiration m’est venue du site [http://www.retronaut.com/](http://www.retronaut.com/), 
+Pour la photothèque, l’inspiration m’est venue du site [http://www.retronaut.com](http://www.retronaut.com/), 
 « _see the past like you wouldn't believe_ », où les photos d’époques sont mises en valeur 
 de manière fort plaisante.
 
@@ -99,9 +99,9 @@ pour pouvoir imaginer de ce que sera le résultat final. Merci de votre indulgen
 
 La page d’accueil présente une sélection de photos choisies rigoureusement au hasard :
 
-[https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/](https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/)
+[https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine](https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/)
 
-![https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/](src/main/webapp/assets/images/parimagine_home.jpg)
+![](src/main/webapp/assets/images/parimagine_home.jpg)
 
 Il est aussi possible d’afficher les photos par
 
@@ -109,15 +109,20 @@ arrondissement ![arrondissements](src/main/webapp/assets/images/parimagine_arron
 
 ##### Déroulement infini
 
-Toutes les pages utilisent la technique dite de l’infinite scrolling, (déroulement infini, en bon français ?), popularisée par facebook, twitter, et ce même retronaut : on déroule vers le bas, et de nouvelles photos apparaissent, à l’infini. J’en veux pour preuve, après une série de déroulement vers le bas, la taille minuscule du curseur ci-dessous : 
+Toutes les pages utilisent la technique dite de l’infinite scrolling, (déroulement infini, 
+en bon français ?), popularisée par facebook, twitter, et ce même retronaut : on déroule vers 
+le bas, et de nouvelles photos apparaissent, à l’infini. J’en veux pour preuve, après 
+une série de déroulement vers le bas, la taille minuscule du curseur ci-dessous : 
 
-![http://masonry.desandro.com/](src/main/webapp/assets/images/parimagine_infinite_scrolling.jpg)
+![http://masonry.desandro.com](src/main/webapp/assets/images/parimagine_infinite_scrolling.jpg)
 
 Cette technique met particulièrement en valeur la quantité vertigineuse des contenus.
 
 ##### Recherche textuelle
 
-Il est aussi possible de rechercher dans l’ensemble des textes (didascalies, adresses, etc.) une série de termes particulier. Par exemple, le mot ‘rosiers’  nous offre - assez prévisiblement - les photos de la rue des rosiers, dans le 4ème arrondissement :
+Il est aussi possible de rechercher dans l’ensemble des textes (didascalies, adresses, etc.) 
+une série de termes particulier. Par exemple, le mot ‘rosiers’  nous offre - assez prévisiblement - 
+les photos de la rue des rosiers, dans le 4ème arrondissement :
 
 [https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/?search=rosiers](https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/?search=rosiers)
 
@@ -131,7 +136,9 @@ Cliquer sur une photo l’affiche plein écran :
 
 ##### Adressabilité 
 
-Chaque photo a sa propre page, accessible directement via la barre d’adresse du navigateur. La page inclut des boutons de navigation photo suivante / photo précédente, et un embryon de gadgets sociaux :
+Chaque photo a sa propre page, accessible directement via la barre d’adresse du navigateur. 
+La page inclut des boutons de navigation photo suivante / photo précédente, 
+et un embryon de gadgets sociaux :
 
 [https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/photo/1698](https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/photo/1698)
 
@@ -185,7 +192,7 @@ Cliquer sur la marque  (ci-dessus au bout de la grosse flèche rouge) nous tél�
 
 Quelques pages statiques donnent accès aux informations concernant Parimagine Editions :
 
-+ [http://dev.parimagine.fr/](Nouveautés)
++ [http://dev.parimagine.fr](Nouveautés)
 + [http://dev.parimagine.fr/contacts.html](Contacts)
 + [http://dev.parimagine.fr/who.html](Qui sommes-nous ?)
 
