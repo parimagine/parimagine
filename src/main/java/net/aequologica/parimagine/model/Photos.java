@@ -235,6 +235,10 @@ public class Photos {
         try (InputStream jsonSource = json.openStream()) {
             fromJSON = mapper.readValue(jsonSource, new TypeReference<ArrayList<Photo>>() { } );
         }
+        int index = 0;
+        for (Photo photo : fromJSON) {
+            photo.setIndex(index++);
+        }
         return fromJSON;
     }
     

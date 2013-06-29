@@ -33,33 +33,28 @@ public class Resource {
     }
 
     @GET
-    @javax.ws.rs.Path("/datum/{image}")
+    @javax.ws.rs.Path("/datum/{index: \\d+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Photo getPhoto(@PathParam("image") String image ) throws IOException {
-        return Photos.getInstance().getPhoto(image);
+    public Photo getPhoto(@PathParam("index") int index) throws IOException {
+        int max = Photos.getInstance().getSize();
+        if (index < 0 || max <= index ) {
+            throw new WebApplicationException(Response.noContent().build());
+        }
+        Photo photo = Photos.getInstance().getPhoto(index);
+        if (photo == null) {
+            throw new WebApplicationException(Response.noContent().build());
+        }
+        return photo;
     }
 
     @GET
     @javax.ws.rs.Path("{index: \\d+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Viewable getPhotoJsp(@PathParam("index") int index ) throws IOException {
-    	int max = Photos.getInstance().getSize();
-    	if (index < 0 || max <= index ) {
-        	throw new WebApplicationException(Response.noContent().build());
-        }
-    	Photo photo = Photos.getInstance().getPhoto(index);
-    	if (photo == null) {
-        	throw new WebApplicationException(Response.noContent().build());
-    	}
+    public Viewable getPhotoJsp(@PathParam("index") int index) throws IOException {
     	URI location = UriBuilder
     			.fromUri("../photo.jsp")
     			.queryParam("index", index)
-    			.queryParam("prev", 0<index?index-1:-1)
-    			.queryParam("next", index<max-1?index+1:-1)
-    			.queryParam("image", photo.getImage())
-    			.queryParam("didascalie", photo.getDidascalie().toString())
     			.build();
-    	
     	throw new WebApplicationException(Response.temporaryRedirect(location).build());
     }
 

@@ -15,6 +15,7 @@ public class Photo implements Comparable<Photo> {
     private Address address;
     private GeoData geoData;
     private Boolean reachable = Boolean.FALSE;
+    private int     index     = 0;
     
     public Photo() {
 	}
@@ -74,6 +75,14 @@ public class Photo implements Comparable<Photo> {
 
     public void setReachable(Boolean reachable) {
         this.reachable = reachable;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     private static ObjectMapper mapper = new ObjectMapper();

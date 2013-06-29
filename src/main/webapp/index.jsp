@@ -215,8 +215,8 @@
   <!-- !!!! content inside script id="didascalie-template" MUST start with "<", otherwise jquery explodes !!!! -->
   <script id="didascalie-template" type="text/x-handlebars-template"
   ><div class="centered box {{random_width_class}}">
-    <a class="photo" href="{{baseURL}}/{{photo.image}}">
-      <img class="box_img" src="{{baseURL}}/{{photo.image}}" />
+    <a class="photo" href="{{documentsBaseURL}}{{photo.image}}" data-index="{{photo.index}}">
+      <img class="box_img" src="{{documentsBaseURL}}{{photo.image}}" />
     </a>
     <span>
      <div class="didascalie-base">
@@ -233,10 +233,12 @@
 
       <span class="iconLinks">
         <a  id="favourite"
+			href="<c:url value='/'/>photo/{{photo.index}}"
+			target="photo_{{photo.index}}"
             data-toggle="tooltip" 
             data-placement="bottom" 
-            title="j'adore&nbsp;cette&nbsp;photo!&nbsp;(coming&nbsp;soon...)"
-          <i class="icon-star-empty"></i>
+            title="open&nbsp;in&nbsp;its&nbsp;own&nbsp;window"
+          <i class="icon-eye-open"></i>
         </a>
         <a  id="streetView"
             href="#" 
@@ -419,9 +421,11 @@
                   geoLocate($(this), $('#myModal'));
               });
 
+              /*
               $(".box div span a#favourite").click(function(event) {
                   event.preventDefault();
               });
+              */
 
               $('#loadingWrapper').hide();
 
@@ -481,9 +485,11 @@
                         event.preventDefault();
                         geoLocate($(this), $('#myModal'));
                     });
+                    /*
                     $newElements.find("div span a#favourite").click(function(event) {
                         event.preventDefault();
                     });
+                    */
 
                     $('#loadingWrapper').hide();
                   });
@@ -671,7 +677,7 @@
       // ask handlebars to render the template
       return handlebars_template(
         {
-          baseURL             : "<%= net.aequologica.parimagine.model.Photos.getInstance().toURL(request, null) %>",
+          documentsBaseURL             : "<%= net.aequologica.parimagine.model.Photos.getInstance().toURL(request, null) %>",
           photo               : photo,
           number              : photo.address.number?photo.address.number:'', 
           random_width_class  : get_random_width_class(), 
@@ -811,24 +817,31 @@
       $('.photo').click( function(event) 
         {
           event.preventDefault();
-          $('#lightbox-img').attr('src', $(this).attr('href'));
-          var $didascalieBase = $(this).parent().children("span:first").clone();
-          $didascalieBase.remove('.iconLinks');
-          $('#lightbox-caption p').html($didascalieBase);
-          
-          $(".lightbox-content").hover(function() {
-            $(".lightbox-content .lightbox-caption").stop().animate({
-              opacity : 1
+          if (event.ctrlKey){
+            
+            location = "<c:url value='/'/>" + "/photo/" + $(this).attr("data-index");
+            
+          } else {
+            $('#lightbox-img').attr('src', $(this).attr('href'));
+            var $didascalieBase = $(this).parent().children("span:first").clone();
+            $didascalieBase.remove('.iconLinks');
+            $('#lightbox-caption p').html($didascalieBase);
+            
+            $(".lightbox-content").hover(function() {
+              $(".lightbox-content .lightbox-caption").stop().animate({
+                opacity : 1
+              });
+            }, function() {
+              $(".lightbox-content .lightbox-caption").stop().animate({
+                opacity : 0
+              });
             });
-          }, function() {
-            $(".lightbox-content .lightbox-caption").stop().animate({
-              opacity : 0
+            
+            $('#lightbox-img').load(function() {
+              $('#demoLightbox').lightbox({maximize: true});
             });
-          });
+          }
           
-          $('#lightbox-img').load(function() {
-            $('#demoLightbox').lightbox({maximize: true});
-          });
         }
       );
       /*

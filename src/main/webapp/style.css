@@ -27,12 +27,12 @@ body {
   color: rgb(160, 160, 160);
 }
 
-.icon-globe {
+.box div span a {
   opacity: .3;
   cursor: pointer;
 }
 
-.box:hover div span i.icon-globe {
+.box:hover div span a {
   opacity: .8;
 }
 
@@ -182,9 +182,5 @@ footer #next {
   position:relative; 
   float: right; 
   right:0;
-}
-
-.icon-star-empty {
-  opacity: 0.2;
 }
 

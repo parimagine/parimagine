@@ -67,40 +67,9 @@
   <link href='//fonts.googleapis.com/css?family=Ubuntu:400' rel='stylesheet' type='text/css'>
 
   <style type="text/css">
-  @font-face {
-    font-family: 'Peignot';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Peignot '), url('<c:url value="/assets/fonts/Peignot.woff"/>') format('woff');
+  .fb-like {
+    padding-top: 10px;
   }
-
-  @font-face {
-    font-family: 'ParmaPetit';
-    font-style: normal;
-    font-weight: 400;
-    src: local('ParmaPetit '), url('<c:url value="/assets/fonts/ParmaPetit-Normal.woff"/>') format('woff');
-  }
-
-  .navbar-search .icon-search {
-    opacity: 0.5;
-    position: absolute;
-    top: 7px;
-    left: 11px;
-    background-image: url("<c:url value='/img/glyphicons-halflings.png' />");
-  }
-
-  .navbar-search .icon-search a {
-    opacity: 1;
-  }
-
-  .navbar-search .icon-remove {
-    opacity: 0.5;
-    position: absolute;
-    top: 7px;
-    right: 11px;
-    background-image: url("<c:url value='/img/glyphicons-halflings.png' />");
-  }
-
   </style>
   
   <link rel="stylesheet" href="style.css" />
@@ -138,35 +107,26 @@
   <!-- page container
   ================================================== -->
   <div class="container" style="padding-top: 70px;">
+  
     <div class="row-fluid">
+
       <div class="span1 text-left" >
-        <c:if test="${param.prev != -1}">
-          <a id="prev" class="btn text-left" href='<c:url value="/photo/${param.prev}"/>'><i class="icon-chevron-left"></i></a>
-        </c:if>
+        <a id="prev" class="btn text-left" href='#'>
+          <i class="icon-chevron-left"></i>
+        </a>
       </div>
-      <div id="photo_container" class="span10 pagination-centered" style="opacity: 0;">
-        <c:if test="${not empty param.image}">
-          <img id="photo", class="centered" src='<c:url value="/documents/${param.image}"/>' style="margin-bottom: 10px;">
-          <c:if test="${not empty param.didascalie}">
-            <br/>
-            <span id="didascalie" class="centered" style="font-size: larger;">${didascalie_base}</span>
-            <br/>
-            <span id="didascalie" class="centered" style="font-size: smaller;">${didascalie_ext}</span>
-          </c:if>
-        </c:if>
+
+      <div id="photo_container" class="span10 pagination-centered">
       </div>
+
       <div class="span1 text-right" >
-        <c:if test="${param.next != -1}">
-          <a id="next" class="btn" href='<c:url value="/photo/${param.next}"/>'>
-            <i class="icon-chevron-right"></i>
-          </a>
-        </c:if>
+        <a id="next" class="btn" href='#'>
+          <i class="icon-chevron-right"></i>
+        </a>
       </div>
-      <c:if test="${not empty param.index}">
-        <div class="span12 text-right fb-like" data-href="http://photos.parimagine.fr/photo/${param.index}" data-send="true" data-layout="button_count" data-width="200" data-show-faces="false" data-font="tahoma">
-        </div>
-      </c:if>
+
     </div>
+    
   </div>
   <!-- ==================================================
   /page container -->
@@ -177,20 +137,67 @@
   <script type="text/javascript" src="handlebars.js"></script>
   <script type="text/javascript" src="imagesloaded.pkgd.js"></script>
 
-  <script type="text/javascript">
+  <!-- handlebars template for photo box -->
+<!-- !!!! content inside script id="didascalie-template" MUST start with "<", otherwise jquery explodes !!!! -->
+<script id="photo-template" type="text/x-handlebars-template"
+><div style="opacity: 0;">
+  <img id="photo", class="centered" src="{{baseURL}}/{{photo.image}}" style="margin-bottom: 10px;">
+  <br/>
+  <span id="didascalie" class="centered" style="font-size: larger;">{{{photo.didascalie.base}}}</span>
+  <br/>
+  <span id="didascalie" class="centered" style="font-size: smaller;">{{{photo.didascalie.ext}}}</span>
+  <br/>
+  <span class="centered fb-like" data-href="" data-send="true" data-layout="button_count" data-width="200" data-show-faces="false" data-font="tahoma"></span>
+<div></script>
+<!-- /handlebars template for photo box -->
+
+<script type="text/javascript">
+  // -------------------------------------------------------------------
+  // compile handlebars template
+  var handlebars_source   = $("#photo-template").html();
+  var handlebars_template = Handlebars.compile(handlebars_source);
+
   $(document).ready(function(){
 
-    $('#prev').click(function(event) {
-      event.preventDefault();
-      window.location = "photo/${param.prev}";
-    });
-    $('#next').click(function(event) {
-      event.preventDefault();
-      window.location = "photo/${param.next}";
-    });
-    imagesLoaded( '#photo', function() {
-      $('#photo').parent().animate({opacity: 1}, 500);
-    });
+    $.ajax(
+        {
+            type        : 'GET',
+            dataType    : "json",
+            url         : "<c:url value='/photo/datum/'/>"+${param.index},
+        }).done(function( photo, textStatus, jqXHR ) {
+          $('#photo_container').html(handlebars_template({
+            photo: photo,
+            baseURL: "<%= net.aequologica.parimagine.model.Photos.getInstance().toURL(request, null) %>",
+          }));
+
+          imagesLoaded( '#photo', function() {
+            $('#photo').parent().animate({opacity: 1}, 500);
+          });
+          
+          if (photo.index < <%= net.aequologica.parimagine.model.Photos.getInstance().getSize() %>) {
+            $('#next').attr('href', '<c:url value="/photo/"/>'+(photo.index+1));
+            $('#next').css({opacity:1});
+          } else {
+            $('#next').css({opacity:0});
+          }
+
+          if (0 < photo.index) {
+            $('#prev').attr('href', '<c:url value="/photo/"/>'+(photo.index-1));
+            $('#prev').css({opacity:1});
+          } else {
+            $('#prev').css({opacity:0});
+          }
+
+          $('.fb-like').attr('data-href', location);
+          $('.fb-like').css({visibility:'visible'});
+
+
+        }).fail(function(jqXHR, textStatus, errorThrown){
+          $('.fb-like').css({visibility:'hidden'});
+        }).always(function(){
+        }
+      );
+    
   });  
   </script>
 
