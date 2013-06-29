@@ -1,4 +1,7 @@
-<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
+<%@page import="net.aequologica.parimagine.utils.RequestUtils"
+%><%@page import="net.aequologica.parimagine.model.Photos"
+%><%@page import="net.aequologica.parimagine.model.Photo"
+%><%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
 %><%@ taglib prefix="c"  uri="http://java.sun.com/jstl/core_rt" 
 %><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" 
 %><!doctype html>
@@ -16,11 +19,18 @@
 
   <!-- facebook metadata 
        cf. http://ogp.me/ -->
-  <meta property="og:title"       content="Parimagine"/>
+  <%
+    int     index  = Integer.parseInt(request.getParameter("index"));
+    Photo   photo  = Photos.getInstance().getPhoto(index);
+    String  title  = photo.getDidascalie().toString();
+    String  image  = Photos.getInstance().toURL(request, photo.getImage()); 
+    String  url    = RequestUtils.getBaseURL(request) + "/photo/" + index;
+  %>
+  <meta property="og:title"       content="<%=title%>"/>
   <meta property="og:description" content="Photothèque des Jeunes Parisiens"/>
-  <meta property="og:image"       content=""/>
+  <meta property="og:image"       content="<%=image%>"/>
   <meta property="og:image:type"  content="image/jpeg" />
-  <meta property="og:url"         content="#"/>
+  <meta property="og:url"         content="<%=url%>"/>
   <meta property="og:type"        content="website"/>
   <meta property="og:site_name"   content="Parimagine"/>
   <meta property="og:locale"      content="fr_FR"/>
@@ -83,8 +93,6 @@
       </div>
     </div>
   </div>
-
-  <c:set var="baseURL" value="${fn:replace(pageContext.request.requestURL, pageContext.request.requestURI, pageContext.request.contextPath)}" />
 
   <!-- page container
   ================================================== -->

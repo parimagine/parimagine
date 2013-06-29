@@ -53,7 +53,7 @@ public class Resource {
     public Viewable getPhotoJsp(@PathParam("index") int index) throws IOException {
     	URI location = UriBuilder
     			.fromUri("../photo.jsp")
-    			.queryParam("index", index)
+                .queryParam("index", index)
     			.build();
     	throw new WebApplicationException(Response.temporaryRedirect(location).build());
     }
