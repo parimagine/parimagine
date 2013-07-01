@@ -448,7 +448,7 @@
                       $photos_container.infinitescroll('beginAjax', opts);
                     },
                     finished: function() {
-                      hideLoading();
+                      // hideLoading();
                     },
                     img: 'ajax-loader.gif',
                     msg: null,
@@ -485,6 +485,9 @@
                         event.preventDefault();
                         geoLocate($(this), $('#myModal'));
                     });
+
+                    hideLoading();
+                    
                   });
 
                   $photos_container.append($newElements);
