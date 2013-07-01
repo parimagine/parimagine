@@ -41,22 +41,6 @@
   <link href='//fonts.googleapis.com/css?family=Ubuntu:400' rel='stylesheet' type='text/css'>
 
   <style type="text/css">
-  /*
-  @font-face {
-    font-family: 'Peignot';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Peignot '), url('<c:url value="/assets/fonts/Peignot.woff"/>') format('woff');
-  }
-
-  @font-face {
-    font-family: 'ParmaPetit';
-    font-style: normal;
-    font-weight: 400;
-    src: local('ParmaPetit '), url('<c:url value="/assets/fonts/ParmaPetit-Normal.woff"/>') format('woff');
-  }
-  */
-
   .navbar-search .icon-search {
     opacity: 0.5;
     position: absolute;
@@ -79,6 +63,18 @@
   
   .lightbox-content .lightbox-caption {
     opacity: 0;
+  }
+
+  #loadingWrapper {
+   width: 128px;
+   height: 128px;
+   position: fixed;
+   left: 64px;
+   top: 64px; 
+   margin-left: -64px;
+   margin-top: -64px;
+   opacity: 1;
+   z-index:1000;
   }
 
   </style>
@@ -178,9 +174,9 @@
   <!-- ==================================================
   /page container -->
 
-  <div id="loadingWrapper" style="position: fixed; bottom: 0; left:0; width:100%; margin: 0; padding:0; display:none; opacity:.3333; background: #4682b4;">
-    <div id="loading" style="width:32px; height:32px; margin: 0 auto; padding:0;">
-      <img src="ajax-loader4.gif"/>
+  <div id="loadingWrapper">
+    <div id="loading">
+      <img src="ajax-loader-coffee.gif"/>
     </div>
   </div>
 
@@ -271,6 +267,17 @@
   }
 
   $(document).ready(function(){
+
+    function showLoading() {
+      $('#loadingWrapper').stop().css({
+          opacity : 1
+      });
+    }
+    function hideLoading() {
+      $('#loadingWrapper').stop().animate({
+          opacity : 0
+      });
+    }
 
     var $phototheque = new $.Phototheque($('#phototheque')); 
     // console.log($phototheque.settings.propertyName);
@@ -379,7 +386,7 @@
 
       loadPhotoSet : function() {
 
-        $('#loadingWrapper').show();
+        showLoading();
 
         // raz 
         destroy_masonry();
@@ -427,7 +434,7 @@
               });
               */
 
-              $('#loadingWrapper').hide();
+              hideLoading();
 
             });
 
@@ -444,7 +451,7 @@
                   path            : function(current) { return that.getPhotoSetUrl(); },
                   loading         : {
                     start: function(opts) {
-                      $('#loadingWrapper').show();
+                      showLoading();
                       $photos_container.infinitescroll('beginAjax', opts);
                     },
                     finished: function() {
@@ -453,7 +460,7 @@
                     img: 'ajax-loader.gif',
                     msg: null,
                     msgText: '',
-                    selector: '#loading',
+                    selector: '#loadingWrapper',
                   }
                 }, function(arrayOfNewElems, data, url) {
                   that.infscrPageview++;
@@ -491,7 +498,7 @@
                     });
                     */
 
-                    $('#loadingWrapper').hide();
+                    hideLoading();
                   });
 
                   $photos_container.append($newElements);

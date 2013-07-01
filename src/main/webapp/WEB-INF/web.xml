@@ -4,6 +4,11 @@
       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
       version="3.0"> 
       
+	<session-config>
+	  <!-- Disables URL-based sessions (no more 'jsessionid' in the URL using Tomcat) -->
+	  <tracking-mode>COOKIE</tracking-mode>
+	</session-config>
+	
 	<servlet>
 		<servlet-name>jsp</servlet-name>
 		<servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
