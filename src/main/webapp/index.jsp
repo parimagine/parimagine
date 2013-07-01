@@ -69,10 +69,10 @@
    width: 128px;
    height: 128px;
    position: fixed;
-   left: 64px;
-   top: 64px; 
+   left: 80px;
+   bottom: 80px; 
    margin-left: -64px;
-   margin-top: -64px;
+   margin-bottom: -64px;
    opacity: 1;
    z-index:1000;
   }
@@ -428,14 +428,7 @@
                   geoLocate($(this), $('#myModal'));
               });
 
-              /*
-              $(".box div span a#favourite").click(function(event) {
-                  event.preventDefault();
-              });
-              */
-
               hideLoading();
-
             });
 
             if (that.search) { // no infinites croll on search results
@@ -455,7 +448,7 @@
                       $photos_container.infinitescroll('beginAjax', opts);
                     },
                     finished: function() {
-
+                      hideLoading();
                     },
                     img: 'ajax-loader.gif',
                     msg: null,
@@ -492,13 +485,6 @@
                         event.preventDefault();
                         geoLocate($(this), $('#myModal'));
                     });
-                    /*
-                    $newElements.find("div span a#favourite").click(function(event) {
-                        event.preventDefault();
-                    });
-                    */
-
-                    hideLoading();
                   });
 
                   $photos_container.append($newElements);
@@ -823,6 +809,7 @@
     function setup_lightbox() {
       $('.photo').click( function(event) 
         {
+          showLoading();
           event.preventDefault();
           if (event.ctrlKey){
             
@@ -846,6 +833,7 @@
             
             $('#lightbox-img').load(function() {
               $('#demoLightbox').lightbox({maximize: true});
+              hideLoading();
             });
           }
           
