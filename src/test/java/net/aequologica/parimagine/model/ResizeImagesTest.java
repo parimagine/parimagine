@@ -3,10 +3,12 @@ package net.aequologica.parimagine.model;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
@@ -19,13 +21,15 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
 
 import org.imgscalr.Scalr;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class ResizeImagesTest {
 
-	Path alImages = new File("C:/_parimagine/Site Web").toPath();
+	Path alImages = Paths.get("/Users/i051108/Documents/parimagine/Site Web (2)/oneDir");
+	Path out = Paths.get("/Users/i051108/Documents/parimagine/photos");
 
-	// @Test
+	@Test	
 	public void test() throws IOException {
 		ProcessFile processFile = new ProcessFile();
 		Files.walkFileTree(alImages, processFile);
@@ -52,13 +56,19 @@ public class ResizeImagesTest {
 	}
 	
 	public void resizeImage(Path p) throws IOException {
+		String filename = p.getFileName().toString();
+		String basename = filename.substring(0, filename.length()-4); // remove ".jpg"
+		File file = new File(out.toString(), basename + ".txt");
+		if (file.exists()) {
+			return;
+		}
 		BufferedImage image = ImageIO.read(p.toFile());
 		BufferedImage big;
 
 		int originalWidth = image.getWidth();
 		int originalHeight = image.getHeight();
-		int containerWidth = 1170;
-		int containerHeight = 800;
+		int containerWidth = 1440;
+		int containerHeight = 900;
 		double originalRatio = (double) originalWidth / (double) originalHeight;
 		double containerRatio = (double) containerWidth / (double) containerHeight;
 		if (originalRatio >= containerRatio) {
@@ -69,15 +79,16 @@ public class ResizeImagesTest {
 		
 		BufferedImage small = Scalr.resize(image, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, 274, null, Scalr.OP_ANTIALIAS);
 
-		writeImage(p, big, .9f);
-		writeImage(p, small, .8f);
+		writeImage(out, "big", basename, big, .9f);
+		writeImage(out, "small", basename, small, .8f);
+		try (FileWriter fw = new FileWriter(file)) {
+			fw.write("done!");
+		}
 	}
 
-	private static void writeImage(Path p, BufferedImage bufferedImage, float compression) throws IOException {
-		String filename = p.getFileName().toString();
-		filename = filename.substring(0, filename.length()-4); // remove ".jpg"
+	private static void writeImage(Path parent, String subdir, String basename, BufferedImage bufferedImage, float compression) throws IOException {
 		
-		File file = new File(p.getParent().toFile(), filename + "-" + bufferedImage.getWidth() + "x" + bufferedImage.getHeight() + ".jpg");
+		File file = Paths.get(parent.toString(), subdir, basename + "-" + bufferedImage.getWidth() + "x" + bufferedImage.getHeight() + ".jpg").toFile();
 		try (FileOutputStream outputStream = new FileOutputStream(file)) {
 			saveAsJPEG(96, bufferedImage, compression, outputStream);
 		}
