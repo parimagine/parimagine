@@ -55,12 +55,12 @@ $1&apos;
 ouf!
 */
 
-	Path piwi 		   			= new File("C:/_parimagine/SiteParimagine/Piwi").toPath();
-	Path piwiGalleries 			= new File("C:/_parimagine/SiteParimagine/Piwi/galleries").toPath();
-	Path piwiGalleriesdistricts = new File("C:/_parimagine/SiteParimagine/Piwi/galleries/Arrondissements").toPath();
+	Path piwi 		   			= new File("C:/parimagine/SiteParimagine/Piwi").toPath();
+	Path piwiGalleries 			= new File("C:/parimagine/SiteParimagine/Piwi/galleries").toPath();
+	Path piwiGalleriesdistricts = new File("C:/parimagine/SiteParimagine/Piwi/galleries/Arrondissements").toPath();
 
     private String makeKey(String district, String id) {
-        return district+"."+id;
+        return district + "." + id;
     }
 
     // @Test

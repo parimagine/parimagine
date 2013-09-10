@@ -39,10 +39,10 @@ public class JpgMetadataExtractorTest {
 	PathMatcher districtPathMatcher  = FileSystems.getDefault().getPathMatcher("glob:{Arrondissements}");
 	PathMatcher thumbnailPathMatcher = FileSystems.getDefault().getPathMatcher("glob:{thumbnail}");
 
-	Path piwi 		   = new File("C:/_parimagine/SiteParimagine/Piwi").toPath();
-	Path piwiGalleries = new File("C:/_parimagine/SiteParimagine/Piwi/galleries").toPath();
+	Path piwi 		   = new File("C:/parimagine/SiteParimagine/Piwi").toPath();
+	Path piwiGalleries = new File("C:/parimagine/SiteParimagine/Piwi/galleries").toPath();
 
-	// @Test
+	@Test
 	public void test() throws ImageProcessingException, IOException {
 
 		List<Photo> photoList = new ArrayList<>();
@@ -56,8 +56,8 @@ public class JpgMetadataExtractorTest {
 
 	// @Test
 	public void testOneFile() throws ImageProcessingException, IOException {
-		getMatadata(Paths.get("C:/_parimagine/SiteParimagine/Piwi/galleries/Photos-Presse/Cinema/P375.jpg"), false);
-		getMatadata(Paths.get("C:/_parimagine/SiteParimagine/Piwi/galleries/Photos-Presse/Cinema/P304.jpg"), false);
+		System.out.println(getMatadata(Paths.get("C:/parimagine/SiteParimagine/Piwi/galleries/Photos-Presse/Cinema/P375.jpg"), false));
+		System.out.println(getMatadata(Paths.get("C:/parimagine/SiteParimagine/Piwi/galleries/Photos-Presse/Cinema/P304.jpg"), false));
 	}
 
 	private final class ProcessFile extends SimpleFileVisitor<Path> {
@@ -79,6 +79,8 @@ public class JpgMetadataExtractorTest {
 			try {
 				String caption = getMatadata(aFile, false);
 				if (caption != null) {
+				    
+				    System.out.println(caption);
 
 					String pathAsString = piwiGalleries.relativize(aFile).toString().toLowerCase().replace('\\', '/');
 					caption = fixQuotes(caption);
@@ -221,7 +223,7 @@ public class JpgMetadataExtractorTest {
 		return ret;
 	}
 	
-	@Test
+//	@Test
 	public void testExtractNumber() throws ImageProcessingException, IOException {
 		{
 			String qwe = "53 ABOUKIR (RUE D) Stoppeurs Stoppeurs du n°53 75002 - Paris";
@@ -273,7 +275,7 @@ public class JpgMetadataExtractorTest {
 
 	}
 
-	@Test
+//	@Test
 	public void testExtractStreet() throws ImageProcessingException, IOException {
 		{
 			String qwe = "ABOUKIR (RUE D) Stoppeurs Stoppeurs du n°53 75002 - Paris";
@@ -331,7 +333,7 @@ public class JpgMetadataExtractorTest {
 		return ret;
 	}
 
-	@Test
+//	@Test
 	public void testExtractParis() throws ImageProcessingException, IOException {
 		{
 			String qwe = "Stoppeurs Stoppeurs du n°53 75002 - Paris";
@@ -366,7 +368,7 @@ public class JpgMetadataExtractorTest {
 		return ret;
 	}
 
-	@Test
+//	@Test
 	public void testExtractDistrict() throws ImageProcessingException, IOException {
 		{
 			String qwe = "Stoppeurs Stoppeurs du n°53    75002";

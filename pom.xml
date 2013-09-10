@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.sap.prd.dts</groupId>
         <artifactId>holos</artifactId>
-        <version>5.3.0-SNAPSHOT</version>
+        <version>5.5.0-SNAPSHOT</version>
     </parent>
 
     <groupId>net.aequologica.parimagine</groupId>
@@ -13,6 +13,57 @@
     <version>0.1-SNAPSHOT</version>
     
     <packaging>war</packaging>
+    
+    <dependencyManagement>
+	    <dependencies>
+	        <dependency>
+	            <groupId>org.apache.lucene</groupId>
+	            <artifactId>lucene-core</artifactId>
+	            <version>4.4.0</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.apache.lucene</groupId>
+	            <artifactId>lucene-analyzers-common</artifactId>
+	            <version>4.4.0</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.apache.lucene</groupId>
+	            <artifactId>lucene-queryparser</artifactId>
+	            <version>4.4.0</version>
+	        </dependency>
+	
+			<dependency>
+			    <groupId>com.drewnoakes</groupId>
+			    <artifactId>metadata-extractor</artifactId>
+			    <version>2.6.2</version>
+			</dependency>
+			<dependency>
+			    <groupId>net.sourceforge.jchardet</groupId>
+			    <artifactId>jchardet</artifactId>
+			    <version>1.0</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.imgscalr</groupId>
+			    <artifactId>imgscalr-lib</artifactId>
+			    <version>4.2</version>
+			</dependency>
+			<dependency>
+			    <groupId>javax.media</groupId>
+			    <artifactId>jai_core</artifactId>
+			    <version>1.1.3</version>
+			</dependency>
+			<dependency>
+			    <groupId>javax.media</groupId>
+			    <artifactId>jai_codec</artifactId>
+			    <version>1.1.3</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ebaysf.web</groupId>
+				<artifactId>cors-filter</artifactId>
+				<version>1.0.1</version>
+			</dependency>
+	    </dependencies>
+    </dependencyManagement>
     
     <dependencies>
         <dependency>
@@ -68,19 +119,16 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-            <version>4.3.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-analyzers-common</artifactId>
-            <version>4.3.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-queryparser</artifactId>
-            <version>4.3.0</version>
         </dependency>
 
         <dependency>
@@ -92,28 +140,24 @@
 		<dependency>
 		    <groupId>com.drewnoakes</groupId>
 		    <artifactId>metadata-extractor</artifactId>
-		    <version>2.6.2</version>
             <scope>test</scope>
 		</dependency>
 		
 		<dependency>
 		    <groupId>net.sourceforge.jchardet</groupId>
 		    <artifactId>jchardet</artifactId>
-		    <version>1.0</version>
             <scope>test</scope>
 		</dependency>
 		
 		<dependency>
 		    <groupId>org.imgscalr</groupId>
 		    <artifactId>imgscalr-lib</artifactId>
-		    <version>4.2</version>
             <scope>test</scope>
 		</dependency>
 		
 		<dependency>
 		    <groupId>javax.media</groupId>
 		    <artifactId>jai_core</artifactId>
-		    <version>1.1.3</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/jai/jai_core.jar</systemPath>
 		</dependency>
@@ -121,7 +165,6 @@
 		<dependency>
 		    <groupId>javax.media</groupId>
 		    <artifactId>jai_codec</artifactId>
-		    <version>1.1.3</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/jai/jai_codec.jar</systemPath>
 		</dependency>
@@ -129,7 +172,6 @@
 		<dependency>
 			<groupId>org.ebaysf.web</groupId>
 			<artifactId>cors-filter</artifactId>
-			<version>1.0.0</version>
 		</dependency>
 		
     </dependencies>
@@ -141,12 +183,6 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
             <!-- *avoid* generating plexus components.xml descriptor from source (javadoc) or class annotations -->
