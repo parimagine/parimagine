@@ -887,7 +887,7 @@
           var lng = $theBox.attr('data-position-lng');
           var lat_lng;
           if (!lat || !lng) {
-            lat_lng = new google.maps.LatLng(results[0].geometry.location.jb, results[0].geometry.location.kb); 
+            lat_lng = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()); 
             $theBox.attr('data-position-lat', lat_lng.lat()); 
             $theBox.attr('data-position-lng', lat_lng.lng()); 
           } else {
