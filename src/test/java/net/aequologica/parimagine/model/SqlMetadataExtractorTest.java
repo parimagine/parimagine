@@ -15,9 +15,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Test;
+
 import com.google.common.base.Charsets;
 
 public class SqlMetadataExtractorTest {
+
+    @Test
+    public void voidtest() {
+    }
 
 /* 
 THE MAGIC REGEXPs

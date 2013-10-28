@@ -14,11 +14,17 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.junit.Test;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 
 public class MergeJpgWithSqlTest {
+
+    @Test
+    public void voidtest() {
+    }
 
 	// @Test
 	public void test() throws IOException {

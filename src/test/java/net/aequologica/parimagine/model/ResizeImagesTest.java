@@ -29,7 +29,11 @@ public class ResizeImagesTest {
 	Path alImages = Paths.get("/Users/i051108/Documents/parimagine/Site Web (2)/oneDir");
 	Path out = Paths.get("/Users/i051108/Documents/parimagine/photos");
 
-	@Test	
+    @Test
+    public void voidtest() {
+    }
+
+	// @Test	
 	public void test() throws IOException {
 		ProcessFile processFile = new ProcessFile();
 		Files.walkFileTree(alImages, processFile);

@@ -42,7 +42,11 @@ public class JpgMetadataExtractorTest {
 	Path piwi 		   = new File("C:/parimagine/SiteParimagine/Piwi").toPath();
 	Path piwiGalleries = new File("C:/parimagine/SiteParimagine/Piwi/galleries").toPath();
 
-	@Test
+    @Test
+    public void voidtest() {
+    }
+
+	// @Test
 	public void test() throws ImageProcessingException, IOException {
 
 		List<Photo> photoList = new ArrayList<>();
@@ -52,10 +56,10 @@ public class JpgMetadataExtractorTest {
 		Files.walkFileTree(piwiGalleries, processFile);
 		
 		writePhotoList(photoList);
-	}
+    }
 
-	// @Test
-	public void testOneFile() throws ImageProcessingException, IOException {
+    // @Test
+    public void testOneFile() throws ImageProcessingException, IOException {
 		System.out.println(getMatadata(Paths.get("C:/parimagine/SiteParimagine/Piwi/galleries/Photos-Presse/Cinema/P375.jpg"), false));
 		System.out.println(getMatadata(Paths.get("C:/parimagine/SiteParimagine/Piwi/galleries/Photos-Presse/Cinema/P304.jpg"), false));
 	}
