@@ -3,4 +3,4 @@ target/
 .classpath
 .project
 /.README.md.html
-git.properties
+**/git.properties
