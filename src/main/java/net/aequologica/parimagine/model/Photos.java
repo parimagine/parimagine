@@ -203,7 +203,7 @@ public class Photos {
         
         IndexReader reader = DirectoryReader.open(index);
         IndexSearcher searcher = new IndexSearcher(reader);
-        QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_43, new String[] { "didascalie.base", "didascalie.ext", "street", "legacy" }, analyzer);
+        QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_45, new String[] { "didascalie.base", "didascalie.ext", "street", "legacy" }, analyzer);
         Query query = parser.parse(searchString);
         TopDocs results = searcher.search(query, maxResults);
         ScoreDoc[] hits = results.scoreDocs;
@@ -288,10 +288,10 @@ public class Photos {
     }
 
     Directory index = new RAMDirectory();
-    Analyzer analyzer = new FrenchAnalyzer(Version.LUCENE_43);
+    Analyzer analyzer = new FrenchAnalyzer(Version.LUCENE_45);
     
     private void createIndex() throws IOException {
-        IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_43, analyzer);
+        IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_45, analyzer);
     
         iwc.setOpenMode(OpenMode.CREATE);
     
