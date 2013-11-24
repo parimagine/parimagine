@@ -12,7 +12,7 @@
     <artifactId>parimagine</artifactId>
     <version>0.1-SNAPSHOT</version>
     
-    <packaging>war</packaging>
+    <packaging>pom</packaging>
     
     <dependencyManagement>
 	    <dependencies>
@@ -65,117 +65,6 @@
 	    </dependencies>
     </dependencyManagement>
     
-    <dependencies>
-        <dependency>
-            <groupId>com.sap.prd.dts</groupId>
-            <artifactId>geppaequo-core</artifactId>
-            <version>1.4.0-SNAPSHOT</version><!--$NO-MVN-MAN-VER$-->
-        </dependency>
-        <dependency>
-            <groupId>com.sap.prd.dts</groupId>
-            <artifactId>geppaequo-fileupload</artifactId>
-            <version>1.4.0-SNAPSHOT</version><!--$NO-MVN-MAN-VER$-->
-            <type>war</type>
-            <scope>runtime</scope>
-        </dependency>
-        <!-- get @WebServlet annotations -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!-- jstl -->
-        <dependency>
-            <groupId>org.glassfish.web</groupId>
-            <artifactId>javax.servlet.jsp.jstl</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>provided</scope>
-        </dependency>
-        <!-- get jersey -->
-        <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-servlet</artifactId>
-        </dependency>
-		<dependency>
-		    <groupId>org.glassfish.jersey.ext</groupId>
-		    <artifactId>jersey-mvc-jsp</artifactId>
-		</dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-        </dependency>
-        
-        <!-- get jackson -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-analyzers-common</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-queryparser</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-		<dependency>
-		    <groupId>com.drewnoakes</groupId>
-		    <artifactId>metadata-extractor</artifactId>
-            <scope>test</scope>
-		</dependency>
-		
-		<dependency>
-		    <groupId>net.sourceforge.jchardet</groupId>
-		    <artifactId>jchardet</artifactId>
-            <scope>test</scope>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.imgscalr</groupId>
-		    <artifactId>imgscalr-lib</artifactId>
-            <scope>test</scope>
-		</dependency>
-		
-		<dependency>
-		    <groupId>javax.media</groupId>
-		    <artifactId>jai_core</artifactId>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/jai/jai_core.jar</systemPath>
-		</dependency>
-
-		<dependency>
-		    <groupId>javax.media</groupId>
-		    <artifactId>jai_codec</artifactId>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/jai/jai_codec.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>org.ebaysf.web</groupId>
-			<artifactId>cors-filter</artifactId>
-		</dependency>
-		
-    </dependencies>
-    
     <build>
         <plugins>
             <plugin>
@@ -198,24 +87,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.sap.research</groupId>
-                <artifactId>nwcloud-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>after.deploy</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>stop</goal>
-                            <goal>deploy</goal>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <application>${nwcloud.application}</application>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
+
 </project>
