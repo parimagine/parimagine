@@ -9,6 +9,10 @@
 	  <tracking-mode>COOKIE</tracking-mode>
 	</session-config>
 	
+	<error-page>
+	    <location>/error.jsp</location>
+	</error-page>
+	
 	<servlet>
 		<servlet-name>jsp</servlet-name>
 		<servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
