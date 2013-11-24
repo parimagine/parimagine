@@ -42,7 +42,7 @@ bénévole de l’association __La Photothèque des Jeunes Parisiens__.
 __Parimagine Editions__ & __La Photothèque des Jeunes Parisiens__ sont déjà 
 présents sur internet à l’adresse [http://www.parimagine.fr](http://www.parimagine.fr/).
 
-![http://www.parimagine.fr](src/main/webapp/assets/images/parimagine_php.jpg)
+![http://www.parimagine.fr](images/parimagine_php.jpg)
  
 D’un point de vue technique, le site est réalisé en [PHP](http://php.net/), 
 et est principalement basé sur le logiciel ouvert [piwigo](http://fr.piwigo.org/), 
@@ -101,11 +101,11 @@ La page d’accueil présente une sélection de photos choisies rigoureusement a
 
 [https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine](https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/)
 
-![](src/main/webapp/assets/images/parimagine_home.jpg)
+![](images/parimagine_home.jpg)
 
 Il est aussi possible d’afficher les photos par
 
-arrondissement ![arrondissements](src/main/webapp/assets/images/parimagine_arrondissements.jpg) ou par thème ![thèmes](src/main/webapp/assets/images/parimagine_themes.jpg). 
+arrondissement ![arrondissements](images/parimagine_arrondissements.jpg) ou par thème ![thèmes](images/parimagine_themes.jpg). 
 
 ##### Déroulement infini
 
@@ -114,7 +114,7 @@ en bon français ?), popularisée par facebook, twitter, et ce même retronaut :
 le bas, et de nouvelles photos apparaissent, à l’infini. J’en veux pour preuve, après 
 une série de déroulement vers le bas, la taille minuscule du curseur ci-dessous : 
 
-![http://masonry.desandro.com](src/main/webapp/assets/images/parimagine_infinite_scrolling.jpg)
+![http://masonry.desandro.com](images/parimagine_infinite_scrolling.jpg)
 
 Cette technique met particulièrement en valeur la quantité vertigineuse des contenus.
 
@@ -126,13 +126,13 @@ les photos de la rue des rosiers, dans le 4ème arrondissement :
 
 [https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/?search=rosiers](https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/?search=rosiers)
 
-![search=rosiers](src/main/webapp/assets/images/parimagine_search.jpg)
+![search=rosiers](images/parimagine_search.jpg)
 
 ##### Plein écran 
 
 Cliquer sur une photo l’affiche plein écran :  
 
-![plein écran](src/main/webapp/assets/images/parimagine_lightbox.jpg)
+![plein écran](images/parimagine_lightbox.jpg)
 
 ##### Adressabilité 
 
@@ -142,13 +142,13 @@ et un embryon de gadgets sociaux :
 
 [https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/photo/1698](https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/photo/1698)
 
-![direct access](src/main/webapp/assets/images/parimagine_direct_access.jpg)
+![direct access](images/parimagine_direct_access.jpg)
 
 ##### Réseau social
 
 Chaque photo peut donc être partagée sur votre réseau social préféré (euh ... facebook pour l'instant), pour être le sujet de discussions fructueuses pour votre ego (le mien en l’occurrence dans l’exemple ci-dessous):
 
-![conversation facebook](src/main/webapp/assets/images/parimagine_facebook.jpg)
+![conversation facebook](images/parimagine_facebook.jpg)
 
 ##### Géo-localisation
 
@@ -156,11 +156,11 @@ Toute photo dont l’adresse est renseignée - même de façon incomplète - peu
 
 En cliquant sur l’icône de mappemonde en bas à droite de ces photos …
 
-![mappemonde](src/main/webapp/assets/images/parimagine_mappemonde.jpg)
+![mappemonde](images/parimagine_mappemonde.jpg)
 
 … on accède alors à la carte de Paris sur google maps, associée à la vue actuelle (‘street view’) du lieu.
 
-![street view](src/main/webapp/assets/images/parimagine_stree_view.jpg)
+![street view](images/parimagine_stree_view.jpg)
 
 _Avertissement : l’état actuel du prototype ne sauvegarde pas la géo-localisation précise, vous n’obtiendrez pas un résultat aussi spectaculaire en testant in vivo … mais ça va venir !_
 
@@ -170,11 +170,11 @@ Il est alors possible, grâce à un effort raisonné et raisonnable de mise en p
 
 [http://dev.parimagine.fr/before-after.html](http://dev.parimagine.fr/before-after.html)
 
-![avant/après](src/main/webapp/assets/images/parimagine_avant_apres.jpg)
+![avant/après](images/parimagine_avant_apres.jpg)
 
-![avant](src/main/webapp/assets/images/parimagine_avant.jpg)
+![avant](images/parimagine_avant.jpg)
 
-![après](src/main/webapp/assets/images/parimagine_apres.jpg)
+![après](images/parimagine_apres.jpg)
 
 ##### Géo-localisation (2)
 
@@ -182,11 +182,11 @@ Google maps permet aussi, à peu de frais, de lier les photos géo-localisée à
 
 [http://dev.parimagine.fr/maps.html](http://dev.parimagine.fr/maps.html)
 
-![carte de Paris](src/main/webapp/assets/images/parimagine_google_map.jpg)
+![carte de Paris](images/parimagine_google_map.jpg)
 
 Cliquer sur la marque  (ci-dessus au bout de la grosse flèche rouge) nous télé-transporte immédiatement vers [les photos de la rue L'Abbé Groult](https://parimaginep1894179457trial.hanatrial.ondemand.com/parimagine/?search=Groult) de la photothèque :  
 
-![rue L'Abbé Groult](src/main/webapp/assets/images/parimagine_abb_groult.jpg)
+![rue L'Abbé Groult](images/parimagine_abb_groult.jpg)
 
 #### Parimagine
 
