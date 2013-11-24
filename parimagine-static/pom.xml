@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>net.aequologica.parimagine</groupId>
+        <artifactId>parimagine</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>parimagine-static</artifactId>
+    
+    <packaging>war</packaging>
+    
+    <dependencies>
+    
+        <dependency>
+	        <groupId>net.aequologica.parimagine</groupId>
+	        <artifactId>parimagine-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.sap.prd.dts</groupId>
+            <artifactId>geppaequo-fileupload</artifactId>
+            <version>1.4.0-SNAPSHOT</version><!--$NO-MVN-MAN-VER$-->
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+        
+    </dependencies>
+    
+</project>

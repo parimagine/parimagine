@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0"> 
+      
+	<session-config>
+	  <!-- Disables URL-based sessions (no more 'jsessionid' in the URL using Tomcat) -->
+	  <tracking-mode>COOKIE</tracking-mode>
+	</session-config>
+	
+	<servlet>
+		<servlet-name>jsp</servlet-name>
+		<servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+		<init-param>
+			<param-name>fork</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<param-name>xpoweredBy</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<param-name>compilerSourceVM</param-name>
+			<param-value>1.7</param-value>
+		</init-param>
+		<init-param>
+			<param-name>compilerTargetVM</param-name>
+			<param-value>1.7</param-value>
+		</init-param>
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+	
+	<login-config>
+		<auth-method>FORM</auth-method>
+	</login-config>
+	
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Protected Area</web-resource-name>
+			<url-pattern>/protected/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<!-- Role Everyone will not be assignable -->
+			<role-name>wizard</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+	<security-role>
+		<description>All SAP HANA Cloud users</description>
+		<role-name>Everyone</role-name>
+	</security-role>
+
+	<security-role>
+		<description>Wizards</description>
+		<role-name>wizard</role-name>
+	</security-role>
+	
+	<!-- Declare the document store service (SAP HANA Cloud document service) -->
+    <resource-ref>
+        <res-ref-name>EcmService</res-ref-name>
+        <res-type>com.sap.ecm.api.EcmService</res-type>
+    </resource-ref>
+    
+</web-app>

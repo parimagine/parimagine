@@ -14,6 +14,12 @@
     
     <packaging>pom</packaging>
     
+    <modules>
+    	<module>parimagine-core</module>
+        <module>parimagine-static</module>
+        <module>parimagine-web</module>
+    </modules>
+    
     <dependencyManagement>
 	    <dependencies>
 	        <dependency>
@@ -84,6 +90,15 @@
                             <goal>generate-metadata</goal>
                         </goals>
                         <phase></phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase/>
                     </execution>
                 </executions>
             </plugin>
