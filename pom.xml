@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>net.aequologica.parimagine</groupId>
-    <artifactId>parimagine</artifactId>
+    <artifactId>parimagine-parent</artifactId>
     <version>0.1-SNAPSHOT</version>
     
     <packaging>pom</packaging>
@@ -20,6 +20,14 @@
         <module>parimagine-web</module>
     </modules>
     
+    <distributionManagement>
+        <snapshotRepository>
+            <id>local_snapshots</id>
+            <layout>default</layout>
+            <url>http://localhost:1082/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <dependencyManagement>
 	    <dependencies>
 	        <dependency>

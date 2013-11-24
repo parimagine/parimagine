@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>net.aequologica.parimagine</groupId>
-        <artifactId>parimagine</artifactId>
+        <artifactId>parimagine-parent</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
 

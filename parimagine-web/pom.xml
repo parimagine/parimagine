@@ -4,11 +4,11 @@
     
     <parent>
         <groupId>net.aequologica.parimagine</groupId>
-        <artifactId>parimagine</artifactId>
+        <artifactId>parimagine-parent</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>parimagine-web</artifactId>
+    <artifactId>parimagine</artifactId>
     
     <packaging>war</packaging>
     
@@ -55,7 +55,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <application>${nwcloud.application}</application>
+                    <application>parimagine</application>
                 </configuration>
             </plugin>
         </plugins>
