@@ -289,10 +289,10 @@ public class Photos {
     }
 
     Directory index = new RAMDirectory();
-    Analyzer analyzer = new FrenchAnalyzer(Version.LUCENE_45);
+    Analyzer analyzer = new FrenchAnalyzer(Version.LUCENE_46);
     
     private void createIndex() throws IOException {
-        IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_45, analyzer);
+        IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_46, analyzer);
     
         iwc.setOpenMode(OpenMode.CREATE);
     
