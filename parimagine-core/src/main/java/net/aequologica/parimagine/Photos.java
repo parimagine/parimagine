@@ -1,5 +1,7 @@
 package net.aequologica.parimagine;
 
+import static net.aequologica.neo.geppaequo.config.ConfigRegistry.CONFIG_REGISTRY;
+
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -51,7 +53,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Predicate;
-import com.sap.prd.geppaequo.config.ConfigRegistry;
+import net.aequologica.neo.geppaequo.config.ConfigRegistry;
 
 public class Photos {
     
@@ -123,7 +125,7 @@ public class Photos {
     }
     
     private Photos() throws IOException {
-        ParimagineConfig config = ConfigRegistry.getConfig(ParimagineConfig.class);
+        ParimagineConfig config = CONFIG_REGISTRY.getConfig(ParimagineConfig.class);
         if (config != null) {
             documents = config.getDocuments();
             verify    = config.getVerify();
@@ -204,7 +206,7 @@ public class Photos {
         
         IndexReader reader = DirectoryReader.open(index);
         IndexSearcher searcher = new IndexSearcher(reader);
-        QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_45, new String[] { "didascalie.base", "didascalie.ext", "street", "legacy" }, analyzer);
+        QueryParser parser = new MultiFieldQueryParser(new String[] { "didascalie.base", "didascalie.ext", "street", "legacy" }, analyzer);
         Query query = parser.parse(searchString);
         TopDocs results = searcher.search(query, maxResults);
         ScoreDoc[] hits = results.scoreDocs;
@@ -289,10 +291,10 @@ public class Photos {
     }
 
     Directory index = new RAMDirectory();
-    Analyzer analyzer = new FrenchAnalyzer(Version.LUCENE_46);
+    Analyzer analyzer = new FrenchAnalyzer();
     
     private void createIndex() throws IOException {
-        IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_46, analyzer);
+        IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
     
         iwc.setOpenMode(OpenMode.CREATE);
     

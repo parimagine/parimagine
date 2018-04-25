@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import org.weakref.jmx.Managed;
 
-import com.sap.prd.geppaequo.config.AbstractConfig;
-import com.sap.prd.geppaequo.config.Config;
+import net.aequologica.neo.geppaequo.config.AbstractConfig;
+import net.aequologica.neo.geppaequo.config.Config;
 
 @Config(name = "parimagine")
 public final class ParimagineConfig extends AbstractConfig {

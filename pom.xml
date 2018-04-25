@@ -3,9 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-        <groupId>com.sap.prd.dts</groupId>
-        <artifactId>holos</artifactId>
-        <version>5.6.0-SNAPSHOT</version>
+        <groupId>net.aequologica.neo</groupId>
+        <artifactId>meios</artifactId>
+        <version>0.6.1-SNAPSHOT</version>
+        <relativePath>../meios</relativePath>
     </parent>
 
     <groupId>net.aequologica.parimagine</groupId>
@@ -30,32 +31,6 @@
 
     <dependencyManagement>
 	    <dependencies>
-	        <dependency>
-	            <groupId>org.apache.lucene</groupId>
-	            <artifactId>lucene-core</artifactId>
-	            <version>4.6.0</version>
-	        </dependency>
-	        <dependency>
-	            <groupId>org.apache.lucene</groupId>
-	            <artifactId>lucene-analyzers-common</artifactId>
-	            <version>4.6.0</version>
-	        </dependency>
-	        <dependency>
-	            <groupId>org.apache.lucene</groupId>
-	            <artifactId>lucene-queryparser</artifactId>
-	            <version>4.6.0</version>
-	        </dependency>
-	
-			<dependency>
-			    <groupId>com.drewnoakes</groupId>
-			    <artifactId>metadata-extractor</artifactId>
-			    <version>2.6.2</version>
-			</dependency>
-			<dependency>
-			    <groupId>net.sourceforge.jchardet</groupId>
-			    <artifactId>jchardet</artifactId>
-			    <version>1.0</version>
-			</dependency>
 			<dependency>
 			    <groupId>org.imgscalr</groupId>
 			    <artifactId>imgscalr-lib</artifactId>
@@ -78,39 +53,5 @@
 			</dependency>
 	    </dependencies>
     </dependencyManagement>
-    
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-            <!-- *avoid* generating plexus components.xml descriptor from source (javadoc) or class annotations -->
-            <plugin>
-                <groupId>org.codehaus.plexus</groupId>
-                <artifactId>plexus-component-metadata</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate-metadata</goal>
-                        </goals>
-                        <phase></phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase/>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
